@@ -9,7 +9,6 @@
   "depends": [
     "File::Find",
     "JSON::Fast",
-    "JSON::Fast",
     "Pod::To::Markdown",
     "Shell::Command"
   ],

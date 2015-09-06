@@ -9,10 +9,12 @@ EOF
 travis => qq:to/EOF/,
 language: perl6
 perl6:
-  - 2015.07
+  - latest
 install:
-  - rakudobrew build-panda 2015.07
+  - rakudobrew build-panda
   - panda --notests installdeps .
+script:
+  - PERL6LIB=\$PWD/lib prove -e perl6 -r t/
 sudo: false
 EOF
 
@@ -20,10 +22,9 @@ test => qq:to/END_OF_TEST/,
 use v6;
 use Test;
 use $module;
+plan 1;
 
 pass "replace me";
-
-done;
 END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,
