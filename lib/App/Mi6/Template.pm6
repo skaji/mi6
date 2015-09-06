@@ -10,6 +10,7 @@ travis => qq:to/EOF/,
 language: perl6
 perl6:
   - latest
+sudo: false
 EOF
 
 test => qq:to/END_OF_TEST/,
