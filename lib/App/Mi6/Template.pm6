@@ -9,7 +9,7 @@ EOF
 travis => qq:to/EOF/,
 language: perl6
 perl6:
-  - latest
+  - 2015.07
 sudo: false
 EOF
 
