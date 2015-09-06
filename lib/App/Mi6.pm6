@@ -177,11 +177,13 @@ sub guess-main-module() {
             my $module = $dir.split('-').join('/');
             my @found = @module-files.grep(-> $f { $f ~~ m:i/$module . pm6?$/});
             my $f = do if @found == 0 {
-                @module-files.sort({ $^a.chars <=> $^b.chars }).first.Str;
+                my @f = @module-files.sort: { $^a.chars <=> $^b.chars };
+                @f.shift.Str;
             } elsif @found == 1 {
                 @found[0].Str;
             } else {
-                @found.sort({ $^a.chars <=> $^b.chars }).first.Str;
+                my @f = @found.sort: { $^a.chars <=> $^b.chars };
+                @f.shift.Str;
             }
             return ($to-module($f), $f);
         }
