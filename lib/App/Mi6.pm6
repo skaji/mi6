@@ -86,16 +86,17 @@ sub regenerate-readme($module-file) {
     my $p = run |@cmd, :out;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp-rest;
-    my ($user, $repo) = guess-user-and-repo();
-    my $header = do if $user and ".travis.yml".IO.e {
-        "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-            ~ "(https://travis-ci.org/$user/$repo)"
-            ~ "\n\n";
-    } else {
-        "";
-    }
-
-    spurt "README.md", $header ~ $markdown;
+    spurt "README.md", $markdown;
+    # TODO
+    # my ($user, $repo) = guess-user-and-repo();
+    # my $header = do if $user and ".travis.yml".IO.e {
+    #     "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
+    #         ~ "(https://travis-ci.org/$user/$repo)"
+    #         ~ "\n\n";
+    # } else {
+    #     "";
+    # }
+    # spurt "README.md", $header ~ $markdown;
 }
 
 method regenerate-meta-info($module) {
@@ -237,10 +238,6 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 =item Where is the spec of META.info or META6.json?
 
   Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod
-
-=item How do I remove travis badge?
-
-  Remove .travis.yml
 
 =head1 SEE ALSO
 

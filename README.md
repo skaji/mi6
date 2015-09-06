@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/shoichikaji/mi6.svg?branch=master)](https://travis-ci.org/shoichikaji/mi6)
-
 NAME
 ====
 
@@ -52,10 +50,6 @@ FAQ
   * Where is the spec of META.info or META6.json?
 
     Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod
-
-  * How do I remove travis badge?
-
-    Remove .travis.yml
 
 SEE ALSO
 ========
