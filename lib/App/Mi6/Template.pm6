@@ -9,10 +9,10 @@ EOF
 travis => qq:to/EOF/,
 language: perl6
 perl6:
-  - latest
+  - 2015.07
 install:
-  - rakudobrew build-panda
-  - panda installdeps --notests .
+  - rakudobrew build-panda 2015.07
+  - panda --notests installdeps .
 sudo: false
 EOF
 
