@@ -65,7 +65,7 @@ multi method cmd('test', :$verbose) {
     exit $exitcode;
 }
 
-sub test(Bool :$verbose) {
+sub withp6lib(&code) {
     # copy from Panda::Common::withp6lib
     my $old = %*ENV<PERL6LIB>;
     LEAVE {
@@ -76,14 +76,20 @@ sub test(Bool :$verbose) {
         }
     }
     %*ENV<PERL6LIB> = "$*CWD/lib";
-    my $option = $verbose ?? "-rv" !! "-r";
-    my $proc = run "prove", "-e", $*EXECUTABLE, $option, "t/";
-    $proc.exitcode;
+    &code();
+}
+
+sub test(Bool :$verbose) {
+    withp6lib {
+        my $option = $verbose ?? "-rv" !! "-r";
+        my $proc = run "prove", "-e", $*EXECUTABLE, $option, "t/";
+        $proc.exitcode;
+    };
 }
 
 sub regenerate-readme($module-file) {
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $module-file;
-    my $p = run |@cmd, :out;
+    my $p = withp6lib { run |@cmd, :out };
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp-rest;
     my ($user, $repo) = guess-user-and-repo();
