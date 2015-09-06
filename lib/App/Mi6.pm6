@@ -205,7 +205,7 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
 =item How can I manage depends, description, ...?
 
-  Write them to META.info directory :)
+  Write them to META.info directly :)
 
 =item Where is Changes file?
 

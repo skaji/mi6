@@ -41,7 +41,7 @@ FAQ
 
   * How can I manage depends, description, ...?
 
-    Write them to META.info directory :)
+    Write them to META.info directly :)
 
   * Where is Changes file?
 
