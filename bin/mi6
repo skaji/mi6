@@ -1,0 +1,15 @@
+#!/usr/bin/env perl6
+use v6;
+use App::Mi6;
+
+my $app = App::Mi6.new;
+
+multi MAIN("new", $module) {
+    $app.cmd("new", $module);
+}
+multi MAIN("build") {
+    $app.cmd("build");
+}
+multi MAIN("test", Bool :$verbose) {
+    $app.cmd("test", :$verbose);
+}
