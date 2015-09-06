@@ -85,8 +85,17 @@ sub regenerate-readme($module-file) {
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $module-file;
     my $p = run |@cmd, :out;
     die "Failed @cmd[]" if $p.exitcode != 0;
-    my $o = $p.out.slurp-rest;
-    spurt "README.md", $o;
+    my $markdown = $p.out.slurp-rest;
+    my ($user, $repo) = guess-user-and-repo();
+    my $header = do if $user and ".travis.yml".IO.e {
+        "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
+            ~ "(https://travis-ci.org/$user/$repo)"
+            ~ "\n\n";
+    } else {
+        "";
+    }
+
+    spurt "README.md", $header ~ $markdown;
 }
 
 method regenerate-meta-info($module) {
@@ -126,6 +135,20 @@ sub find-source-url() {
         $url = "git://$<rest>";
     }
     $url;
+}
+
+sub guess-user-and-repo() {
+    my $url = find-source-url();
+    return if $url eq "";
+    if $url ~~ m{ 'git://'
+        [<-[/]>+] '/'
+        $<user>=[<-[/]>+] '/'
+        $<repo>=[.+?] [\.git]?
+    $} {
+        return $/<user>, $/<repo>;
+    } else {
+        return;
+    }
 }
 
 sub find-provides() {
@@ -213,13 +236,17 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
 =item Where is the spec of META.info or META6.json?
 
-  Maybe L<https://github.com/perl6/ecosystem/blob/master/spec.pod>
+  Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod
+
+=item How do I remove travis badge?
+
+  Remove .travis.yml
 
 =head1 SEE ALSO
 
-L<https://github.com/tokuhirom/Minilla>
+L<<https://github.com/tokuhirom/Minilla>>
 
-L<https://github.com/rjbs/Dist-Zilla>
+L<<https://github.com/rjbs/Dist-Zilla>>
 
 =head1 COPYRIGHT AND LICENSE
 
