@@ -4,6 +4,7 @@ perl6:
 install:
   - rakudobrew build-panda
   - panda --notests installdeps .
+  - panda --notests install JSON::Fast
 script:
   - PERL6LIB=$PWD/lib prove -e perl6 -r t/
 sudo: false
