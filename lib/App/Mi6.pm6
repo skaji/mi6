@@ -1,17 +1,20 @@
 use v6;
 use App::Mi6::Template;
 use File::Find;
-use JSON::Fast;
 use Pod::To::Markdown;
 use Shell::Command;
 
+use JSON::Fast;
+unless ({}, :pretty) ~~ &to-json.signature {
+    die "!!! Your JSON::Fast is so old that it does not accepts :pretty argument.\n"
+      ~ "!!! Please upgrade it: panda install JSON::Fast\n";
+}
 unit class App::Mi6;
 
 has $!author;
 has $!email;
 has $!year;
 has $!module;
-
 
 my $to-module = -> $file {
     $file.subst('lib/', '').subst('/', '::', :g).subst(/\.pm6?$/, '');
