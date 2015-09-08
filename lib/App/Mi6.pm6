@@ -138,6 +138,7 @@ sub find-source-url() {
         }
     }
     return "" unless $url;
+    $url .= Str;
     if $url ~~ m/'git@' $<host>=[.+] ':' $<repo>=[<-[:]>+] $/ {
         $url = "git://$<host>/$<repo>";
     } elsif $url ~~ m/'ssh://git@' $<rest>=[.+] / {
