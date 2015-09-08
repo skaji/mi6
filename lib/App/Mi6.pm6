@@ -162,7 +162,7 @@ sub guess-user-and-repo() {
 }
 
 sub find-provides() {
-    my %provides = find(dir => "lib", name => /\.pm6$/).list.map(-> $file {
+    my %provides = find(dir => "lib", name => /\.pm6?$/).list.map(-> $file {
         my $module = $to-module($file.Str);
         $module => $file.Str;
     });
@@ -171,7 +171,7 @@ sub find-provides() {
 
 sub guess-main-module() {
     die "Must run in the top directory" unless "lib".IO ~~ :d;
-    my @module-files = find(dir => "lib", name => /.pm6$/).list;
+    my @module-files = find(dir => "lib", name => /.pm6?$/).list;
     my $num = @module-files.elems;
     given $num {
         when 0 {
