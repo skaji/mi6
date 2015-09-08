@@ -127,7 +127,7 @@ method regenerate-meta-info($module) {
 }
 
 sub find-source-url() {
-    try my @line = qx/git remote -v/;
+    try my @line = qx{git remote -v 2>/dev/null};
     return "" unless @line;
     my $url = gather for @line -> $line {
         $line.chomp;
