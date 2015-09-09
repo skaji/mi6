@@ -80,7 +80,7 @@ sub withp6lib(&code) {
         }
     }
     my $new = "$*CWD/blib/lib".IO.e ?? "$*CWD/blib/lib" !! "$*CWD/lib";
-    %*ENV<PERL6LIB> = $new ~ $old ?? ":$old" !! "";
+    %*ENV<PERL6LIB> = $new ~ ($old ?? ":$old" !! "");
     &code();
 }
 
