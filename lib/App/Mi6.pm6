@@ -150,7 +150,7 @@ sub find-source-url() {
 sub guess-user-and-repo() {
     my $url = find-source-url();
     return if $url eq "";
-    if $url ~~ m{ 'git://'
+    if $url ~~ m{ (git|https?) '://'
         [<-[/]>+] '/'
         $<user>=[<-[/]>+] '/'
         $<repo>=[.+?] [\.git]?
