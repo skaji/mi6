@@ -60,6 +60,7 @@ multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
     regenerate-readme($module-file);
     self.regenerate-meta-info($module);
+    build();
 }
 
 multi method cmd('test', :$verbose) {
@@ -70,16 +71,24 @@ multi method cmd('test', :$verbose) {
 
 sub withp6lib(&code) {
     # copy from Panda::Common::withp6lib
-    my $old = %*ENV<PERL6LIB>;
+    my $old = %*ENV<PERL6LIB>:exists ?? %*ENV<PERL6LIB> !! False;
     LEAVE {
-        if $old.defined {
+        if $old {
             %*ENV<PERL6LIB> = $old;
         } else {
             %*ENV<PERL6LIB>:delete;
         }
     }
-    %*ENV<PERL6LIB> = "$*CWD/lib";
+    my $new = "$*CWD/blib/lib".IO.e ?? "$*CWD/blib/lib" !! "$*CWD/lib";
+    %*ENV<PERL6LIB> = $new ~ $old ?? ":$old" !! "";
     &code();
+}
+
+sub build() {
+    return unless "Build.pm".IO.e;
+    require Panda::Builder;
+    my $builder = ::("Panda::Builder").new;
+    $builder.build($*CWD.Str);
 }
 
 sub test(Bool :$verbose) {

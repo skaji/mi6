@@ -4,6 +4,9 @@ our sub template(:$module, :$author, :$email, :$year) {
     my %template =
 gitignore => qq:to/EOF/,
 /blib/
+/src/*.o
+/src/Makefile
+/.panda-work
 EOF
 
 travis => qq:to/EOF/,
