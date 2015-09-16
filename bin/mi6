@@ -13,3 +13,6 @@ multi MAIN("build") {
 multi MAIN("test", Bool :$verbose) {
     $app.cmd("test", :$verbose);
 }
+multi MAIN("release") {
+    $app.cmd("release");
+}

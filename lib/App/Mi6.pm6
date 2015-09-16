@@ -69,6 +69,24 @@ multi method cmd('test', :$verbose) {
     exit $exitcode;
 }
 
+multi method cmd('release') {
+    my ($module, $module-file) = guess-main-module();
+    my ($user, $repo) = guess-user-and-repo();
+    die "Cannot find user and repository settting" unless $repo;
+    print qq:to/EOF/;
+    Are you ready to release your module? Congrats!
+    For this, follow these steps:
+
+    1. Fork https://github.com/perl6/ecosystem repository.
+    2. Add https://raw.githubusercontent.com/$user/$repo/master/META.info to META.list.
+    3. And raise a pull request!
+
+    Once your pull request is merged, you can install your module by:
+    \$ panda install $module
+
+    EOF
+}
+
 sub withp6lib(&code) {
     # copy from Panda::Common::withp6lib
     my $old = %*ENV<PERL6LIB>:exists ?? %*ENV<PERL6LIB> !! False;
