@@ -251,7 +251,7 @@ App::Mi6 - minimal authoring tool for Perl6
 
 =head1 INSTALLATION
 
-  > panda install git://github.com/shoichikaji/mi6.git
+  > panda install App::Mi6
 
 =head1 DESCRIPTION
 

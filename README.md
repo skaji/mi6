@@ -25,7 +25,7 @@ SYNOPSIS
 INSTALLATION
 ============
 
-    > panda install git://github.com/shoichikaji/mi6.git
+    > panda install App::Mi6
 
 DESCRIPTION
 ===========
