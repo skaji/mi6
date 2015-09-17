@@ -1,20 +1,14 @@
 use v6;
 use App::Mi6::Template;
 use File::Find;
-use Pod::To::Markdown;
 use Shell::Command;
-
 use JSON::Fast;
-unless ({}, :pretty) ~~ &to-json.signature {
-    die "!!! Your JSON::Fast is so old that it does not accepts :pretty argument.\n"
-      ~ "!!! Please upgrade it: panda install JSON::Fast\n";
-}
+
 unit class App::Mi6;
 
-has $!author;
-has $!email;
-has $!year;
-has $!module;
+has $!author = qx{git config --global user.name}.chomp;
+has $!email  = qx{git config --global user.email}.chomp;
+has $!year   = Date.today.year;
 
 my $to-module = -> $file {
     $file.subst('lib/', '').subst('/', '::', :g).subst(/\.pm6?$/, '');
@@ -22,12 +16,6 @@ my $to-module = -> $file {
 my $to-file = -> $module {
     'lib/' ~ $module.subst('::', '/', :g) ~ '.pm6';
 };
-
-submethod BUILD(
-    $!author = qx{git config --global user.name}.chomp,
-    $!email  = qx{git config --global user.email}.chomp,
-    $!year   = Date.today.year
-) {}
 
 multi method cmd('new', $module is copy) {
     $module ~~ s:g/ '-' /::/;
@@ -157,7 +145,6 @@ sub find-source-url() {
     try my @line = qx{git remote -v 2>/dev/null};
     return "" unless @line;
     my $url = gather for @line -> $line {
-        $line.chomp;
         my ($, $url) = $line.split(/\s+/);
         if $url {
             take $url;
