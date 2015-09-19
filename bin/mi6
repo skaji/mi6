@@ -10,9 +10,27 @@ multi MAIN("new", $module) {
 multi MAIN("build") {
     $app.cmd("build");
 }
-multi MAIN("test", Bool :$verbose) {
+multi MAIN("test", Bool :v(:$verbose)) {
     $app.cmd("test", :$verbose);
 }
 multi MAIN("release") {
     $app.cmd("release");
 }
+sub USAGE() {
+    require Pod::To::Text;
+    ::("Pod::To::Text").new.render($=pod).say;
+}
+
+=begin pod
+
+=head1 USAGE
+
+  > mi6 new Foo::Bar # create Foo-Bar distribution
+  > mi6 build        # build the distribution, and re-generate README.md/META6.json
+  > mi6 test         # run tests
+  > mi6 release      # show release steps
+
+  Options:
+  > mi6 -v test      # run tests with verbose mode
+
+=end pod

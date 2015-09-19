@@ -8,19 +8,11 @@ App::Mi6 - minimal authoring tool for Perl6
 SYNOPSIS
 ========
 
-    > mi6 new Foo::Bar
-
-    > find Foo-Bar -type f -not -iwholename '*.git*'
-    Foo-Bar/.travis.yml
-    Foo-Bar/lib/Foo/Bar.pm6
-    Foo-Bar/LICENSE
-    Foo-Bar/META.info
-    Foo-Bar/README.md
-    Foo-Bar/t/01-basic.t
-
+    > mi6 new Foo::Bar # create Foo-Bar distribution
     > cd Foo-Bar
-    > mi6 build  # regenerate README.md
-    > mi6 test   # run tests
+    > mi6 build        # build the distribution and re-generate README.md/META6.json
+    > mi6 test         # run tests
+    > mi6 release      # release!
 
 INSTALLATION
 ============
@@ -32,9 +24,9 @@ DESCRIPTION
 
 App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
-  * Create minimal distribution skelton for Perl6
+  * Create minimal distribution skeleton for Perl6
 
-  * Auto generate README.md from lib/Main/Module.pm6's pod
+  * Generate README.md from lib/Main/Module.pm6's pod
 
   * Run tests by `mi6 test`
 
