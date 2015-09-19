@@ -61,17 +61,17 @@ multi method cmd('release') {
     my ($module, $module-file) = guess-main-module();
     my ($user, $repo) = guess-user-and-repo();
     die "Cannot find user and repository settting" unless $repo;
-    print qq:to/EOF/;
-    Are you ready to release your module? Congrats!
-    For this, follow these steps:
+    my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
+    print "\n" ~ qq:to/EOF/ ~ "\n";
+      Are you ready to release your module? Congrats!
+      For this, follow these steps:
 
-    1. Fork https://github.com/perl6/ecosystem repository.
-    2. Add https://raw.githubusercontent.com/$user/$repo/master/META.info to META.list.
-    3. And raise a pull request!
+      1. Fork https://github.com/perl6/ecosystem repository.
+      2. Add https://raw.githubusercontent.com/$user/$repo/master/$meta-file to META.list.
+      3. And raise a pull request!
 
-    Once your pull request is merged, you can install your module by:
-    \$ panda install $module
-
+      Once your pull request is merged, we can install your module by:
+      \$ panda install $module
     EOF
 }
 
@@ -123,22 +123,29 @@ sub regenerate-readme($module-file) {
 }
 
 method regenerate-meta-info($module) {
-    my $already = do if "META.info".IO.e {
-        from-json "META.info".IO.slurp;
+    my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
+    my $already = $meta-file.defined ?? from-json $meta-file.IO.slurp !! {};
+
+    my $authors = do if $already<authors> {
+        $already<authors>;
+    } elsif $already<author> {
+        [$already<author>];
     } else {
-        {};
-    }
+        [ $!author ];
+    };
 
     my %new-meta =
         name        => $module,
-        author      => $already<author> || $!author,
+        perl        => "v6",
+        authors     => $authors,
         depends     => $already<depends> || [],
         description => $already<description> || "",
         provides    => find-provides(),
         source-url  => $already<source-url> || find-source-url(),
         version     => $already<version> || "*",
     ;
-    "META.info".IO.spurt: to-json(%new-meta) ~ "\n";
+    %new-meta{$_} = $already{$_} for <build-depends test-depends>.grep({$already{$_}});
+    ($meta-file || "META6.json").IO.spurt: to-json(%new-meta) ~ "\n";
 }
 
 sub find-source-url() {
@@ -262,7 +269,7 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
 =item Where is the spec of META.info or META6.json?
 
-  Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod
+  Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
 
 =item How do I remove travis badge?
 
