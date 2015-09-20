@@ -51,9 +51,9 @@ multi method cmd('build') {
     build();
 }
 
-multi method cmd('test', :$verbose) {
+multi method cmd('test', @file, Bool :$verbose, Int :$jobs) {
     self.cmd('build');
-    my $exitcode = test(:$verbose);
+    my $exitcode = test(@file, :$verbose, :$jobs);
     exit $exitcode;
 }
 
@@ -97,10 +97,16 @@ sub build() {
     $builder.build($*CWD.Str);
 }
 
-sub test(Bool :$verbose) {
+sub test(@file, Bool :$verbose, Int :$jobs) {
     withp6lib {
-        my $option = $verbose ?? "-rv" !! "-r";
-        my $proc = run "prove", "-e", $*EXECUTABLE, $option, "t/";
+        my @option = "-r";
+        @option.push("-v") if $verbose;
+        @option.push("-j", $jobs) if $jobs;
+        @file = "t/" if @file.elems == 0;
+        my @command = "prove", "-e", $*EXECUTABLE, |@option, |@file;
+        note "==> Set PERL6LIB=%*ENV<PERL6LIB>";
+        note "==> @command[]";
+        my $proc = run |@command;
         $proc.exitcode;
     };
 }
