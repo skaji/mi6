@@ -18,7 +18,7 @@ multi MAIN("release") {
 }
 sub USAGE() {
     require Pod::To::Text;
-    ::("Pod::To::Text").new.render($=pod).say;
+    ::("Pod::To::Text").render($=pod).say;
 }
 
 =begin pod
