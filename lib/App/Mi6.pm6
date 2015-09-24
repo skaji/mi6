@@ -2,7 +2,6 @@ use v6;
 use App::Mi6::Template;
 use File::Find;
 use Shell::Command;
-use JSON::Fast;
 
 unit class App::Mi6;
 
