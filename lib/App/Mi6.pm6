@@ -38,7 +38,9 @@ multi method cmd('new', $module is copy) {
         spurt($f, %content{$c});
     }
     self.cmd("build");
-    run "git", "init", ".";
+    my $devnull = open $*SPEC.devnull, :w;
+    run "git", "init", ".", :out($devnull);
+    $devnull.close;
     run "git", "add", ".";
     note "Successfully created $main-dir";
 }
