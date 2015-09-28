@@ -25,7 +25,7 @@ multi method cmd('new', $module is copy) {
     chdir($main-dir); # XXX temp $*CWD
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
-    mkpath($_) for $module-dir, "t", "xt", "bin";
+    mkpath($_) for $module-dir, "t", "bin";
     my %content = App::Mi6::Template::template(:$module, :$!author, :$!email, :$!year);
     my %map = <<
         $module-file module

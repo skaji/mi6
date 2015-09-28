@@ -18,12 +18,14 @@ my $tempdir = tempdir;
     ok $r.success;
     ok "Foo-Bar".IO.d;
     chdir "Foo-Bar";
-    ok $_.IO.e for <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t  xt>;
+    ok $_.IO.e for <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
+    ok !"xt".IO.d;
     ok "lib/Foo/Bar.pm6".IO.e;
     $r = mi6 "test";
     ok $r.success;
     like $r.out, rx/All \s+ tests \s+ successful/;
 
+    mkdir "xt";
     "xt/01-fail.t".IO.spurt: q:to/EOF/;
     use Test;
     plan 1;
