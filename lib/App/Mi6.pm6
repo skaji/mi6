@@ -25,7 +25,7 @@ multi method cmd('new', $module is copy) {
     chdir($main-dir); # XXX temp $*CWD
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
-    mkpath($_) for $module-dir, "t", "bin";
+    mkpath($_) for $module-dir, "t", "xt", "bin";
     my %content = App::Mi6::Template::template(:$module, :$!author, :$!email, :$!year);
     my %map = <<
         $module-file module
@@ -85,7 +85,7 @@ sub withp6lib(&code) {
         }
     }
     my $new = "$*CWD/blib/lib".IO.e ?? "$*CWD/blib/lib" !! "$*CWD/lib";
-    %*ENV<PERL6LIB> = $new ~ ($old ?? ":$old" !! "");
+    %*ENV<PERL6LIB> = $new ~ ($old ?? ",$old" !! "");
     &code();
 }
 
@@ -101,7 +101,9 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
         my @option = "-r";
         @option.push("-v") if $verbose;
         @option.push("-j", $jobs) if $jobs;
-        @file = "t/" if @file.elems == 0;
+        if @file.elems == 0 {
+            @file = <t xt>.grep({.IO.d});
+        }
         my @command = "prove", "-e", $*EXECUTABLE, |@option, |@file;
         note "==> Set PERL6LIB=%*ENV<PERL6LIB>";
         note "==> @command[]";

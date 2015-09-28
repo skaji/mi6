@@ -16,7 +16,9 @@ multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
 multi MAIN("release") {
     $app.cmd("release");
 }
-sub USAGE() {
+multi MAIN("help") { usage }
+multi MAIN(:h(:$help)!) { usage}
+sub usage() {
     require Pod::To::Text;
     ::("Pod::To::Text").render($=pod).say;
 }
