@@ -26,9 +26,10 @@ test => qq:to/END_OF_TEST/,
 use v6;
 use Test;
 use $module;
-plan 1;
 
 pass "replace me";
+
+done-testing;
 END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,

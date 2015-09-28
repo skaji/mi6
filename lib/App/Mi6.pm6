@@ -92,8 +92,8 @@ sub withp6lib(&code) {
 sub build() {
     return unless "Build.pm".IO.e;
     require Panda::Builder;
-    my $builder = ::("Panda::Builder").new;
-    $builder.build($*CWD.Str);
+    note '==> Execute Panda::Builder.build($*CWD)';
+    ::("Panda::Builder").build($*CWD);
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
