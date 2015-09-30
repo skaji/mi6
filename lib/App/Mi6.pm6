@@ -9,8 +9,11 @@ has $!author = qx{git config --global user.name}.chomp;
 has $!email  = qx{git config --global user.email}.chomp;
 has $!year   = Date.today.year;
 
+my $normalize-path = -> $path {
+    $*DISTRO.is-win ?? $path.subst('\\', '/', :g) !! $path;
+};
 my $to-module = -> $file {
-    $file.subst('lib/', '').subst('/', '::', :g).subst(/\.pm6?$/, '');
+    $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/\.pm6?$/, '');
 };
 my $to-file = -> $module {
     'lib/' ~ $module.subst('::', '/', :g) ~ '.pm6';
@@ -195,7 +198,7 @@ sub guess-user-and-repo() {
 sub find-provides() {
     my %provides = find(dir => "lib", name => /\.pm6?$/).list.map(-> $file {
         my $module = $to-module($file.Str);
-        $module => $file.Str;
+        $module => $normalize-path($file.Str);
     });
     %provides;
 }
