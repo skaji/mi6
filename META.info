@@ -11,6 +11,9 @@
     "Pod::To::Markdown",
     "Shell::Command"
   ],
+  "test-depends" : [
+    "File::Temp"
+  ],
   "description" : "minimal authoring tool for Perl6",
   "version" : "*",
   "authors" : [
