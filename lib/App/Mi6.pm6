@@ -199,7 +199,7 @@ sub find-provides() {
     my %provides = find(dir => "lib", name => /\.pm6?$/).list.map(-> $file {
         my $module = $to-module($file.Str);
         $module => $normalize-path($file.Str);
-    });
+    }).sort;
     %provides;
 }
 
