@@ -147,16 +147,17 @@ method regenerate-meta-info($module) {
     };
 
     my %new-meta =
-        name        => $module,
-        perl        => "v6",
-        authors     => $authors,
-        depends     => $already<depends> || [],
-        description => $already<description> || "",
-        provides    => find-provides(),
-        source-url  => $already<source-url> || find-source-url(),
-        version     => $already<version> || "*",
+        name          => $module,
+        perl          => "v6",
+        authors       => $authors,
+        depends       => $already<depends> || [],
+        test-depends  => $already<test-depends> || [],
+        build-depends => $already<build-depends> || [],
+        description   => $already<description> || "",
+        provides      => find-provides(),
+        source-url    => $already<source-url> || find-source-url(),
+        version       => $already<version> || "*",
     ;
-    %new-meta{$_} = $already{$_} for <build-depends test-depends>.grep({$already{$_}});
     ($meta-file || "META6.json").IO.spurt: to-json(%new-meta) ~ "\n";
 }
 
