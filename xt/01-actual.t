@@ -35,5 +35,29 @@ my $tempdir = tempdir;
     ok !$r.success;
     like $r.out, rx/Failed/;
 }
+{
+    temp $*CWD = $tempdir.IO;
+    $r = mi6 "new", "Hello";
+    chdir "Hello";
+    my $meta = from-json( "META6.json".IO.slurp );
+    is $meta<description>, "blah blah blah";
+    "lib/Hello.pm6".IO.spurt: q:to/EOF/;
+    use v6;
+    unit module Hello;
+
+    =begin pod
+
+    =head1 NAME
+
+    Hello - This is hello module.
+
+    =head1 DESC
+
+    =end pod
+    EOF
+    $r = mi6 "build";
+    $meta = from-json( "META6.json".IO.slurp );
+    is $meta<description>, "This is hello module.";
+}
 
 done-testing;

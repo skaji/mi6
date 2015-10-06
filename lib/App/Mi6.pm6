@@ -51,7 +51,7 @@ multi method cmd('new', $module is copy) {
 multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
     regenerate-readme($module-file);
-    self.regenerate-meta-info($module);
+    self.regenerate-meta-info($module, $module-file);
     build();
 }
 
@@ -62,6 +62,7 @@ multi method cmd('test', @file, Bool :$verbose, Int :$jobs) {
 }
 
 multi method cmd('release') {
+    self.cmd('build');
     my ($module, $module-file) = guess-main-module();
     my ($user, $repo) = guess-user-and-repo();
     die "Cannot find user and repository settting" unless $repo;
@@ -134,7 +135,7 @@ sub regenerate-readme($module-file) {
     spurt "README.md", $header ~ $markdown;
 }
 
-method regenerate-meta-info($module) {
+method regenerate-meta-info($module, $module-file) {
     my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
     my $already = $meta-file.defined ?? from-json $meta-file.IO.slurp !! {};
 
@@ -153,12 +154,25 @@ method regenerate-meta-info($module) {
         depends       => $already<depends> || [],
         test-depends  => $already<test-depends> || [],
         build-depends => $already<build-depends> || [],
-        description   => $already<description> || "",
+        description   => find-description($module-file),
         provides      => find-provides(),
         source-url    => $already<source-url> || find-source-url(),
         version       => $already<version> || "*",
     ;
     ($meta-file || "META6.json").IO.spurt: to-json(%new-meta) ~ "\n";
+}
+
+sub find-description($module-file) {
+    my $content = $module-file.IO.slurp;
+    if $content ~~ /^^
+        '=' head. \s+ NAME
+        \s+
+        \S+ \s+ '-' \s+ (\S<-[\n]>*)
+    / {
+        return $/[0].Str;
+    } else {
+        return "";
+    }
 }
 
 sub find-source-url() {
@@ -265,7 +279,7 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
 =head1 FAQ
 
-=item How can I manage depends, description, ...?
+=item How can I manage depends, build-depends, test-depends?
 
   Write them to META.info directly :)
 

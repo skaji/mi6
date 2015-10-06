@@ -33,7 +33,7 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 FAQ
 ===
 
-  * How can I manage depends, description, ...?
+  * How can I manage depends, build-depends, test-depends?
 
     Write them to META.info directly :)
 
