@@ -154,7 +154,7 @@ method regenerate-meta-info($module, $module-file) {
         depends       => $already<depends> || [],
         test-depends  => $already<test-depends> || [],
         build-depends => $already<build-depends> || [],
-        description   => find-description($module-file),
+        description   => find-description($module-file) || $already<description> || "",
         provides      => find-provides(),
         source-url    => $already<source-url> || find-source-url(),
         version       => $already<version> || "*",
