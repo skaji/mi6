@@ -281,13 +281,13 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
 =item How can I manage depends, build-depends, test-depends?
 
-  Write them to META.info directly :)
+  Write them to META6.json directly :)
 
 =item Where is Changes file?
 
   TODO
 
-=item Where is the spec of META.info or META6.json?
+=item Where is the spec of META6.json or META.info?
 
   Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
 
@@ -301,9 +301,13 @@ L<<https://github.com/tokuhirom/Minilla>>
 
 L<<https://github.com/rjbs/Dist-Zilla>>
 
+=head1 AUTHOR
+
+Shoichi Kaji <skaji@cpan.org>
+
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2015 Shoichi Kaji <skaji@cpan.org>
+Copyright 2015 Shoichi Kaji
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

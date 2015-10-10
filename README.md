@@ -35,13 +35,13 @@ FAQ
 
   * How can I manage depends, build-depends, test-depends?
 
-    Write them to META.info directly :)
+    Write them to META6.json directly :)
 
   * Where is Changes file?
 
     TODO
 
-  * Where is the spec of META.info or META6.json?
+  * Where is the spec of META6.json or META.info?
 
     Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
 
@@ -56,9 +56,14 @@ SEE ALSO
 
 [https://github.com/rjbs/Dist-Zilla](https://github.com/rjbs/Dist-Zilla)
 
+AUTHOR
+======
+
+Shoichi Kaji <skaji@cpan.org>
+
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright 2015 Shoichi Kaji <skaji@cpan.org>
+Copyright 2015 Shoichi Kaji
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
