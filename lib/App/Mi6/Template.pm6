@@ -51,9 +51,13 @@ $module - blah blah blah
 
 $module is ...
 
+=head1 AUTHOR
+
+$author <$email>
+
 =head1 COPYRIGHT AND LICENSE
 
-Copyright $year $author <$email>
+Copyright $year $author
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
