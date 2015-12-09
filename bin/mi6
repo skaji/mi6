@@ -10,6 +10,11 @@ multi MAIN("new", $module) {
 multi MAIN("build") {
     $app.cmd("build");
 }
+
+multi MAIN("build-readme") {
+    $app.cmd("build-readme");
+}
+
 multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
     $app.cmd("test", @file, :$verbose, :$jobs);
 }

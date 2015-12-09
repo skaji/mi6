@@ -55,6 +55,11 @@ multi method cmd('build') {
     build();
 }
 
+multi method cmd('build-readme') {
+    my ($module, $module-file) = guess-main-module();
+    regenerate-readme($module-file);
+}
+
 multi method cmd('test', @file, Bool :$verbose, Int :$jobs) {
     self.cmd('build');
     my $exitcode = test(@file, :$verbose, :$jobs);
