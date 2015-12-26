@@ -50,6 +50,7 @@ multi method cmd('new', $module is copy) {
 
 multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
+    migrate-travis-yml();
     regenerate-readme($module-file);
     self.regenerate-meta-info($module, $module-file);
     build();
@@ -174,6 +175,38 @@ sub find-description($module-file) {
     } else {
         return "";
     }
+}
+
+# FIXME
+sub migrate-travis-yml() {
+    my $travis-yml = ".travis.yml".IO;
+    return False unless $travis-yml.f;
+    my %fix =
+        q!  - perl6 -MPanda::Builder -e 'Panda::Builder.build($*CWD)'!
+            => q!  - perl6 -MPanda::Builder -e 'Panda::Builder.build(~$*CWD)'!,
+        q!  - PERL6LIB=$PWD/blib/lib prove -e perl6 -vr t/!
+            => q!  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/!,
+        q!  - PERL6LIB=$PWD/blib/lib prove -e perl6 -r t/!
+            => q!  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/!,
+    ;
+
+    my @lines = $travis-yml.lines;
+    my @out;
+    my $replaced = False;
+    for @lines -> $line {
+        if %fix{$line} -> $fix {
+            @out.push($fix);
+            $replaced = True;
+        } else {
+            @out.push($line);
+        }
+    }
+    return False unless $replaced;
+    given $travis-yml.open(:w) -> $fh {
+        LEAVE { $fh.close }
+        $fh.say($_) for @out;
+    }
+    return True;
 }
 
 sub find-source-url() {
