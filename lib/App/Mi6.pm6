@@ -98,8 +98,8 @@ sub withp6lib(&code) {
 sub build() {
     return unless "Build.pm".IO.e;
     require Panda::Builder;
-    note '==> Execute Panda::Builder.build($*CWD)';
-    ::("Panda::Builder").build($*CWD);
+    note '==> Execute Panda::Builder.build(~$*CWD)';
+    ::("Panda::Builder").build(~$*CWD);
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
@@ -158,6 +158,7 @@ method regenerate-meta-info($module, $module-file) {
         provides      => find-provides(),
         source-url    => $already<source-url> || find-source-url(),
         version       => $already<version> || "*",
+        resources     => $already<resources> || [],
     ;
     ($meta-file || "META6.json").IO.spurt: to-json(%new-meta) ~ "\n";
 }

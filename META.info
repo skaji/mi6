@@ -2,6 +2,7 @@
   "name" : "App::Mi6",
   "source-url" : "git://github.com/shoichikaji/mi6.git",
   "perl" : "v6",
+  "resources" : [ ],
   "build-depends" : [ ],
   "provides" : {
     "App::Mi6" : "lib/App/Mi6.pm6",

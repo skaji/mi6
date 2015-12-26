@@ -7,6 +7,9 @@ gitignore => qq:to/EOF/,
 /src/*.o
 /src/Makefile
 /.panda-work
+/resources/*.so
+/resources/*.dylib
+.precomp/
 EOF
 
 travis => qq:to/EOF/,
@@ -17,8 +20,8 @@ install:
   - rakudobrew build-panda
   - panda --notests installdeps .
 script:
-  - perl6 -MPanda::Builder -e 'Panda::Builder.build(\$*CWD)'
-  - PERL6LIB=\$PWD/blib/lib prove -e perl6 -vr t/
+  - perl6 -MPanda::Builder -e 'Panda::Builder.build(~\$*CWD)'
+  - PERL6LIB=\$PWD/lib prove -e perl6 -vr t/
 sudo: false
 EOF
 

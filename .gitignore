@@ -1,1 +1,4 @@
 /blib/
+/resources/*.so
+/resources/*.dylib
+.precomp/
