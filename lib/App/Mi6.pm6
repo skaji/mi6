@@ -82,17 +82,8 @@ multi method cmd('release') {
 }
 
 sub withp6lib(&code) {
-    # copy from Panda::Common::withp6lib
-    my $old = %*ENV<PERL6LIB>:exists ?? %*ENV<PERL6LIB> !! False;
-    LEAVE {
-        if $old {
-            %*ENV<PERL6LIB> = $old;
-        } else {
-            %*ENV<PERL6LIB>:delete;
-        }
-    }
-    my $new = "$*CWD/blib/lib".IO.e ?? "$*CWD/blib/lib" !! "$*CWD/lib";
-    %*ENV<PERL6LIB> = $new ~ ($old ?? ",$old" !! "");
+    temp %*ENV;
+    %*ENV<PERL6LIB> = %*ENV<PERL6LIB>:exists ?? "$*CWD/lib," ~ %*ENV<PERL6LIB> !! "$*CWD/lib";
     &code();
 }
 
