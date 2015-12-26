@@ -50,7 +50,9 @@ multi method cmd('new', $module is copy) {
 
 multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
-    migrate-travis-yml();
+    if migrate-travis-yml() {
+        note "==> migrated .travis.yml for latest panda change";
+    }
     regenerate-readme($module-file);
     self.regenerate-meta-info($module, $module-file);
     build();
