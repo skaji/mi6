@@ -141,9 +141,13 @@ method regenerate-meta-info($module, $module-file) {
         [ $!author ];
     };
 
+    my $perl = $already<perl> || "6.c";
+    $perl = "6.c" if $perl eq "v6";
+    $perl ~~ s/^v//;
+
     my %new-meta =
         name          => $module,
-        perl          => "v6",
+        perl          => $perl,
         authors       => $authors,
         depends       => $already<depends> || [],
         test-depends  => $already<test-depends> || [],
