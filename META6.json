@@ -1,6 +1,6 @@
 {
   "name" : "App::Mi6",
-  "source-url" : "git://github.com/shoichikaji/mi6.git",
+  "source-url" : "git://github.com/skaji/mi6.git",
   "perl" : "6.c",
   "resources" : [ ],
   "build-depends" : [ ],
