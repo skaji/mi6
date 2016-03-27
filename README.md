@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/skaji/mi6.svg?branch=master)](https://travis-ci.org/skaji/mi6)
+[![Travis CI Build Status](https://travis-ci.org/skaji/mi6.svg?branch=master)](https://travis-ci.org/skaji/mi6)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/github/skaji/mi6?svg=true)](https://ci.appveyor.com/project/skaji/mi6/branch/master)
 
 NAME
 ====
