@@ -5,6 +5,7 @@
   "build-depends" : [ ],
   "depends" : [
     "File::Find",
+    "JSON::Pretty",
     "Pod::To::Markdown",
     "Shell::Command"
   ],
@@ -19,8 +20,7 @@
   "resources" : [ ],
   "source-url" : "git://github.com/skaji/mi6.git",
   "test-depends" : [
-    "File::Temp",
-    "JSON::Pretty"
+    "File::Temp"
   ],
   "version" : "*"
 }
