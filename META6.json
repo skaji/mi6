@@ -1,24 +1,26 @@
 {
-  "name" : "App::Mi6",
-  "source-url" : "git://github.com/skaji/mi6.git",
-  "perl" : "6.c",
-  "resources" : [ ],
+  "authors" : [
+    "Shoichi Kaji"
+  ],
   "build-depends" : [ ],
-  "provides" : {
-    "App::Mi6" : "lib/App/Mi6.pm6",
-    "App::Mi6::Template" : "lib/App/Mi6/Template.pm6"
-  },
   "depends" : [
     "File::Find",
     "Pod::To::Markdown",
     "Shell::Command"
   ],
   "description" : "minimal authoring tool for Perl6",
+  "name" : "App::Mi6",
+  "perl" : "6.c",
+  "provides" : {
+    "App::Mi6" : "lib/App/Mi6.pm6",
+    "App::Mi6::JSON" : "lib/App/Mi6/JSON.pm6",
+    "App::Mi6::Template" : "lib/App/Mi6/Template.pm6"
+  },
+  "resources" : [ ],
+  "source-url" : "git://github.com/skaji/mi6.git",
   "test-depends" : [
-    "File::Temp"
+    "File::Temp",
+    "JSON::Pretty"
   ],
-  "version" : "*",
-  "authors" : [
-    "Shoichi Kaji"
-  ]
+  "version" : "*"
 }

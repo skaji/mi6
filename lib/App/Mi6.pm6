@@ -1,5 +1,6 @@
 use v6;
 use App::Mi6::Template;
+use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
 
@@ -131,7 +132,7 @@ sub regenerate-readme($module-file) {
 
 method regenerate-meta-info($module, $module-file) {
     my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
-    my $already = $meta-file.defined ?? from-json $meta-file.IO.slurp !! {};
+    my $already = $meta-file.defined ?? App::Mi6::JSON.decode($meta-file.IO.slurp) !! {};
 
     my $authors = do if $already<authors> {
         $already<authors>;
@@ -158,7 +159,7 @@ method regenerate-meta-info($module, $module-file) {
         version       => $already<version> || "*",
         resources     => $already<resources> || [],
     ;
-    ($meta-file || "META6.json").IO.spurt: to-json(%new-meta) ~ "\n";
+    ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
 }
 
 sub find-description($module-file) {
