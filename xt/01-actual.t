@@ -3,6 +3,7 @@ use Test;
 use lib "xt";
 use Util;
 use File::Temp;
+use JSON::Pretty;
 
 my $r;
 $r = mi6 "new";
