@@ -6,5 +6,5 @@ install:
   - panda --notests installdeps .
 script:
   - perl6 -MPanda::Builder -e 'Panda::Builder.build(~$*CWD)'
-  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/
+  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/ xt/
 sudo: false
