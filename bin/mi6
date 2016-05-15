@@ -18,6 +18,7 @@ multi MAIN("release") {
 }
 multi MAIN("help") { usage }
 multi MAIN(:h(:$help)!) { usage}
+multi MAIN(|) { usage; exit 1; }
 sub usage() {
     require Pod::To::Text;
     ::("Pod::To::Text").render($=pod).say;
