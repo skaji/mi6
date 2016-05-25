@@ -13,6 +13,9 @@ gitignore => qq:to/EOF/,
 EOF
 
 travis => qq:to/EOF/,
+os:
+  - linux
+  - osx
 language: perl6
 perl6:
   - latest
