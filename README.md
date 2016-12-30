@@ -17,7 +17,11 @@ SYNOPSIS
 INSTALLATION
 ============
 
+    # with panda
     > panda install App::Mi6
+
+    # or, with zef
+    > zef install App::Mi6
 
 DESCRIPTION
 ===========

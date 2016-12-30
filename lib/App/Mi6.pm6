@@ -297,7 +297,11 @@ App::Mi6 - minimal authoring tool for Perl6
 
 =head1 INSTALLATION
 
+  # with panda
   > panda install App::Mi6
+
+  # or, with zef
+  > zef install App::Mi6
 
 =head1 DESCRIPTION
 
