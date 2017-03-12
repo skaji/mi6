@@ -158,6 +158,7 @@ method regenerate-meta-info($module, $module-file) {
         source-url    => $already<source-url> || find-source-url(),
         version       => $already<version> || "*",
         resources     => $already<resources> || [],
+        tags          => $already<tags> || [],
     ;
     ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
 }

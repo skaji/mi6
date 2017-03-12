@@ -19,6 +19,7 @@
   },
   "resources" : [ ],
   "source-url" : "git://github.com/skaji/mi6.git",
+  "tags" : [ ],
   "test-depends" : [
     "File::Temp"
   ],
