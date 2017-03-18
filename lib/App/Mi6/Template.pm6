@@ -73,7 +73,7 @@ EOD_OF_MODULE
 license => qq:to/END_OF_LICENSE/,
 		       The Artistic License 2.0
 
-	    Copyright (c) 2000-2016, The Perl Foundation.
+	    Copyright (c) 2000-2006, The Perl Foundation.
 
      Everyone is permitted to copy and distribute verbatim copies
       of this license document, but changing it is not allowed.
