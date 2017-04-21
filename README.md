@@ -45,9 +45,9 @@ FAQ
 
     TODO
 
-  * Where is the spec of META6.json or META.info?
+  * Where is the spec of META6.json?
 
-    Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
+    http://design.perl6.org/S22.html
 
   * How do I remove travis badge?
 

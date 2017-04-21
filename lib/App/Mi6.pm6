@@ -336,9 +336,9 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
   TODO
 
-=item Where is the spec of META6.json or META.info?
+=item Where is the spec of META6.json?
 
-  Maybe https://github.com/perl6/ecosystem/blob/master/spec.pod or http://design.perl6.org/S22.html
+  http://design.perl6.org/S22.html
 
 =item How do I remove travis badge?
 
