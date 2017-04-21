@@ -159,8 +159,20 @@ method regenerate-meta-info($module, $module-file) {
         version       => $already<version> || "*",
         resources     => $already<resources> || [],
         tags          => $already<tags> || [],
+        license       => $already<license> || guess-license(),
     ;
     ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
+}
+
+sub guess-license() {
+    my $file = "LICENSE".IO;
+    return 'NOASSERTION' unless $file.e;
+    my @line = $file.lines;
+    if @line.elems == 201 && @line[0].index('The Artistic License 2.0') {
+        return 'Artistic-2.0';
+    } else {
+        return 'NOASSERTION';
+    }
 }
 
 sub find-description($module-file) {

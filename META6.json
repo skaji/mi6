@@ -10,6 +10,7 @@
     "Shell::Command"
   ],
   "description" : "minimal authoring tool for Perl6",
+  "license" : "Artistic-2.0",
   "name" : "App::Mi6",
   "perl" : "6.c",
   "provides" : {
