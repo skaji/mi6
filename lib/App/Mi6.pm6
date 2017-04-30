@@ -137,7 +137,7 @@ method regenerate-meta-info($module, $module-file) {
     my $authors = do if $already<authors> {
         $already<authors>;
     } elsif $already<author> {
-        [$already<author>];
+        [$already<author>:delete];
     } else {
         [ $!author ];
     };
@@ -161,6 +161,9 @@ method regenerate-meta-info($module, $module-file) {
         tags          => $already<tags> || [],
         license       => $already<license> || guess-license(),
     ;
+    for $already.keys -> $k {
+        %new-meta{$k} = $already{$k} unless %new-meta{$k}:exists;
+    }
     ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
 }
 
