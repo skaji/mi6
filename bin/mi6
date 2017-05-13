@@ -16,6 +16,9 @@ multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
 multi MAIN("release") {
     $app.cmd("release");
 }
+multi MAIN("dist") {
+    $app.cmd("dist");
+}
 multi MAIN("help") { usage }
 multi MAIN(:h(:$help)!) { usage}
 sub usage() {

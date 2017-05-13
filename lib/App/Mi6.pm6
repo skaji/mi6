@@ -84,6 +84,13 @@ multi method cmd('release') {
     EOF
 }
 
+multi method cmd('dist') {
+    self.cmd('build');
+    my ($module, $module-file) = guess-main-module();
+    my $taball = make-dist-tarball($module);
+    say "Created $taball";
+}
+
 sub withp6lib(&code) {
     temp %*ENV;
     %*ENV<PERL6LIB> = %*ENV<PERL6LIB>:exists ?? "$*CWD/lib," ~ %*ENV<PERL6LIB> !! "$*CWD/lib";
@@ -221,6 +228,43 @@ sub migrate-travis-yml() {
         $fh.say($_) for @out;
     }
     return True;
+}
+
+sub make-dist-tarball($main-module) {
+    my $name = $main-module.subst("::", "-", :g);
+    my $meta = App::Mi6::JSON.decode("META6.json".IO.slurp);
+    my $version = $meta<version>;
+    die "To make dist tarball, you must specify version (not '*') in META6.json first"
+        if $version eq '*';
+    $name ~= "-$version";
+    my $proc = run "git", "ls-files", :out;
+    my @file = $proc.out.lines;
+    rm_rf $name if $name.IO.d;
+    my @ignore = (
+        * eq ".travis.yml",
+        * eq ".gitignore",
+        * ~~ rx/\.precomp/,
+    );
+    if "MANIFEST.SKIP".IO.e {
+        my @skip = "MANIFEST.SKIP".IO.lines.map: -> $skip { * eq $skip };
+        @ignore.push: |@skip;
+    }
+    for @file -> $file {
+        next if @ignore.grep({$_($file)});
+        my $target = "$name/$file";
+        my $dir = $target.IO.dirname;
+        mkpath $dir unless $dir.IO.d;
+        $file.IO.copy($target);
+    }
+    my %env = %*ENV;
+    %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
+    $proc = run "tar", "czf", "$name.tar.gz", $name, :out, :err, :%env;
+    if $proc.exitcode != 0 {
+        my $exitcode = $proc.exitcode;
+        my $err = $proc.err.slurp;
+        die $err ?? $err !! "can't create tarball, exitcode = $exitcode";
+    }
+    return "$name.tar.gz";
 }
 
 sub find-source-url() {
