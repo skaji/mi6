@@ -7,7 +7,8 @@
     "File::Find",
     "JSON::Pretty",
     "Pod::To::Markdown",
-    "Shell::Command"
+    "Shell::Command",
+    "CPAN::Uploader::Tiny"
   ],
   "description" : "minimal authoring tool for Perl6",
   "license" : "Artistic-2.0",
