@@ -231,7 +231,7 @@ sub migrate-travis-yml() {
 }
 
 sub make-dist-tarball($main-module) {
-    my $name = $main-module.subst("::", "-");
+    my $name = $main-module.subst("::", "-", :g);
     my $meta = App::Mi6::JSON.decode("META6.json".IO.slurp);
     my $version = $meta<version>;
     die "To make dist tarball, you must specify version (not '*') in META6.json first"
