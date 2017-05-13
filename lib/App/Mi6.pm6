@@ -389,6 +389,10 @@ App::Mi6 - minimal authoring tool for Perl6
   > mi6 test         # run tests
   > mi6 release      # release!
 
+  !!! EXPERIMENTAL !!!
+  > mi6 dist         # make distribution tarball
+  > mi6 upload       # upload distribution tarball to CPAN
+
 =head1 INSTALLATION
 
   # with panda
