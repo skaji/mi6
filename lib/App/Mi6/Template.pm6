@@ -1,6 +1,6 @@
 unit module App::Mi6::Template;
 
-our sub template(:$module, :$author, :$email, :$year) {
+our sub template(:$module, :$dist, :$author, :$email, :$year) {
     my %template =
 gitignore => qq:to/EOF/,
 /blib/
@@ -10,6 +10,7 @@ gitignore => qq:to/EOF/,
 /resources/*.so
 /resources/*.dylib
 .precomp/
+/$dist-*
 EOF
 
 travis => qq:to/EOF/,
@@ -40,7 +41,7 @@ END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,
 use v6;
-unit class $module;
+unit class $module\:ver<0.0.1>;
 
 
 =begin pod

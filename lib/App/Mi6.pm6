@@ -4,7 +4,7 @@ use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
 
-unit class App::Mi6;
+unit class App::Mi6:ver<0.0.1>;
 
 has $!author = qx{git config --global user.name}.chomp;
 has $!email  = qx{git config --global user.email}.chomp;
@@ -30,7 +30,10 @@ multi method cmd('new', $module is copy) {
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin";
-    my %content = App::Mi6::Template::template(:$module, :$!author, :$!email, :$!year);
+    my %content = App::Mi6::Template::template(
+        :$module, :$!author, :$!email, :$!year,
+        dist => $module.subst("::", "-", :g),
+    );
     my %map = <<
         $module-file module
         t/01-basic.t test
@@ -153,6 +156,11 @@ method regenerate-meta-info($module, $module-file) {
     $perl = "6.c" if $perl eq "v6";
     $perl ~~ s/^v//;
 
+    my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
+    my $p = withp6lib { run |@cmd, :out, :err };
+    my $version = $p.out.slurp-rest.chomp || $already<version>;
+    $version = "0.0.1" if $version eq "*";
+
     my %new-meta =
         name          => $module,
         perl          => $perl,
@@ -163,7 +171,7 @@ method regenerate-meta-info($module, $module-file) {
         description   => find-description($module-file) || $already<description> || "",
         provides      => find-provides(),
         source-url    => $already<source-url> || find-source-url(),
-        version       => $already<version> || "*",
+        version       => $version,
         resources     => $already<resources> || [],
         tags          => $already<tags> || [],
         license       => $already<license> || guess-license(),
