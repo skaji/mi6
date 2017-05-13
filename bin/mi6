@@ -19,6 +19,9 @@ multi MAIN("release") {
 multi MAIN("dist") {
     $app.cmd("dist");
 }
+multi MAIN("upload") {
+    $app.cmd("upload");
+}
 multi MAIN("help") { usage }
 multi MAIN(:h(:$help)!) { usage}
 sub usage() {
@@ -34,6 +37,8 @@ sub usage() {
   > mi6 build        # build the distribution, and re-generate README.md/META6.json
   > mi6 test         # run tests
   > mi6 release      # show release steps
+  > mi6 dist         # make distribution tarball
+  > mi6 upload       # upload distribution tarball to CPAN
 
   Examples:
   > mi6 --verbose test    # run tests with verbose mode (alias: -v)

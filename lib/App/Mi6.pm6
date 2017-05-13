@@ -3,6 +3,7 @@ use App::Mi6::Template;
 use App::Mi6::JSON;
 use File::Find;
 use Shell::Command;
+use CPAN::Uploader::Tiny;
 
 unit class App::Mi6:ver<0.0.1>;
 
@@ -90,8 +91,33 @@ multi method cmd('release') {
 multi method cmd('dist') {
     self.cmd('build');
     my ($module, $module-file) = guess-main-module();
-    my $taball = make-dist-tarball($module);
-    say "Created $taball";
+    my $tarball = make-dist-tarball($module);
+    say "Created $tarball";
+    return $tarball;
+}
+
+multi method cmd('upload') {
+    my $tarball = self.cmd('dist');
+    my $proc = run "git", "status", "-s", :out;
+    my @line = $proc.out.lines;
+    if @line.elems != 0 {
+        note "You need to commit the following files before uploading $tarball";
+        note "-> $_" for @line;
+        note "If you want to ignore these files, then list them in .gitignore or MANIFEST.SKIP";
+        die "\n";
+    }
+    my $config = $*HOME.add: ".pause";
+    die "To upload tarball to CPAN, you need to prepare $config first\n" unless $config.IO.e;
+    my $client = CPAN::Uploader::Tiny.new-from-config($config);
+    $*OUT.print("Are you sure to upload $tarball to CPAN? (y/N) ");
+    $*OUT.flush;
+    my $line = $*IN.get;
+    if $line !~~ rx:i/^y/ {
+        $*OUT.print("Abort.\n");
+        return;
+    }
+    $client.upload($tarball);
+    say "Successfully uploaded $tarball to CPAN.";
 }
 
 sub withp6lib(&code) {
