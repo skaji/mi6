@@ -119,7 +119,7 @@ multi method cmd('upload') {
         $*OUT.print("Abort.\n");
         return;
     }
-    $client.upload($tarball);
+    $client.upload($tarball, subdirectory => "Perl6");
     say "Successfully uploaded $tarball to CPAN.";
 }
 
