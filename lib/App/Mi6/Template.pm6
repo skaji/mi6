@@ -30,7 +30,7 @@ sudo: false
 EOF
 
 test => qq:to/END_OF_TEST/,
-use v6;
+use v6.c;
 use Test;
 use $module;
 
@@ -40,7 +40,7 @@ done-testing;
 END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,
-use v6;
+use v6.c;
 unit class $module\:ver<0.0.1>;
 
 
