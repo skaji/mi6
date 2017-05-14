@@ -298,7 +298,7 @@ sub make-dist-tarball($main-module) {
     $proc = run "tar", "czf", "$name.tar.gz", $name, :out, :err, :%env;
     if $proc.exitcode != 0 {
         my $exitcode = $proc.exitcode;
-        my $err = $proc.err.slurp;
+        my $err = $proc.err.slurp-rest;
         die $err ?? $err !! "can't create tarball, exitcode = $exitcode";
     }
     return "$name.tar.gz";
