@@ -102,9 +102,12 @@ multi method cmd('upload') {
     my @line = $proc.out.lines;
     if @line.elems != 0 {
         note "You need to commit the following files before uploading $tarball";
-        note "-> $_" for @line;
+        note "";
+        note " * $_" for @line.map({s/\s*\S+\s+//; $_});
+        note "";
         note "If you want to ignore these files, then list them in .gitignore or MANIFEST.SKIP";
-        die "\n";
+        note "";
+        die;
     }
     my $config = $*HOME.add: ".pause";
     die "To upload tarball to CPAN, you need to prepare $config first\n" unless $config.IO.e;
