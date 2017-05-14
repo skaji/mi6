@@ -5,7 +5,7 @@ use File::Find;
 use Shell::Command;
 use CPAN::Uploader::Tiny;
 
-unit class App::Mi6:ver<0.0.1>;
+unit class App::Mi6:ver<0.0.2>;
 
 has $!author = qx{git config --global user.name}.chomp;
 has $!email  = qx{git config --global user.email}.chomp;
