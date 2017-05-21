@@ -131,9 +131,11 @@ sub withp6lib(&code) {
 
 sub build() {
     return unless "Build.pm".IO.e;
-    require Panda::Builder;
-    note '==> Execute Panda::Builder.build(~$*CWD)';
-    ::("Panda::Builder").build(~$*CWD);
+    note '==> Execute Build.pm';
+    my @cmd = $*EXECUTABLE, '-Ilib', '-I.', '-MBuild', '-e', "Build.new.build('{~$*CWD}')";
+    my $proc = run |@cmd;
+    my $code = $proc.exitcode;
+    die "Failed with exitcode $code" if $code != 0;
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
