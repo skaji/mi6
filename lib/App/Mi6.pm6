@@ -55,9 +55,6 @@ multi method cmd('new', $module is copy) {
 
 multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
-    if migrate-travis-yml() {
-        note "==> migrated .travis.yml for latest panda change";
-    }
     regenerate-readme($module-file);
     self.regenerate-meta-info($module, $module-file);
     build();
@@ -84,7 +81,7 @@ multi method cmd('release') {
       3. And raise a pull request!
 
       Once your pull request is merged, we can install your module by:
-      \$ panda install $module
+      \$ zef install $module
     EOF
 }
 
@@ -131,9 +128,11 @@ sub withp6lib(&code) {
 
 sub build() {
     return unless "Build.pm".IO.e;
-    require Panda::Builder;
-    note '==> Execute Panda::Builder.build(~$*CWD)';
-    ::("Panda::Builder").build(~$*CWD);
+    note '==> Execute Build.pm';
+    my @cmd = $*EXECUTABLE, '-Ilib', '-I.', '-MBuild', '-e', "Build.new.build('{~$*CWD}')";
+    my $proc = run |@cmd;
+    my $code = $proc.exitcode;
+    die "Failed with exitcode $code" if $code != 0;
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
@@ -233,38 +232,6 @@ sub find-description($module-file) {
     } else {
         return "";
     }
-}
-
-# FIXME
-sub migrate-travis-yml() {
-    my $travis-yml = ".travis.yml".IO;
-    return False unless $travis-yml.f;
-    my %fix =
-        q!  - perl6 -MPanda::Builder -e 'Panda::Builder.build($*CWD)'!
-            => q!  - perl6 -MPanda::Builder -e 'Panda::Builder.build(~$*CWD)'!,
-        q!  - PERL6LIB=$PWD/blib/lib prove -e perl6 -vr t/!
-            => q!  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/!,
-        q!  - PERL6LIB=$PWD/blib/lib prove -e perl6 -r t/!
-            => q!  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/!,
-    ;
-
-    my @lines = $travis-yml.lines;
-    my @out;
-    my $replaced = False;
-    for @lines -> $line {
-        if %fix{$line} -> $fix {
-            @out.push($fix);
-            $replaced = True;
-        } else {
-            @out.push($line);
-        }
-    }
-    return False unless $replaced;
-    given $travis-yml.open(:w) -> $fh {
-        LEAVE { $fh.close }
-        $fh.say($_) for @out;
-    }
-    return True;
 }
 
 sub make-dist-tarball($main-module) {
@@ -398,10 +365,6 @@ App::Mi6 - minimal authoring tool for Perl6
 
 =head1 INSTALLATION
 
-  # with panda
-  > panda install App::Mi6
-
-  # or, with zef
   > zef install App::Mi6
 
 =head1 DESCRIPTION
