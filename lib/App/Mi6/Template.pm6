@@ -22,7 +22,7 @@ perl6:
   - latest
 install:
   - rakudobrew build zef
-  - zef install --depsonly --/test .
+  - zef install --deps-only --/test .
 script:
   - PERL6LIB=\$PWD/lib prove -e perl6 -vr t/
 sudo: false
