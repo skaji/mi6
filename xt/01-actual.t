@@ -7,23 +7,23 @@ use JSON::Pretty;
 
 my $r;
 $r = mi6 "new";
-ok !$r.success;
+isnt $r.exit, 0;
 
 $r = mi6 "unknown";
-ok !$r.success;
+isnt $r.exit, 0;
 
 my $tempdir = tempdir;
 {
     temp $*CWD = $tempdir.IO;
     $r = mi6 "new", "Foo::Bar";
-    ok $r.success;
+    is $r.exit, 0;
     ok "Foo-Bar".IO.d;
     chdir "Foo-Bar";
     ok $_.IO.e for <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
     ok !"xt".IO.d;
     ok "lib/Foo/Bar.pm6".IO.e;
     $r = mi6 "test";
-    ok $r.success;
+    is $r.exit, 0;
     like $r.out, rx/All \s+ tests \s+ successful/;
 
     mkdir "xt";
@@ -33,7 +33,7 @@ my $tempdir = tempdir;
     ok False;
     EOF
     $r = mi6 "test";
-    ok !$r.success;
+    isnt $r.exit, 0;
     like $r.out, rx/Failed/;
 }
 {

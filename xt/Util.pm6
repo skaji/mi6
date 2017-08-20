@@ -11,14 +11,8 @@ my class Result {
 }
 
 sub mi6(*@arg) is export {
-    my $p = Proc::Async.new($*EXECUTABLE, "-I$base/lib", "$base/bin/mi6", |@arg);
-    my ($out, $err);
-    $p.stdout.tap: -> $v { $out ~= $v };
-    $p.stderr.tap: -> $v { $err ~= $v };
-    my $promise = $p.start;
-
-    # See https://docs.perl6.org/language/traps
-    # https://rt.perl.org/Ticket/Display.html?id=128674
-    try sink await $promise; # or $ = await $promise;
-    Result.new(:out($out), :err($err), :exit($promise.result.exitcode));
+    my $p = run $*EXECUTABLE, "-I$base/lib", "$base/bin/mi6", |@arg, :out, :err;
+    my $out = $p.out.slurp(:close);
+    my $err = $p.err.slurp(:close);
+    Result.new(:out($out), :err($err), :exit($p.exitcode));
 }
