@@ -93,8 +93,7 @@ multi method cmd('dist') {
 
 multi method cmd('upload') {
     my $tarball = self.cmd('dist');
-    my $proc = run "git", "status", "-s", :out;
-    my @line = $proc.out.lines(:close);
+    my @line = run("git", "status", "-s", :out).out.lines(:close);
     if @line.elems != 0 {
         note "You need to commit the following files before uploading $tarball";
         note "";
@@ -240,9 +239,9 @@ sub make-dist-tarball($main-module) {
     die "To make dist tarball, you must specify version (not '*') in META6.json first"
         if $version eq '*';
     $name ~= "-$version";
-    my $proc = run "git", "ls-files", :out;
-    my @file = $proc.out.lines(:close);
     rm_rf $name if $name.IO.d;
+    unlink "$name.tar.gz" if "$name.tar.gz".IO.e;
+    my @file = run("git", "ls-files", :out).out.lines(:close);
     my @ignore = (
         * eq ".travis.yml",
         * eq ".gitignore",
@@ -261,7 +260,7 @@ sub make-dist-tarball($main-module) {
     }
     my %env = %*ENV;
     %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
-    $proc = run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
+    my $proc = run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
     LEAVE $proc.err.close;
     if $proc.exitcode != 0 {
         my $exitcode = $proc.exitcode;
