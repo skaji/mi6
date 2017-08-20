@@ -60,5 +60,12 @@ my $tempdir = tempdir;
     $meta = from-json( "META6.json".IO.slurp );
     is $meta<description>, "This is hello module.";
 }
+{
+    temp $*CWD = $tempdir.IO;
+    mi6 "new", "Hoge::Bar";
+    chdir "Hoge-Bar";
+    mi6 "dist";
+    ok "Hoge-Bar-0.0.1.tar.gz".IO.f;
+}
 
 done-testing;
