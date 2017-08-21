@@ -51,21 +51,21 @@ multi method cmd('new', $module is copy) {
     note "Successfully created $main-dir";
 }
 
-multi method cmd('build') {
+multi method cmd('build', Bool :$skip-readme) {
     my ($module, $module-file) = guess-main-module();
-    regenerate-readme($module-file);
+    regenerate-readme($module-file) unless $skip-readme;
     self.regenerate-meta-info($module, $module-file);
     build();
 }
 
-multi method cmd('test', @file, Bool :$verbose, Int :$jobs) {
-    self.cmd('build');
+multi method cmd('test', @file, Bool :$verbose, Int :$jobs, Bool :$skip-readme) {
+    self.cmd('build', :$skip-readme);
     my $exitcode = test(@file, :$verbose, :$jobs);
     exit $exitcode;
 }
 
-multi method cmd('release') {
-    self.cmd('build');
+multi method cmd('release', Bool :$skip-readme) {
+    self.cmd('build', :$skip-readme);
     my ($module, $module-file) = guess-main-module();
     my ($user, $repo) = guess-user-and-repo();
     die "Cannot find user and repository setting" unless $repo;
@@ -83,16 +83,16 @@ multi method cmd('release') {
     EOF
 }
 
-multi method cmd('dist') {
-    self.cmd('build');
+multi method cmd('dist', Bool :$skip-readme) {
+    self.cmd('build', :$skip-readme);
     my ($module, $module-file) = guess-main-module();
     my $tarball = make-dist-tarball($module);
     say "Created $tarball";
     return $tarball;
 }
 
-multi method cmd('upload') {
-    my $tarball = self.cmd('dist');
+multi method cmd('upload', Bool :$skip-readme) {
+    my $tarball = self.cmd('dist', :$skip-readme);
     my @line = run("git", "status", "-s", :out).out.lines(:close);
     if @line.elems != 0 {
         note "You need to commit the following files before uploading $tarball";
