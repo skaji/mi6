@@ -7,19 +7,19 @@ my $app = App::Mi6.new;
 multi MAIN("new", $module) {
     $app.cmd("new", $module);
 }
-multi MAIN("build") {
-    $app.cmd("build");
+multi MAIN("build", Bool :$skip-readme) {
+    $app.cmd("build", :$skip-readme);
 }
-multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
-    $app.cmd("test", @file, :$verbose, :$jobs);
+multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs), Bool :$skip-readme) {
+    $app.cmd("test", @file, :$verbose, :$jobs, :$skip-readme);
 }
-multi MAIN("release") {
+multi MAIN("release"m Bool :$skip-readme) {
     $app.cmd("release");
 }
-multi MAIN("dist") {
+multi MAIN("dist", Bool :$skip-readme) {
     $app.cmd("dist");
 }
-multi MAIN("upload") {
+multi MAIN("upload", Bool :$skip-readme) {
     $app.cmd("upload");
 }
 multi MAIN("help") { usage }
