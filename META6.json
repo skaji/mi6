@@ -16,6 +16,7 @@
   "perl" : "6.c",
   "provides" : {
     "App::Mi6" : "lib/App/Mi6.pm6",
+    "App::Mi6::INI" : "lib/App/Mi6/INI.pm6",
     "App::Mi6::JSON" : "lib/App/Mi6/JSON.pm6",
     "App::Mi6::Template" : "lib/App/Mi6/Template.pm6"
   },
