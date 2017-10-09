@@ -22,12 +22,12 @@ my $to-file = -> $module {
     'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.pm6';
 };
 
-my sub config($section, $key?) {
+my sub config($section, $key?, :$default = Any) {
     my $top = "dist.ini".IO.e ?? App::Mi6::INI::parsefile("dist.ini") !! {};
     my $config = $top{$section};
-    return $config if !$config || !$key;
+    return $config || $default if !$config || !$key;
     my $pair = @($config).grep({ $_.key eq $key }).first;
-    $pair ?? $pair.value !! "";
+    $pair ?? $pair.value !! $default;
 }
 
 multi method cmd('new', $module is copy) {
@@ -161,8 +161,9 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
 
 method regenerate-readme($module-file) {
     my $section = "ReadmeFromPod";
-    return if config($section, "enable") eq "false" or config($section, "disable") eq "true";
-    my $file = config($section, "filename") || $module-file;
+    my $default = "";
+    return if config($section, "enable", :$default) eq "false" or config($section, "disable", :$default) eq "true";
+    my $file = config($section, "filename", :$default) || $module-file;
 
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
     my $p = withp6lib { run |@cmd, :out };
