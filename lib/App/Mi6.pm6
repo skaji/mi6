@@ -1,6 +1,7 @@
 use v6;
 use App::Mi6::Template;
 use App::Mi6::JSON;
+use App::Mi6::INI;
 use File::Find;
 use Shell::Command;
 use CPAN::Uploader::Tiny;
@@ -18,8 +19,16 @@ my $to-module = -> $file {
     $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/\.pm6?$/, '');
 };
 my $to-file = -> $module {
-    'lib/' ~ $module.subst('::', '/', :g) ~ '.pm6';
+    'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.pm6';
 };
+
+my sub config($section, $key?) {
+    my $top = "dist.ini".IO.e ?? App::Mi6::INI::parsefile("dist.ini") !! {};
+    my $config = $top{$section};
+    return $config if !$config || !$key;
+    my $pair = @($config).grep({ $_.key eq $key }).first;
+    $pair ?? $pair.value !! "";
+}
 
 multi method cmd('new', $module is copy) {
     $module ~~ s:g/ '-' /::/;
@@ -33,9 +42,11 @@ multi method cmd('new', $module is copy) {
     mkpath($_) for $module-dir, "t", "bin";
     my %content = App::Mi6::Template::template(
         :$module, :$!author, :$!email, :$!year,
+        :$module-file,
         dist => $module.subst("::", "-", :g),
     );
     my %map = <<
+        dist.ini     dist
         $module-file module
         t/01-basic.t test
         LICENSE      license
@@ -53,7 +64,7 @@ multi method cmd('new', $module is copy) {
 
 multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
-    regenerate-readme($module-file);
+    self.regenerate-readme($module-file);
     self.regenerate-meta-info($module, $module-file);
     build();
 }
@@ -86,7 +97,7 @@ multi method cmd('release') {
 multi method cmd('dist') {
     self.cmd('build');
     my ($module, $module-file) = guess-main-module();
-    my $tarball = make-dist-tarball($module);
+    my $tarball = self.make-dist-tarball($module);
     say "Created $tarball";
     return $tarball;
 }
@@ -148,10 +159,14 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
     };
 }
 
-sub regenerate-readme($module-file) {
-    my @cmd = $*EXECUTABLE, "--doc=Markdown", $module-file;
+method regenerate-readme($module-file) {
+    my $section = "ReadmeFromPod";
+    return if config($section, "enable") eq "false" or config($section, "disable") eq "true";
+    my $file = config($section, "filename") || $module-file;
+
+    my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
     my $p = withp6lib { run |@cmd, :out };
-    LEAVE $p.out.close;
+    LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
     my ($user, $repo) = guess-user-and-repo();
@@ -232,7 +247,36 @@ sub find-description($module-file) {
     }
 }
 
-sub make-dist-tarball($main-module) {
+method prune-files {
+    my @prune = (
+        * eq ".travis.yml",
+        * eq ".gitignore",
+        * eq "approvar.yml",
+        * eq ".approvar.yml",
+        * eq "circle.yml",
+        * ~~ rx/\.precomp/,
+    );
+    if "MANIFEST.SKIP".IO.e {
+        my @skip = "MANIFEST.SKIP".IO.lines.map: -> $skip { * eq $skip };
+        @prune.push: |@skip;
+    }
+    if my $config = config("PruneFiles") {
+        for @($config) {
+            my ($k, $v) = $_.kv;
+            if $k eq "filename" {
+                @prune.push: * eq $v;
+            } elsif $k eq "match" {
+                @prune.push: * ~~ rx/<{$v}>/;
+            } else {
+                die "Invalid entry PruneFiles.$k in dist.ini";
+            }
+        }
+    }
+    return |@prune;
+
+}
+
+method make-dist-tarball($main-module) {
     my $name = $main-module.subst("::", "-", :g);
     my $meta = App::Mi6::JSON.decode("META6.json".IO.slurp);
     my $version = $meta<version>;
@@ -242,17 +286,10 @@ sub make-dist-tarball($main-module) {
     rm_rf $name if $name.IO.d;
     unlink "$name.tar.gz" if "$name.tar.gz".IO.e;
     my @file = run("git", "ls-files", :out).out.lines(:close);
-    my @ignore = (
-        * eq ".travis.yml",
-        * eq ".gitignore",
-        * ~~ rx/\.precomp/,
-    );
-    if "MANIFEST.SKIP".IO.e {
-        my @skip = "MANIFEST.SKIP".IO.lines.map: -> $skip { * eq $skip };
-        @ignore.push: |@skip;
-    }
+
+    my @prune = self.prune-files;
     for @file -> $file {
-        next if @ignore.grep({$_($file)});
+        next if @prune.grep({$_($file)});
         my $target = "$name/$file";
         my $dir = $target.IO.dirname;
         mkpath $dir unless $dir.IO.d;
@@ -261,7 +298,7 @@ sub make-dist-tarball($main-module) {
     my %env = %*ENV;
     %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
     my $proc = run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
-    LEAVE $proc.err.close;
+    LEAVE $proc && $proc.err.close;
     if $proc.exitcode != 0 {
         my $exitcode = $proc.exitcode;
         my $err = $proc.err.slurp;
@@ -315,6 +352,11 @@ sub find-provides() {
 
 sub guess-main-module() {
     die "Must run in the top directory" unless "lib".IO ~~ :d;
+    if my $name = config("_", "name") {
+        my $file = $to-file($name).subst(".pm6", "");
+        $file = "$file.pm6".IO.e ?? "$file.pm6" !! "$file.pm".IO.e ?? "$file.pm" !! "";
+        return ($to-module($file), $file) if $file;
+    }
     my @module-files = find(dir => "lib", name => /.pm6?$/).list;
     my $num = @module-files.elems;
     given $num {
@@ -353,13 +395,8 @@ App::Mi6 - minimal authoring tool for Perl6
 =head1 SYNOPSIS
 
   > mi6 new Foo::Bar # create Foo-Bar distribution
-  > cd Foo-Bar
   > mi6 build        # build the distribution and re-generate README.md/META6.json
   > mi6 test         # run tests
-  > mi6 release      # release!
-
-  !!! EXPERIMENTAL !!!
-  > mi6 dist         # make distribution tarball
   > mi6 upload       # upload distribution tarball to CPAN
 
 =head1 INSTALLATION
@@ -378,21 +415,38 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
 =head1 FAQ
 
-=item How can I manage depends, build-depends, test-depends?
+=head2 Can I customize mi6 behavior?
 
-  Write them to META6.json directly :)
+Use C<dist.ini>:
 
-=item Where is Changes file?
+    ; dist.ini
+    name = Your-Module-Name
 
-  TODO
+    [ReadmeFromPod]
+    ; if you want to disable generating README.md from main module's pod, then:
+    ; disable = true
+    ;
+    ; if you want to change a file that generates README.md, then:
+    ; filename = lib/Your/Tutorial.pod
 
-=item Where is the spec of META6.json?
+    [PruneFiles]
+    ; if you want to prune files when packaging, then
+    ; filename = utils/tool.pl
+    ;
+    ; you can use Perl6 regular expressions
+    ; match = ^^ 'xt/'
 
-  http://design.perl6.org/S22.html
+=head2 How can I manage depends, build-depends, test-depends?
 
-=item How do I remove travis badge?
+Write them to META6.json directly :)
 
-  Remove .travis.yml
+=head2 Where is Changes file?
+
+TODO
+
+=head2 Where is the spec of META6.json?
+
+http://design.perl6.org/S22.html
 
 =head1 SEE ALSO
 

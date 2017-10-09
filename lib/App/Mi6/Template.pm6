@@ -1,7 +1,18 @@
 unit module App::Mi6::Template;
 
-our sub template(:$module, :$dist, :$author, :$email, :$year) {
+our sub template(:$module, :$module-file, :$dist, :$author, :$email, :$year) {
     my %template =
+dist => qq:to/EOF/,
+name = $dist
+
+[ReadmeFromPod]
+; disable = true
+filename = $module-file
+
+[PruneFiles]
+; match = ^^ 'xt/'
+EOF
+
 gitignore => qq:to/EOF/,
 /blib/
 /src/*.o
