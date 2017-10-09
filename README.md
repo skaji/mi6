@@ -52,7 +52,7 @@ Use `dist.ini`:
     ; filename = utils/tool.pl
     ;
     ; you can use Perl6 regular expressions
-    ; match = ^^ 'xt/'
+    ; match = ^ 'xt/'
 
 How can I manage depends, build-depends, test-depends?
 ------------------------------------------------------

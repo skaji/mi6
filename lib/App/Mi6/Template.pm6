@@ -10,7 +10,7 @@ name = $dist
 filename = $module-file
 
 [PruneFiles]
-; match = ^^ 'xt/'
+; match = ^ 'xt/'
 EOF
 
 gitignore => qq:to/EOF/,

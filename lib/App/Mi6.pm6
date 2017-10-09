@@ -319,11 +319,11 @@ sub find-source-url() {
     }
     return "" unless $url;
     $url .= Str;
-    $url ~~ s/^https?/git/; # panda does not support http protocol
+    $url .= subst(/^git/, 'https');
     if $url ~~ m/'git@' $<host>=[.+] ':' $<repo>=[<-[:]>+] $/ {
-        $url = "git://$<host>/$<repo>";
+        $url = "https://$<host>/$<repo>";
     } elsif $url ~~ m/'ssh://git@' $<rest>=[.+] / {
-        $url = "git://$<rest>";
+        $url = "https://$<rest>";
     }
     $url;
 }
@@ -434,7 +434,7 @@ Use C<dist.ini>:
     ; filename = utils/tool.pl
     ;
     ; you can use Perl6 regular expressions
-    ; match = ^^ 'xt/'
+    ; match = ^ 'xt/'
 
 =head2 How can I manage depends, build-depends, test-depends?
 
