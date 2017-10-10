@@ -320,7 +320,7 @@ sub find-source-url() {
     }
     return "" unless $url;
     $url .= Str;
-    $url .= subst(/^ 'git:' /, 'https');
+    $url .= subst(/^ 'git:' /, 'https:');
     if $url ~~ m/'git@' $<host>=[.+] ':' $<repo>=[<-[:]>+] $/ {
         $url = "https://$<host>/$<repo>";
     } elsif $url ~~ m/'ssh://git@' $<rest>=[.+] / {
