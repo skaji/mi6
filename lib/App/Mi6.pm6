@@ -163,23 +163,47 @@ method regenerate-readme($module-file) {
     my $section = "ReadmeFromPod";
     my $default = "";
     return if config($section, "enable", :$default) eq "false" or config($section, "disable", :$default) eq "true";
-    my $file = config($section, "filename", :$default) || $module-file;
 
+    my @candidates = self.find-pod-for( config($section, "filename", :$default) || $module-file );
+
+    for @candidates -> $file
+    {
+        if my $markdown = self.render-markdown( $file )
+        {
+            my ($user, $repo) = guess-user-and-repo();
+            my $header = do if $user and ".travis.yml".IO.e {
+                "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
+                    ~ "(https://travis-ci.org/$user/$repo)"
+                    ~ "\n\n";
+            } else {
+                "";
+            }
+
+            return spurt "README.md", $header ~ $markdown;
+        }
+    }
+
+    say "Attention: mi6 could not find any pod for the README.md"
+}
+
+method render-markdown( $file )
+{
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
     my $p = withp6lib { run |@cmd, :out };
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
-    my $markdown = $p.out.slurp;
-    my ($user, $repo) = guess-user-and-repo();
-    my $header = do if $user and ".travis.yml".IO.e {
-        "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-            ~ "(https://travis-ci.org/$user/$repo)"
-            ~ "\n\n";
-    } else {
-        "";
-    }
+    return $p.out.slurp;
+}
 
-    spurt "README.md", $header ~ $markdown;
+method find-pod-for( $module-file )
+{
+  my @candidates =
+    "README.pod6",
+    $module-file,
+    $module-file.subst( / \. pm6 $ /, '.pod6'),
+    $module-file.subst( / \. pm6 $ /, '.pod6').subst('lib', 'docs');
+
+  return @candidates.grep({ .IO.e });
 }
 
 method regenerate-meta-info($module, $module-file) {
@@ -386,83 +410,3 @@ sub guess-main-module() {
         }
     }
 }
-
-=begin pod
-
-=head1 NAME
-
-App::Mi6 - minimal authoring tool for Perl6
-
-=head1 SYNOPSIS
-
-  > mi6 new Foo::Bar # create Foo-Bar distribution
-  > mi6 build        # build the distribution and re-generate README.md/META6.json
-  > mi6 test         # run tests
-  > mi6 upload       # upload distribution tarball to CPAN
-
-=head1 INSTALLATION
-
-  > zef install App::Mi6
-
-=head1 DESCRIPTION
-
-App::Mi6 is a minimal authoring tool for Perl6. Features are:
-
-=item Create minimal distribution skeleton for Perl6
-
-=item Generate README.md from lib/Main/Module.pm6's pod
-
-=item Run tests by C<mi6 test>
-
-=head1 FAQ
-
-=head2 Can I customize mi6 behavior?
-
-Use C<dist.ini>:
-
-    ; dist.ini
-    name = Your-Module-Name
-
-    [ReadmeFromPod]
-    ; if you want to disable generating README.md from main module's pod, then:
-    ; disable = true
-    ;
-    ; if you want to change a file that generates README.md, then:
-    ; filename = lib/Your/Tutorial.pod
-
-    [PruneFiles]
-    ; if you want to prune files when packaging, then
-    ; filename = utils/tool.pl
-    ;
-    ; you can use Perl6 regular expressions
-    ; match = ^ 'xt/'
-
-=head2 How can I manage depends, build-depends, test-depends?
-
-Write them to META6.json directly :)
-
-=head2 Where is Changes file?
-
-TODO
-
-=head2 Where is the spec of META6.json?
-
-http://design.perl6.org/S22.html
-
-=head1 SEE ALSO
-
-L<<https://github.com/tokuhirom/Minilla>>
-
-L<<https://github.com/rjbs/Dist-Zilla>>
-
-=head1 AUTHOR
-
-Shoichi Kaji <skaji@cpan.org>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2015 Shoichi Kaji
-
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
-=end pod
