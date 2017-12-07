@@ -18,6 +18,11 @@ INSTALLATION
 
     > zef install App::Mi6
 
+Or, for developers
+
+	> zef install --deps-only .
+	> zef test .
+
 DESCRIPTION
 ===========
 
