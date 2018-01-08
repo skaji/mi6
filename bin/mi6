@@ -4,6 +4,9 @@ use App::Mi6;
 
 my $app = App::Mi6.new;
 
+multi MAIN("version") {
+    say $app.^ver;
+}
 multi MAIN("new", $module) {
     $app.cmd("new", $module);
 }
