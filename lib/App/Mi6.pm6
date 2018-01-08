@@ -119,7 +119,7 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
         note "==> Set PERL6LIB=%*ENV<PERL6LIB>";
         note "==> @command[]";
         my $proc = run |@command;
-        $proc.exitcode;
+        die "Test failed" unless ?$proc;
     };
 }
 
