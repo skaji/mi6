@@ -37,7 +37,7 @@ my @klass =
     MakeDist => "",
     UploadToCPAN => "Upload tarball to CPAN!",
     RewriteChanges => "",
-    GitCommit => "Git commit locally",
+    GitCommit => "Git commit, and push it to remote",
     CreateGitTag => "Create git tag, and push it to remote",
 ;
 
