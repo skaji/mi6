@@ -1,4 +1,6 @@
 Revision history for App-Mi6
 
 {{$NEXT}}
-  - Add a "true" release command
+
+0.1.0  2018-01-09T01:43:25+09:00
+  - Add a "true" release command (#29)
