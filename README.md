@@ -11,7 +11,7 @@ SYNOPSIS
     > mi6 new Foo::Bar # create Foo-Bar distribution
     > mi6 build        # build the distribution and re-generate README.md/META6.json
     > mi6 test         # run tests
-    > mi6 upload       # upload distribution tarball to CPAN
+    > mi6 release      # release your distribution to CPAN
 
 INSTALLATION
 ============
@@ -28,6 +28,8 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
   * Generate README.md from lib/Main/Module.pm6's pod
 
   * Run tests by `mi6 test`
+
+  * Release your distribution tarball to CPAN
 
 FAQ
 ===
@@ -59,15 +61,15 @@ How can I manage depends, build-depends, test-depends?
 
 Write them to META6.json directly :)
 
-Where is Changes file?
-----------------------
-
-TODO
-
 Where is the spec of META6.json?
 --------------------------------
 
 http://design.perl6.org/S22.html
+
+TODO
+====
+
+documentation
 
 SEE ALSO
 ========
@@ -87,3 +89,4 @@ COPYRIGHT AND LICENSE
 Copyright 2015 Shoichi Kaji
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+

@@ -2,6 +2,14 @@ unit module App::Mi6::Template;
 
 our sub template(:$module, :$module-file, :$dist, :$author, :$email, :$year) {
     my %template =
+
+Changes => qq:to/EOF/,
+Revision history for $dist
+
+\{\{\$NEXT\}\}
+    - Initial version
+EOF
+
 dist => qq:to/EOF/,
 name = $dist
 
