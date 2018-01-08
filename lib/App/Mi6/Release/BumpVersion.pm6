@@ -30,6 +30,12 @@ has @.line;
 method run(*%opt) {
     self.scan(%opt<dir>);
     my $current-version = self.current-version;
+    if !$current-version {
+        die   "Could not determine version from {%opt<main-module-file>}.\n"
+            ~ "You should specify version first in it:\n\n"
+            ~ "  class {%opt<main-module>}:ver<0.0.1>;\n";
+    }
+
     my $next-version = self!exists-git-tag($current-version) ?? self.next-version !! $current-version;
     my $message = "Next release version? [$next-version]:";
     my $answer = prompt($message, default => $next-version);

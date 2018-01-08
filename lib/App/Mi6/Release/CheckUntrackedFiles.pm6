@@ -3,10 +3,9 @@ unit class App::Mi6::Release::CheckUntrackedFiles;
 
 method run(*%opt) {
     my @cmd = <git ls-files -z --others --exclude-standard>;
-    my $proc = run |@cmd, :out;
-    my @line = $proc.out.lines(:nl-in("\0"), :chomp, :close);
+    my @line = run(|@cmd, :out).out.slurp(:close).split("\0").grep(* ne "");
     return if +@line == 0;
-    die "Untracked files are found:\n"
+    die "Untracked files are found:\n\n"
         ~ @line.map({ "* $_\n" }).join("")
-        ~ "You should git-add them or list them in .gitignore.\n"
+        ~ "\nYou should git-add them or list them in .gitignore."
 }

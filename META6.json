@@ -21,7 +21,6 @@
     "App::Mi6::Release" : "lib/App/Mi6/Release.pm6",
     "App::Mi6::Release::BumpVersion" : "lib/App/Mi6/Release/BumpVersion.pm6",
     "App::Mi6::Release::CheckChanges" : "lib/App/Mi6/Release/CheckChanges.pm6",
-    "App::Mi6::Release::CheckDirty" : "lib/App/Mi6/Release/CheckDirty.pm6",
     "App::Mi6::Release::CheckOrigin" : "lib/App/Mi6/Release/CheckOrigin.pm6",
     "App::Mi6::Release::CheckUntrackedFiles" : "lib/App/Mi6/Release/CheckUntrackedFiles.pm6",
     "App::Mi6::Release::CreateGitTag" : "lib/App/Mi6/Release/CreateGitTag.pm6",

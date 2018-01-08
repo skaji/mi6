@@ -15,7 +15,6 @@ instaed of dynamic requires :/
 
 =end pod
 
-use App::Mi6::Release::CheckDirty;
 use App::Mi6::Release::CheckChanges;
 use App::Mi6::Release::CheckOrigin;
 use App::Mi6::Release::CheckUntrackedFiles;
@@ -28,27 +27,39 @@ use App::Mi6::Release::UploadToCPAN;
 use App::Mi6::Release::GitCommit;
 use App::Mi6::Release::CreateGitTag;
 
-my @klass = <
-    CheckDirty
-    CheckChanges
-    CheckOrigin
-    CheckUntrackedFiles
-    BumpVersion
-    RegenerateFiles
-    DistTest
-    MakeDist
-    UploadToCPAN
-    RewriteChanges
-    GitCommit
-    CreateGitTag
->;
+my @klass =
+    CheckChanges => "Make sure 'Changes' file has the next release description",
+    CheckOrigin => "",
+    CheckUntrackedFiles => "",
+    BumpVersion => "Bump version for modules (eg: 0.0.1 -> 0.0.2)",
+    RegenerateFiles => "",
+    DistTest => "",
+    MakeDist => "",
+    UploadToCPAN => "Upload tarball to CPAN!",
+    RewriteChanges => "",
+    GitCommit => "Git commit locally",
+    CreateGitTag => "Create git tag, and push it to remote",
+;
+
+method !desc {
+    note "==> Release distribution to CPAN";
+    note "";
+    note "  There are {+@klass} steps:";
+    for @klass.kv -> $i, $pair {
+        my ($klass, $desc) = $pair.kv;
+        note "   * Step{sprintf '%2d', $i+1}. $klass" ~ ($desc ?? " - $desc" !! "");
+    }
+    note "";
+}
 
 method run(*%opt is copy) {
-    note "==> Release distribution to CPAN";
+    self!desc;
+    my &color = $*DISTRO.is-win ?? ({$_}) !! ({"\e[32;1m$_\e[m"});
     my $prefix = "App::Mi6::Release::";
-    for @klass.kv -> $i, $klass {
+    for @klass.kv -> $i, $pair {
+        my $klass = $pair.key;
         my $instance = ::($prefix ~ $klass).new;
-        note "==> Step{$i+1} $klass";
+        note &color("==> Step{sprintf '%2d', $i+1} $klass");
         my $res = $instance.run(|%opt);
         %opt = |%opt, |%($res) if $res ~~ Associative;
     }
