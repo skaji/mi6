@@ -7,7 +7,7 @@ method run(*%opt) {
         return;
     }
 
-    my $message = %opt<next-version>;
+    my $message = "Bump version to " ~ %opt<next-version>;
     my $proc;
     $proc = run <git commit -a -m>, $message;
     die if $proc.exitcode != 0;
