@@ -6,7 +6,7 @@ use App::Mi6::Release;
 use File::Find;
 use Shell::Command;
 
-unit class App::Mi6:ver<0.1.2>;
+unit class App::Mi6:ver<0.1.3>;
 
 has $!author = run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
 has $!email  = run(<git config --global user.email>, :out).out.slurp(:close).chomp;
