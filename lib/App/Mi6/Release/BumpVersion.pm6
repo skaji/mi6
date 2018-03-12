@@ -8,9 +8,9 @@ my $PACKAGE-LINE = rx/
     ^
     $<before>=(
         \s* 'unit'? \s*
-        ['module'|'class']
+        ['module'|'class'|'grammar'|'role']
         \s+
-        [ <[a..zA..Z0..9_]> | '::' ]+
+        [ <[a..zA..Z0..9_-]> | '::' ]+
         .*
         ':ver' ['('|'<']
         [\'|\"]?
