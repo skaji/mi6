@@ -4,6 +4,8 @@ unit class App::Mi6::Release::BumpVersion;
 use App::Mi6::Util;
 use File::Find;
 
+my $VERSION-REGEXP = rx/ [<[0..9]> | '.']+ /;
+
 my $PACKAGE-LINE = rx/
     ^
     $<before>=(
@@ -16,7 +18,7 @@ my $PACKAGE-LINE = rx/
         [\'|\"]?
     )
     $<version>=(
-        v? [<[0..9]> | '.']+
+        $VERSION-REGEXP
     )
     $<after>=(
         [\'|\"]?
@@ -39,6 +41,7 @@ method run(*%opt) {
     my $next-version = self!exists-git-tag($current-version) ?? self.next-version !! $current-version;
     my $message = "Next release version? [$next-version]:";
     my $answer = prompt($message, default => $next-version);
+    die "'$answer' is not a supported version string.\n" if $answer !~~ rx/^ $VERSION-REGEXP $/;
     $next-version = $answer;
     self.bump($next-version);
 
