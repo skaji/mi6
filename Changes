@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.1.5  2018-03-17T09:02:46+09:00
+  - Clean dist after releasing (melezhik #31)
+
 0.1.4  2018-03-14T21:48:32+09:00
   - Check version in BumpVersion (drforr #36)
 
