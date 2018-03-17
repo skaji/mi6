@@ -2,6 +2,7 @@
 use v6;
 use App::Mi6;
 
+my %*SUB-MAIN-OPTS = :named-anywhere;
 my $app = App::Mi6.new;
 
 multi MAIN("version") {
@@ -16,8 +17,8 @@ multi MAIN("build") {
 multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
     $app.cmd("test", @file, :$verbose, :$jobs);
 }
-multi MAIN("release") {
-    $app.cmd("release");
+multi MAIN("release", Bool :$keep) {
+    $app.cmd("release", :$keep);
 }
 multi MAIN("dist") {
     $app.cmd("dist");

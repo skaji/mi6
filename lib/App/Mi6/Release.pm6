@@ -26,6 +26,7 @@ use App::Mi6::Release::RewriteChanges;
 use App::Mi6::Release::UploadToCPAN;
 use App::Mi6::Release::GitCommit;
 use App::Mi6::Release::CreateGitTag;
+use App::Mi6::Release::CleanDist;
 
 my @klass =
     CheckChanges => "Make sure 'Changes' file has the next release description",
@@ -39,6 +40,7 @@ my @klass =
     RewriteChanges => "",
     GitCommit => "Git commit, and push it to remote",
     CreateGitTag => "Create git tag, and push it to remote",
+    CleanDist => "",
 ;
 
 method !desc {
