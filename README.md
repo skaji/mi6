@@ -37,14 +37,14 @@ FAQ
 Can I customize mi6 behavior?
 -----------------------------
 
-Use `dist.ini`:
+Yes. Use `dist.ini`:
 
     ; dist.ini
     name = Your-Module-Name
 
     [ReadmeFromPod]
     ; if you want to disable generating README.md from main module's pod, then:
-    ; disable = true
+    ; enable = false
     ;
     ; if you want to change a file that generates README.md, then:
     ; filename = lib/Your/Tutorial.pod

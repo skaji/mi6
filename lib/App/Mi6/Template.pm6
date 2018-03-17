@@ -14,7 +14,7 @@ dist => qq:to/EOF/,
 name = $dist
 
 [ReadmeFromPod]
-; disable = true
+; enable = false
 filename = $module-file
 
 [PruneFiles]
