@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.1.6  2018-03-25T13:39:04+09:00
+  - Set auth cpan:AUTHOR (titsuki #37, #38)
+
 0.1.5  2018-03-17T09:02:46+09:00
   - Clean dist after releasing (melezhik #31)
 

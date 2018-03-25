@@ -7,7 +7,7 @@ use CPAN::Uploader::Tiny;
 use File::Find;
 use Shell::Command;
 
-unit class App::Mi6:ver<0.1.5>:auth<cpan:SKAJI>;
+unit class App::Mi6:ver<0.1.6>:auth<cpan:SKAJI>;
 
 has $!author = run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
 has $!email  = run(<git config --global user.email>, :out).out.slurp(:close).chomp;
