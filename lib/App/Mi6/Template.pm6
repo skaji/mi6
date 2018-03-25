@@ -1,6 +1,6 @@
 unit module App::Mi6::Template;
 
-our sub template(:$module, :$module-file, :$dist, :$author, :$email, :$year) {
+our sub template(:$module, :$module-file, :$dist, :$author, :$cpanid, :$email, :$year) {
     my %template =
 
 Changes => qq:to/EOF/,
@@ -59,7 +59,7 @@ END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,
 use v6.c;
-unit class $module\:ver<0.0.1>;
+unit class $module\:ver<0.0.1>{ $cpanid ?? ":auth<cpan:$cpanid>" !! ""};
 
 
 =begin pod

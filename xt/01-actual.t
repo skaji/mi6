@@ -38,10 +38,17 @@ my $tempdir = tempdir;
 }
 {
     temp $*CWD = $tempdir.IO;
+    temp %*ENV<HOME> = $tempdir;
+    $*HOME.add('.pause').spurt: q:to/EOF/;
+    user SOMEBODY
+    password this-is-secret
+    EOF
+
     $r = mi6 "new", "Hello";
     chdir "Hello";
     my $meta = from-json( "META6.json".IO.slurp );
     is $meta<description>, "blah blah blah";
+    is $meta<auth>, "cpan:SOMEBODY";
     "lib/Hello.pm6".IO.spurt: q:to/EOF/;
     use v6;
     unit module Hello;
