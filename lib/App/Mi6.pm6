@@ -3,6 +3,7 @@ use App::Mi6::Template;
 use App::Mi6::JSON;
 use App::Mi6::INI;
 use App::Mi6::Release;
+use CPAN::Uploader::Tiny;
 use File::Find;
 use Shell::Command;
 
@@ -10,6 +11,7 @@ unit class App::Mi6:ver<0.1.5>;
 
 has $!author = run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
 has $!email  = run(<git config --global user.email>, :out).out.slurp(:close).chomp;
+has $!cpanid = $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user> !! Nil;
 has $!year   = Date.today.year;
 
 my $normalize-path = -> $path {
@@ -41,7 +43,7 @@ multi method cmd('new', $module is copy) {
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin";
     my %content = App::Mi6::Template::template(
-        :$module, :$!author, :$!email, :$!year,
+        :$module, :$!author, :$!cpanid, :$!email, :$!year,
         :$module-file,
         dist => $module.subst("::", "-", :g),
     );
@@ -162,10 +164,17 @@ method regenerate-meta-info($module, $module-file) {
     $perl = "6.c" if $perl eq "v6";
     $perl ~~ s/^v//;
 
-    my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
-    my $p = withp6lib { run |@cmd, :out, :!err };
-    my $version = $p.out.slurp(:close).chomp || $already<version>;
-    $version = "0.0.1" if $version eq "*";
+    my $version = do {
+        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
+        my $p = withp6lib { run |@cmd, :out, :!err };
+        my $v = $p.out.slurp(:close).chomp || $already<version>;
+        $v eq "*" ?? "0.0.1" !! $v;
+    };
+    my $auth = do {
+        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^auth.Str.say";
+        my $p = withp6lib { run |@cmd, :out, :!err };
+        $p.out.slurp(:close).chomp || $already<auth> || Nil;
+    };
 
     my %new-meta =
         name          => $module,
@@ -182,6 +191,7 @@ method regenerate-meta-info($module, $module-file) {
         tags          => $already<tags> || [],
         license       => $already<license> || guess-license(),
     ;
+    %new-meta<auth> = $auth if $auth;
     for $already.keys -> $k {
         %new-meta{$k} = $already{$k} unless %new-meta{$k}:exists;
     }
