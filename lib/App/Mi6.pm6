@@ -421,6 +421,8 @@ Write them to META6.json directly :)
 
 http://design.perl6.org/S22.html
 
+See also L<The Meta spec, Distribution, and CompUnit::Repository explained-ish|https://perl6advent.wordpress.com/2016/12/16/day-16-the-meta-spec-distribution-and-compunitrepository-explained-ish/> by ugexe.
+
 =head1 TODO
 
 documentation
