@@ -226,8 +226,8 @@ method prune-files {
     my @prune = (
         * eq ".travis.yml",
         * eq ".gitignore",
-        * eq "approvar.yml",
-        * eq ".approvar.yml",
+        * eq "appveyor.yml",
+        * eq ".appveyor.yml",
         * eq "circle.yml",
         * ~~ rx/\.precomp/,
     );
