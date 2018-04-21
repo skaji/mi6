@@ -2,6 +2,10 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.1.7  2018-04-21T16:36:23+02:00
+  - Document about --keep option (lizmat #41)
+  - Fix version requirement in META6.json (niner #43)
+
 0.1.6  2018-03-25T13:39:04+09:00
   - Set auth cpan:AUTHOR (titsuki #37, #38)
 
