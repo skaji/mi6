@@ -9,7 +9,7 @@
     "JSON::Pretty",
     "Pod::To::Markdown",
     "Shell::Command",
-    "CPAN::Uploader::Tiny:ver(v0.0.4 .. *)"
+    "CPAN::Uploader::Tiny:ver(0.0.4+)"
   ],
   "description" : "minimal authoring tool for Perl6",
   "license" : "Artistic-2.0",
