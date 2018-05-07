@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.1.8  2018-05-07T22:37:44+09:00
+  - Restrict to concrete versions only (ugexe #46)
+
 0.1.7  2018-04-21T16:36:23+02:00
   - Document about --keep option (lizmat #41)
   - Fix version requirement in META6.json (niner #43)
