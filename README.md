@@ -56,6 +56,10 @@ Yes. Use `dist.ini`:
     ; you can use Perl6 regular expressions
     ; match = ^ 'xt/'
 
+    [MetaNoIndex]
+    ; if you do not want to list some files in META6.json as "provides", then
+    ; filename = lib/Should/Not/List/Provides.pm6
+
 How can I manage depends, build-depends, test-depends?
 ------------------------------------------------------
 

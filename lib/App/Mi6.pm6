@@ -184,7 +184,7 @@ method regenerate-meta-info($module, $module-file) {
         test-depends  => $already<test-depends> || [],
         build-depends => $already<build-depends> || [],
         description   => find-description($module-file) || $already<description> || "",
-        provides      => find-provides(),
+        provides      => self.find-provides(),
         source-url    => $already<source-url> || find-source-url(),
         version       => $version,
         resources     => $already<resources> || [],
@@ -317,11 +317,27 @@ sub guess-user-and-repo() {
     }
 }
 
-sub find-provides() {
-    my %provides = find(dir => "lib", name => /\.pm6?$/).list.map(-> $file {
-        my $module = $to-module($file.Str);
-        $module => $normalize-path($file.Str);
-    }).sort;
+method find-provides() {
+    my @no-index;
+    my $config = config('MetaNoIndex');
+    if $config {
+        for @($config) {
+            my ($k, $v) = $_.kv;
+            if $k eq 'file' || $k eq 'filename' {
+                @no-index.push: $v;
+            } else {
+                die "Unsupported key 'MetaNoIndex.$k' is found in dist.ini";
+            }
+        }
+    }
+    my @prune = self.prune-files;
+    my %provides = find(dir => "lib", name => /\.pm6?$/).list\
+        .grep(-> $file { !so @prune.grep({$_($file)}) })\
+        .grep(-> $file { !so @no-index.grep({ $_ eq $file }) })\
+        .map(-> $file {
+            my $module = $to-module($file.Str);
+            $module => $normalize-path($file.Str);
+        }).sort;
     %provides;
 }
 
@@ -412,6 +428,10 @@ Yes. Use C<dist.ini>:
     ;
     ; you can use Perl6 regular expressions
     ; match = ^ 'xt/'
+
+    [MetaNoIndex]
+    ; if you do not want to list some files in META6.json as "provides", then
+    ; filename = lib/Should/Not/List/Provides.pm6
 
 =head2 How can I manage depends, build-depends, test-depends?
 
