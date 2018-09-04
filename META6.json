@@ -5,7 +5,6 @@
   ],
   "build-depends" : [ ],
   "depends" : [
-    "File::Find",
     "JSON::Pretty",
     "Pod::To::Markdown",
     "Shell::Command",
