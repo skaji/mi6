@@ -2,6 +2,10 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.1.9  2018-09-04T22:56:40+09:00
+  - Introduce MetaNoIndex section to dist.ini (Scimon #52, #53)
+  - Use git ls-files to find pm files (#54)
+
 0.1.8  2018-05-07T22:37:44+09:00
   - Restrict to concrete versions only (ugexe #46)
 
