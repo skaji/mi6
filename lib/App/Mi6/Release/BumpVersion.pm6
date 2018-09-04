@@ -2,7 +2,6 @@ use v6.c;
 unit class App::Mi6::Release::BumpVersion;
 
 use App::Mi6::Util;
-use File::Find;
 
 my $VERSION-REGEXP = rx/ [<[0..9]> | '.']+ /;
 
@@ -55,7 +54,8 @@ method !exists-git-tag($tag) {
 }
 
 method scan($dir) {
-    @!line = gather for find(dir => $dir, name => /\.pm6?$/) -> $file {
+    my @file = run("git", "ls-files", $dir, :out).out.lines(:close).grep(/\.pm6?$/);
+    @!line = gather for @file -> $file {
         for $file.lines(:!chomp).kv -> $num, $line {
             next if $line ~~ /'# No BumpVersion'/;
             if $line ~~ $PACKAGE-LINE {

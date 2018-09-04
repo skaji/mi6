@@ -90,6 +90,7 @@ my $tempdir = tempdir;
     filename = lib/Hello/World3.pm6
     filename = lib/Hello/World4.pm6
     EOF
+    run "git", "add", ".";
 
     mi6 "build";
     my $meta = from-json( "META6.json".IO.slurp );

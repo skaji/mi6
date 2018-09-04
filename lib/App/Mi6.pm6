@@ -4,7 +4,6 @@ use App::Mi6::JSON;
 use App::Mi6::INI;
 use App::Mi6::Release;
 use CPAN::Uploader::Tiny;
-use File::Find;
 use Shell::Command;
 
 unit class App::Mi6:ver<0.1.8>:auth<cpan:SKAJI>;
@@ -59,8 +58,9 @@ multi method cmd('new', $module is copy) {
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
     }
-    self.cmd("build");
     run "git", "init", ".", :!out;
+    run "git", "add", ".";
+    self.cmd("build");
     run "git", "add", ".";
     note "Successfully created $main-dir";
 }
@@ -331,7 +331,7 @@ method find-provides() {
         }
     }
     my @prune = self.prune-files;
-    my %provides = find(dir => "lib", name => /\.pm6?$/).list\
+    my %provides = run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/)\
         .grep(-> $file { !so @prune.grep({$_($file)}) })\
         .grep(-> $file { !so @no-index.grep({ $_ eq $file }) })\
         .map(-> $file {
@@ -348,7 +348,7 @@ sub guess-main-module() {
         $file = "$file.pm6".IO.e ?? "$file.pm6" !! "$file.pm".IO.e ?? "$file.pm" !! "";
         return ($to-module($file), $file) if $file;
     }
-    my @module-files = find(dir => "lib", name => /.pm6?$/).list;
+    my @module-files = run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/);
     my $num = @module-files.elems;
     given $num {
         when 0 {
