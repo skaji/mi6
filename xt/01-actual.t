@@ -74,5 +74,29 @@ my $tempdir = tempdir;
     mi6 "dist";
     ok "Hoge-Bar-0.0.1.tar.gz".IO.f;
 }
+{
+    temp $*CWD = $tempdir.IO;
+    mi6 "new", "Hello::World";
+    chdir "Hello-World";
+    "lib/Hello/World2.pm6".IO.spurt("");
+    "lib/Hello/World3.pm6".IO.spurt("");
+    "lib/Hello/World4.pm6".IO.spurt("");
+    "lib/Hello/World5.pm6".IO.spurt("");
+    "dist.ini".IO.spurt: q:to/EOF/;
+    name = Hello-World
+    [PruneFiles]
+    filename = lib/Hello/World5.pm6
+    [MetaNoIndex]
+    filename = lib/Hello/World3.pm6
+    filename = lib/Hello/World4.pm6
+    EOF
+
+    mi6 "build";
+    my $meta = from-json( "META6.json".IO.slurp );
+    is $meta<provides>, {
+        "Hello::World" => "lib/Hello/World.pm6",
+        "Hello::World2" => "lib/Hello/World2.pm6",
+    };
+}
 
 done-testing;
