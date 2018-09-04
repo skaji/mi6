@@ -56,7 +56,7 @@ method !exists-git-tag($tag) {
 method scan($dir) {
     my @file = run("git", "ls-files", $dir, :out).out.lines(:close).grep(/\.pm6?$/);
     @!line = gather for @file -> $file {
-        for $file.lines(:!chomp).kv -> $num, $line {
+        for $file.IO.lines(:!chomp).kv -> $num, $line {
             next if $line ~~ /'# No BumpVersion'/;
             if $line ~~ $PACKAGE-LINE {
                 take %(
