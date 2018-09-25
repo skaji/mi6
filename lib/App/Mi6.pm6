@@ -6,6 +6,7 @@ use App::Mi6::Release;
 use App::Mi6::Util;
 use CPAN::Uploader::Tiny;
 use Shell::Command;
+use TAP::Harness;
 
 unit class App::Mi6:ver<0.3.1>:auth<cpan:SKAJI>;
 
@@ -125,22 +126,30 @@ sub build() {
     }
 }
 
+multi list-testfiles(IO::Path $path where .d) {
+    for $path.dir(:test(!*.starts-with('.'))).self -> $entry {
+        list-testfiles($entry);
+    }
+}
+multi list-testfiles(IO::Path $path where .f) {
+    take ~$path if $path.extension eq any('t', 't6', 'rakutest');
+}
+multi list-testfiles(IO::Path $path) {
+    die "Invalid input '$path'";
+}
+
 sub test(@file, Bool :$verbose, Int :$jobs) {
     withp6lib {
-        my @option = "-r";
-        @option.push("--ext", ".t");
-        @option.push("--ext", ".t6");
-        @option.push("--ext", ".rakutest");
-        @option.push("-v") if $verbose;
-        @option.push("-j", $jobs) if $jobs;
+        my %args;
+        %args<jobs> = $jobs with $jobs;
+        %args<volume> = TAP::Verbose with $verbose;
         if @file.elems == 0 {
             @file = <t xt>.grep({.IO.d});
         }
-        my @command = "prove", "-e", $*EXECUTABLE, |@option, |@file;
+        my @sources = gather { list-testfiles($_.IO) for @file }
         note "==> Set PERL6LIB=%*ENV<PERL6LIB>";
-        note "==> @command[]";
-        my $proc = mi6run |@command;
-        die "Test failed" unless ?$proc;
+        my $run = TAP::Harness.new(|%args).run(@sources);
+        die "Test failed" if $run.result.has-errors;
     };
 }
 
