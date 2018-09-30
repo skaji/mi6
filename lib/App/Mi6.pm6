@@ -443,6 +443,22 @@ http://design.perl6.org/S22.html
 
 See also L<The Meta spec, Distribution, and CompUnit::Repository explained-ish|https://perl6advent.wordpress.com/2016/12/16/day-16-the-meta-spec-distribution-and-compunitrepository-explained-ish/> by ugexe.
 
+=head2 What is the format of the .pause file?
+
+Mi6 uses the .pause file in your home directory to determine the username.
+This is a flat text file, designed to be compatible with the .pause file used
+by the Perl5 C<cpan-upload> module (L<<https://metacpan.org/pod/cpan-upload>>).
+Note that this file only needs to contain the "user" and "password" directives.
+Unknown directives are ignored.
+
+An example file could consist of only two lines:
+
+    user your_pause_username
+    password your_pause_password
+
+Replace C<your_pause_username> with your PAUSE username, and replace
+C<your_pause_password> with your PAUSE password.
+
 =head1 TODO
 
 documentation
