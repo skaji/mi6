@@ -84,7 +84,7 @@ An example file could consist of only two lines:
 
 Replace `your_pause_username` with your PAUSE username, and replace `your_pause_password` with your PAUSE password.
 
-This file can also be encrypted with GPG (it must be in ASCII armoured format, not binary format), if you do not want to leave your PAUSE credentials in plain text.
+This file can also be encrypted with GPG if you do not want to leave your PAUSE credentials in plain text.
 
 TODO
 ====
