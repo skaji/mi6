@@ -459,6 +459,10 @@ An example file could consist of only two lines:
 Replace C<your_pause_username> with your PAUSE username, and replace
 C<your_pause_password> with your PAUSE password.
 
+This file can also be encrypted with GPG (it must be in ASCII armoured format,
+not binary format), if you do not want to leave your PAUSE credentials in plain
+text.
+
 =head1 TODO
 
 documentation
