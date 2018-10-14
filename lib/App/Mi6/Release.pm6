@@ -56,7 +56,7 @@ method !desc {
 
 method run(*%opt is copy) {
     self!desc;
-    my &color = $*DISTRO.is-win ?? ({$_}) !! ({"\e[32;1m$_\e[m"});
+    my &color = $*DISTRO.is-win || %*ENV<NO_COLOR> ?? ({$_}) !! ({"\e[32;1m$_\e[m"});
     my $prefix = "App::Mi6::Release::";
     for @klass.kv -> $i, $pair {
         my $klass = $pair.key;
