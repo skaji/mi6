@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.2.1  2018-10-14T21:40:33+09:00
+  - If NO_COLOR environment variable is set, disable color output (jmaslak #56)
+
 0.2.0  2018-10-02T08:32:45+09:00
   - Add documentation on format of .pause (jmaslak #55)
 
