@@ -17,6 +17,11 @@ INSTALLATION
 ============
 
     > zef install App::Mi6
+    
+Module dependency problem 
+--------------------------
+    If you are using an older version of Perl 6, it is recommended to upgrade the latest version, which may cause installation errors.
+
 
 DESCRIPTION
 ===========
