@@ -42,8 +42,6 @@ sub USAGE {
 
 =head1 USAGE
 
-  tl;dr
-
   $ mi6 new Foo::Bar # create Foo-Bar distribution
   $ mi6 build        # build the distribution, and re-generate README.md/META6.json
   $ mi6 test         # run tests
