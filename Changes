@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.2.2  2018-10-27T22:50:28+09:00
+  - Fix doc (ccworld1000 #58)
+
 0.2.1  2018-10-14T21:40:33+09:00
   - If NO_COLOR environment variable is set, disable color output (jmaslak #56)
 
