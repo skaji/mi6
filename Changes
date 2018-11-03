@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.2.3  2018-11-04T07:24:08+09:00
+  - Make upload prompt clearer (uzluisf #59)
+
 0.2.2  2018-10-27T22:50:28+09:00
   - Fix doc (ccworld1000 #58)
 
