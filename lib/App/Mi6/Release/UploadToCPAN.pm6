@@ -13,7 +13,7 @@ method run(*%opt) {
     my $client = CPAN::Uploader::Tiny.new-from-config($config);
     my $tarball = %opt<tarball>;
     loop {
-        my $answer = prompt("Are you sure to upload $tarball to CPAN? (y/N)");
+        my $answer = prompt("Are you sure you want to upload $tarball to CPAN? (y/N)");
         if $answer ~~ rx:i/^y(es)?$/ {
             last;
         } elsif $answer ~~ /^n(o)?$/ {
