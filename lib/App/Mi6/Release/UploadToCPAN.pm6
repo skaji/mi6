@@ -16,7 +16,7 @@ method run(*%opt) {
         my $answer = prompt("Are you sure you want to upload $tarball to CPAN? (y/N)");
         if $answer ~~ rx:i/^y(es)?$/ {
             last;
-        } elsif $answer ~~ /^n(o)?$/ {
+        } elsif $answer ~~ rx:i/^n(o)?$/ {
             die "Abort.\n";
         } else {
             say "Please type Yes or No.";
