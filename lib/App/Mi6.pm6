@@ -287,8 +287,8 @@ sub find-source-url() {
     my @line = run("git", "remote", "-v", :out, :!err).out.lines(:close);
     return "" unless @line;
     my $url = gather for @line -> $line {
-        my ($, $url) = $line.split(/\s+/);
-        if $url {
+        my ($name, $url) = $line.split(/\s+/);
+        if $name eq "origin" and $url {
             take $url;
             last;
         }
