@@ -3,6 +3,7 @@ use App::Mi6::Template;
 use App::Mi6::JSON;
 use App::Mi6::INI;
 use App::Mi6::Release;
+use App::Mi6::Util;
 use CPAN::Uploader::Tiny;
 use Shell::Command;
 
@@ -120,7 +121,7 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
         my @command = "prove", "-e", $*EXECUTABLE, |@option, |@file;
         note "==> Set PERL6LIB=%*ENV<PERL6LIB>";
         note "==> @command[]";
-        my $proc = run |@command;
+        my $proc = mi6run |@command;
         die "Test failed" unless ?$proc;
     };
 }
