@@ -62,7 +62,7 @@ method run(*%opt is copy) {
         my $klass = $pair.key;
         my $instance = ::($prefix ~ $klass).new;
         note &color("==> Step{sprintf '%2d', $i+1}. $klass");
-        try { my $res = $instance.run(|%opt); }
+        my $res = $instance.run(|%opt);
         %opt = |%opt, |%($res) if $res ~~ Associative;
     }
 }
