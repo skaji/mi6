@@ -35,7 +35,7 @@
     "App::Mi6::Util" : "lib/App/Mi6/Util.pm6"
   },
   "resources" : [ ],
-  "source-url" : "git://github.com/skaji/mi6.git",
+  "source-url" : "https://github.com/skaji/mi6.git",
   "tags" : [ ],
   "test-depends" : [
     "File::Temp"
