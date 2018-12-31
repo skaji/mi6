@@ -4,6 +4,7 @@ Revision history for App-Mi6
 
 0.2.4  2018-12-31T21:47:59+09:00
   - Fix test invokation on windows (ufobat #64)
+  - Fix case sensitivity for saying "No" to CPAN upload (ufobat #61)
   - Take git remote "origin" by default (#65)
 
 0.2.3  2018-11-04T07:24:08+09:00
