@@ -386,14 +386,22 @@ App::Mi6 - minimal authoring tool for Perl6
 
 =head1 SYNOPSIS
 
-  > mi6 new Foo::Bar # create Foo-Bar distribution
-  > mi6 build        # build the distribution and re-generate README.md/META6.json
-  > mi6 test         # run tests
-  > mi6 release      # release your distribution to CPAN
+=begin code :lang<console>
+
+$ mi6 new Foo::Bar # create Foo-Bar distribution
+$ mi6 build        # build the distribution and re-generate README.md/META6.json
+$ mi6 test         # run tests
+$ mi6 release      # release your distribution to CPAN
+
+=end code
 
 =head1 INSTALLATION
 
-  > zef install App::Mi6
+=begin code :lang<console>
+
+$ zef install App::Mi6
+
+=end code
 
 =head1 DESCRIPTION
 
@@ -413,26 +421,30 @@ App::Mi6 is a minimal authoring tool for Perl6. Features are:
 
 Yes. Use C<dist.ini>:
 
-    ; dist.ini
-    name = Your-Module-Name
+=begin code :lang<ini>
 
-    [ReadmeFromPod]
-    ; if you want to disable generating README.md from main module's pod, then:
-    ; enable = false
-    ;
-    ; if you want to change a file that generates README.md, then:
-    ; filename = lib/Your/Tutorial.pod
+; dist.ini
+name = Your-Module-Name
 
-    [PruneFiles]
-    ; if you want to prune files when packaging, then
-    ; filename = utils/tool.pl
-    ;
-    ; you can use Perl6 regular expressions
-    ; match = ^ 'xt/'
+[ReadmeFromPod]
+; if you want to disable generating README.md from main module's pod, then:
+; enable = false
+;
+; if you want to change a file that generates README.md, then:
+; filename = lib/Your/Tutorial.pod
 
-    [MetaNoIndex]
-    ; if you do not want to list some files in META6.json as "provides", then
-    ; filename = lib/Should/Not/List/Provides.pm6
+[PruneFiles]
+; if you want to prune files when packaging, then
+; filename = utils/tool.pl
+;
+; you can use Perl6 regular expressions
+; match = ^ 'xt/'
+
+[MetaNoIndex]
+; if you do not want to list some files in META6.json as "provides", then
+; filename = lib/Should/Not/List/Provides.pm6
+
+=end code
 
 =head2 How can I manage depends, build-depends, test-depends?
 
@@ -454,8 +466,12 @@ Unknown directives are ignored.
 
 An example file could consist of only two lines:
 
-    user your_pause_username
-    password your_pause_password
+=begin code
+
+user your_pause_username
+password your_pause_password
+
+=end code
 
 Replace C<your_pause_username> with your PAUSE username, and replace
 C<your_pause_password> with your PAUSE password.

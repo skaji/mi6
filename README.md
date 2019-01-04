@@ -8,15 +8,19 @@ App::Mi6 - minimal authoring tool for Perl6
 SYNOPSIS
 ========
 
-    > mi6 new Foo::Bar # create Foo-Bar distribution
-    > mi6 build        # build the distribution and re-generate README.md/META6.json
-    > mi6 test         # run tests
-    > mi6 release      # release your distribution to CPAN
+```console
+$ mi6 new Foo::Bar # create Foo-Bar distribution
+$ mi6 build        # build the distribution and re-generate README.md/META6.json
+$ mi6 test         # run tests
+$ mi6 release      # release your distribution to CPAN
+```
 
 INSTALLATION
 ============
 
-    > zef install App::Mi6
+```console
+$ zef install App::Mi6
+```
 
 DESCRIPTION
 ===========
@@ -39,26 +43,28 @@ Can I customize mi6 behavior?
 
 Yes. Use `dist.ini`:
 
-    ; dist.ini
-    name = Your-Module-Name
+```ini
+; dist.ini
+name = Your-Module-Name
 
-    [ReadmeFromPod]
-    ; if you want to disable generating README.md from main module's pod, then:
-    ; enable = false
-    ;
-    ; if you want to change a file that generates README.md, then:
-    ; filename = lib/Your/Tutorial.pod
+[ReadmeFromPod]
+; if you want to disable generating README.md from main module's pod, then:
+; enable = false
+;
+; if you want to change a file that generates README.md, then:
+; filename = lib/Your/Tutorial.pod
 
-    [PruneFiles]
-    ; if you want to prune files when packaging, then
-    ; filename = utils/tool.pl
-    ;
-    ; you can use Perl6 regular expressions
-    ; match = ^ 'xt/'
+[PruneFiles]
+; if you want to prune files when packaging, then
+; filename = utils/tool.pl
+;
+; you can use Perl6 regular expressions
+; match = ^ 'xt/'
 
-    [MetaNoIndex]
-    ; if you do not want to list some files in META6.json as "provides", then
-    ; filename = lib/Should/Not/List/Provides.pm6
+[MetaNoIndex]
+; if you do not want to list some files in META6.json as "provides", then
+; filename = lib/Should/Not/List/Provides.pm6
+```
 
 How can I manage depends, build-depends, test-depends?
 ------------------------------------------------------
