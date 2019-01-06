@@ -70,7 +70,11 @@ $module - blah blah blah
 
 =head1 SYNOPSIS
 
-  use $module;
+=begin code :lang<perl6>
+
+use $module;
+
+=end code
 
 =head1 DESCRIPTION
 
