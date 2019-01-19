@@ -113,6 +113,8 @@ sub build() {
 sub test(@file, Bool :$verbose, Int :$jobs) {
     withp6lib {
         my @option = "-r";
+        @option.push("--ext", ".t");
+        @option.push("--ext", ".t6");
         @option.push("-v") if $verbose;
         @option.push("-j", $jobs) if $jobs;
         if @file.elems == 0 {

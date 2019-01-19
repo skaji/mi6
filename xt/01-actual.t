@@ -35,6 +35,12 @@ my $tempdir = tempdir;
     $r = mi6 "test";
     isnt $r.exit, 0;
     like $r.out, rx/Failed/;
+
+    # Check .t6 extension
+    "xt/01-fail.t".IO.rename("xt/01-fail.t6");
+    $r = mi6 "test";
+    isnt $r.exit, 0;
+    like $r.out, rx/Failed/;
 }
 {
     temp $*CWD = $tempdir.IO;
