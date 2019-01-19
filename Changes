@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.2.6  2019-01-19T13:49:46+09:00
+  - Support .t6 files in test directories (jmaslak #66)
+
 0.2.5  2019-01-06T18:40:27+09:00
   - Use :lang<perl6> in template
 
