@@ -48,13 +48,13 @@ multi method cmd('new', $module is copy) {
         dist => $module.subst("::", "-", :g),
     );
     my %map = <<
-        Changes      Changes
-        dist.ini     dist
-        $module-file module
-        t/01-basic.t test
-        LICENSE      license
-        .gitignore   gitignore
-        .travis.yml  travis
+        Changes       Changes
+        dist.ini      dist
+        $module-file  module
+        t/01-basic.t6 test
+        LICENSE       license
+        .gitignore    gitignore
+        .travis.yml   travis
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
