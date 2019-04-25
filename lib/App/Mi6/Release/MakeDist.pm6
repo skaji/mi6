@@ -4,7 +4,7 @@ use Shell::Command;
 use App::Mi6::JSON;
 
 method run(*%opt) {
-    my $name = %opt<main-module>.subst("::", "-", :g);
+    my $name = %opt<dist>;
     my $meta = App::Mi6::JSON.decode("META6.json".IO.slurp);
     $name ~= "-" ~ %opt<next-version>;
     rm_rf $name if $name.IO.d;

@@ -87,7 +87,7 @@ multi method cmd('test', *@file, Bool :$verbose, Int :$jobs) {
 
 multi method cmd('release', Bool :$keep) {
     my ($main-module, $main-module-file) = guess-main-module();
-    my $dist = $main-module.subst("::", "-", :g);
+    my $dist = config("_","name");
     my $release-date = DateTime.now.truncated-to('second').Str;
     my $release = App::Mi6::Release.new;
     $release.run(dir => "lib", app => self, :$main-module, :$main-module-file, :$release-date, :$dist, :$keep);
