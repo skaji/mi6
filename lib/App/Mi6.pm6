@@ -95,8 +95,7 @@ multi method cmd('release', Bool :$keep) {
 
 multi method cmd('dist') {
     self.cmd('build');
-    my ($module, $module-file) = guess-main-module();
-    my $tarball = self.make-dist-tarball($module);
+    my $tarball = self.make-dist-tarball(config("_","name"));
     say "Created $tarball";
     return $tarball;
 }
