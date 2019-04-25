@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/skaji/mi6.svg?branch=master)](https://travis-ci.org/skaji/mi6)
+[![Build Status](https://travis-ci.org/lizmat/mi6.svg?branch=master)](https://travis-ci.org/lizmat/mi6)
 
 NAME
 ====
