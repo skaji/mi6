@@ -193,7 +193,7 @@ method regenerate-meta-info($module, $module-file) {
         test-depends  => $already<test-depends> || [],
         build-depends => $already<build-depends> || [],
         description   => find-description($module-file) || $already<description> || "",
-        provides      => self.find-provides(),
+        provides      => config-is-disabled("ProvidesFromLib") ?? $already<provides> !! self.find-provides(),
         source-url    => $already<source-url> || find-source-url(),
         version       => $version,
         resources     => $already<resources> || [],
