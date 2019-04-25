@@ -186,7 +186,7 @@ method regenerate-meta-info($module, $module-file) {
     };
 
     my %new-meta =
-        name          => $module,
+        name          => $already<name> || $module,
         perl          => $perl,
         authors       => $authors,
         depends       => $already<depends> || [],
