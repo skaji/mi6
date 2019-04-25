@@ -32,6 +32,12 @@ my sub config($section, $key?, :$default = Any) {
     $pair ?? $pair.value !! $default;
 }
 
+my sub config-is-disabled($section) {
+    my $default = "";
+    return config($section, "enable", :$default) eq "false"
+       or config($section, "disable", :$default) eq "true";
+}
+
 multi method cmd('new', $module is copy) {
     $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
@@ -131,7 +137,7 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
 method regenerate-readme($module-file) {
     my $section = "ReadmeFromPod";
     my $default = "";
-    return if config($section, "enable", :$default) eq "false" or config($section, "disable", :$default) eq "true";
+    return if config-is-disabled($section);
     my $file = config($section, "filename", :$default) || $module-file;
 
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
