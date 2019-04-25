@@ -25,7 +25,7 @@ my $to-file = -> $module {
 };
 
 my sub config($section, $key?, :$default = Any) {
-    my $top = "dist.ini".IO.e ?? App::Mi6::INI::parsefile("dist.ini") !! {};
+    state $top = "dist.ini".IO.e ?? App::Mi6::INI::parsefile("dist.ini") !! {};
     my $config = $top{$section};
     return $config || $default if !$config || !$key;
     my $pair = @($config).grep({ $_.key eq $key }).first;
