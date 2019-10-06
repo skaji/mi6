@@ -102,12 +102,37 @@ sub withp6lib(&code) {
 }
 
 sub build() {
-    return unless "Build.pm".IO.e;
-    note '==> Execute Build.pm';
-    my @cmd = $*EXECUTABLE, '-Ilib', '-I.', '-MBuild', '-e', "Build.new.build('{~$*CWD}')";
-    my $proc = run |@cmd;
-    my $code = $proc.exitcode;
-    die "Failed with exitcode $code" if $code != 0;
+    my $skip-buildpm = prompt("Skip build process by the Build.pm? (y or n)");
+    if $skip-buildpm !~~ /^ <[yn]> $/ {
+        die "Answer the question by y or n"
+    }
+
+    if $skip-buildpm eq "n" && "Build.pm".IO.e {
+        note '==> Execute Build.pm';
+        my @cmd = $*EXECUTABLE, '-Ilib', '-I.', '-MBuild', '-e', "Build.new.build('{~$*CWD}')";
+        my $proc = run |@cmd;
+        my $code = $proc.exitcode;
+        die "Failed with exitcode $code" if $code != 0;
+    }
+    return if $skip-buildpm eq "n";
+
+    my $skip-builder = prompt("Skip build process by a builder set in META6.json? (y or n)");
+    if $skip-builder !~~ /^ <[yn]> $/ {
+        die "Answer the question by y or n"
+    }
+
+    if $skip-builder eq "n" {
+        my $meta-text = $*CWD.child('META6.json').slurp;
+        my $meta = Rakudo::Internals::JSON.from-json($meta-text);
+        if $meta<builder>:exists {
+            my $builder = do if $meta<builder> eq "MakeFromJSON" {
+                "Distribution::Builder::$meta<builder>"
+            } else {
+                $meta<builder>
+            };
+            withp6lib { (require ::($builder)).new(:$meta).build }
+        }
+    }
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
