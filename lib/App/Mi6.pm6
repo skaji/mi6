@@ -135,7 +135,7 @@ method regenerate-readme($module-file) {
     my $file = config($section, "filename", :$default) || $module-file;
 
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
-    my $p = withp6lib { run |@cmd, :out };
+    my $p = withp6lib { mi6run |@cmd, :out };
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
@@ -168,14 +168,14 @@ method regenerate-meta-info($module, $module-file) {
     $perl ~~ s/^v//;
 
     my $version = do {
-        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
-        my $p = withp6lib { run |@cmd, :out, :!err };
+        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.HOW.ver($module).Str.say";
+        my $p = withp6lib { mi6run |@cmd, :out, :!err };
         my $v = $p.out.slurp(:close).chomp || $already<version>;
         $v eq "*" ?? "0.0.1" !! $v;
     };
     my $auth = do {
-        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^auth.Str.say";
-        my $p = withp6lib { run |@cmd, :out, :!err };
+        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.HOW.auth($module).Str.say";
+        my $p = withp6lib { mi6run |@cmd, :out, :!err };
         $p.out.slurp(:close).chomp || $already<auth> || Nil;
     };
 

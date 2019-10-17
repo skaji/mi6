@@ -1,5 +1,6 @@
-/blib/
-/resources/*.so
-/resources/*.dylib
-.precomp/
-/App-Mi6-*
+dist.ini
+*.save
+*.tar.gz
+*.tgz
+*.iml
+.*
