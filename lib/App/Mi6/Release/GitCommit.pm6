@@ -1,4 +1,5 @@
 use v6.c;
+use App::Mi6::Util;
 unit class App::Mi6::Release::GitCommit;
 
 method run(*%opt) {
@@ -9,11 +10,11 @@ method run(*%opt) {
 
     my $message = %opt<next-version>;
     my $proc;
-    $proc = run <git commit -a -m>, $message;
+    $proc = mi6run <git commit -a -m>, $message;
     die if $proc.exitcode != 0;
 
     my $branch = self!git-branch;
-    $proc = run <git push origin>, $branch;
+    $proc = mi6run <git push origin>, $branch;
     die if $proc.exitcode != 0;
 }
 

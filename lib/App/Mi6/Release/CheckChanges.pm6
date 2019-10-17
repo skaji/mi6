@@ -1,4 +1,5 @@
 use v6.c;
+use App::Mi6::Util;
 unit class App::Mi6::Release::CheckChanges;
 
 method run(*%opt) {
@@ -13,7 +14,7 @@ method run(*%opt) {
             - Initial version
         EOF
         "Changes".IO.spurt($content);
-        run <git add Changes>;
+        mi6run <git add Changes>;
         die;
     }
 

@@ -2,6 +2,7 @@ use v6.c;
 unit class App::Mi6::Release::MakeDist;
 use Shell::Command;
 use App::Mi6::JSON;
+use App::Mi6::Util;
 
 method run(*%opt) {
     my $name = %opt<main-module>.subst("::", "-", :g);
@@ -9,7 +10,7 @@ method run(*%opt) {
     $name ~= "-" ~ %opt<next-version>;
     rm_rf $name if $name.IO.d;
     unlink "$name.tar.gz" if "$name.tar.gz".IO.e;
-    my @file = run("git", "ls-files", :out).out.lines(:close);
+    my @file = mi6run("git", "ls-files", :out).out.lines(:close);
 
     my @prune = %opt<app>.prune-files;
     for @file -> $file {
@@ -28,7 +29,7 @@ method run(*%opt) {
     }
     my %env = %*ENV;
     %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
-    my $proc = run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
+    my $proc = mi6run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
     LEAVE $proc && $proc.err.close;
     if $proc.exitcode != 0 {
         my $exitcode = $proc.exitcode;

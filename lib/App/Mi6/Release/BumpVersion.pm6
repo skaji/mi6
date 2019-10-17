@@ -1,4 +1,5 @@
 use v6.c;
+use App::Mi6::Util;
 unit class App::Mi6::Release::BumpVersion;
 
 use App::Mi6::Util;
@@ -49,12 +50,12 @@ method run(*%opt) {
 }
 
 method !exists-git-tag($tag) {
-    my @line = run(<git tag -l>, $tag, :out).out.lines(:close);
+    my @line = mi6run(<git tag -l>, $tag, :out).out.lines(:close);
     +@line > 0;
 }
 
 method scan($dir) {
-    my @file = run("git", "ls-files", $dir, :out).out.lines(:close).grep(/\.pm6?$/);
+    my @file = mi6run("git", "ls-files", $dir, :out).out.lines(:close).grep(/\.pm6?$/);
     @!line = gather for @file -> $file {
         for $file.IO.lines(:!chomp).kv -> $num, $line {
             next if $line ~~ /'# No BumpVersion'/;

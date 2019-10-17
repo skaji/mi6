@@ -1,4 +1,5 @@
 use v6.c;
+use App::Mi6::Util;
 unit class App::Mi6::Release::CreateGitTag;
 
 method run(*%opt) {
@@ -9,8 +10,8 @@ method run(*%opt) {
 
     my $tag = %opt<next-version>;
     my $proc;
-    $proc = run <git tag>, $tag;
+    $proc = mi6run <git tag>, $tag;
     die if $proc.exitcode != 0;
-    $proc = run <git push origin tag>, $tag;
+    $proc = mi6run <git push origin tag>, $tag;
     die if $proc.exitcode != 0;
 }

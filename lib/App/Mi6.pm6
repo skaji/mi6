@@ -9,8 +9,8 @@ use Shell::Command;
 
 unit class App::Mi6:ver<0.2.6>:auth<cpan:SKAJI>;
 
-has $!author = run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
-has $!email  = run(<git config --global user.email>, :out).out.slurp(:close).chomp;
+has $!author = mi6run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
+has $!email  = mi6run(<git config --global user.email>, :out).out.slurp(:close).chomp;
 has $!cpanid = $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user> !! Nil;
 has $!year   = Date.today.year;
 
@@ -59,10 +59,10 @@ multi method cmd('new', $module is copy) {
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
     }
-    run "git", "init", ".", :!out;
-    run "git", "add", ".";
+    mi6run "git", "init", ".", :!out;
+    mi6run "git", "add", ".";
     self.cmd("build");
-    run "git", "add", ".";
+    mi6run "git", "add", ".";
     note "Successfully created $main-dir";
 }
 
@@ -117,7 +117,7 @@ sub build() {
     if "Build.pm".IO.e {
         note '==> Execute Build.pm';
         my @cmd = $*EXECUTABLE, '-Ilib', '-I.', '-MBuild', '-e', "Build.new.build('{~$*CWD}')";
-        my $proc = run |@cmd;
+        my $proc = mi6run |@cmd;
         my $code = $proc.exitcode;
         die "Failed with exitcode $code" if $code != 0;
     }
@@ -148,7 +148,7 @@ method regenerate-readme($module-file) {
     my $file = config($section, "filename", :$default) || $module-file;
 
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
-    my $p = withp6lib { run |@cmd, :out };
+    my $p = withp6lib { mi6run |@cmd, :out };
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
@@ -182,13 +182,13 @@ method regenerate-meta-info($module, $module-file) {
 
     my $version = do {
         my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
-        my $p = withp6lib { run |@cmd, :out, :!err };
+        my $p = withp6lib { mi6run |@cmd, :out, :!err };
         my $v = $p.out.slurp(:close).chomp || $already<version>;
         $v eq "*" ?? "0.0.1" !! $v;
     };
     my $auth = do {
         my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^auth.Str.say";
-        my $p = withp6lib { run |@cmd, :out, :!err };
+        my $p = withp6lib { mi6run |@cmd, :out, :!err };
         $p.out.slurp(:close).chomp || $already<auth> || Nil;
     };
 
@@ -276,7 +276,7 @@ method make-dist-tarball($main-module) {
     $name ~= "-$version";
     rm_rf $name if $name.IO.d;
     unlink "$name.tar.gz" if "$name.tar.gz".IO.e;
-    my @file = run("git", "ls-files", :out).out.lines(:close);
+    my @file = mi6run("git", "ls-files", :out).out.lines(:close);
 
     my @prune = self.prune-files;
     for @file -> $file {
@@ -288,7 +288,7 @@ method make-dist-tarball($main-module) {
     }
     my %env = %*ENV;
     %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
-    my $proc = run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
+    my $proc = mi6run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
     LEAVE $proc && $proc.err.close;
     if $proc.exitcode != 0 {
         my $exitcode = $proc.exitcode;
@@ -299,7 +299,7 @@ method make-dist-tarball($main-module) {
 }
 
 sub find-source-url() {
-    my @line = run("git", "remote", "-v", :out, :!err).out.lines(:close);
+    my @line = mi6run("git", "remote", "-v", :out, :!err).out.lines(:close);
     return "" unless @line;
     my $url = gather for @line -> $line {
         my ($name, $url) = $line.split(/\s+/);
@@ -347,7 +347,7 @@ method find-provides() {
         }
     }
     my @prune = self.prune-files;
-    my %provides = run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/)\
+    my %provides = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/)\
         .grep(-> $file { !so @prune.grep({$_($file)}) })\
         .grep(-> $file { !so @no-index.grep({ $_ eq $file }) })\
         .map(-> $file {
@@ -364,7 +364,7 @@ sub guess-main-module() {
         $file = "$file.pm6".IO.e ?? "$file.pm6" !! "$file.pm".IO.e ?? "$file.pm" !! "";
         return ($to-module($file), $file) if $file;
     }
-    my @module-files = run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/);
+    my @module-files = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/);
     my $num = @module-files.elems;
     given $num {
         when 0 {
