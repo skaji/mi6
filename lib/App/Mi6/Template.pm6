@@ -43,7 +43,7 @@ install:
   - rakudobrew build zef
   - zef install --deps-only --/test .
 script:
-  - PERL6LIB=\$PWD/lib prove -e perl6 -vr --ext .t --ext .t6 t
+  - PERL6LIB=\$PWD/lib prove -e perl6 -vr --ext .t --ext .t6 --ext .rakutest t
 sudo: false
 EOF
 
