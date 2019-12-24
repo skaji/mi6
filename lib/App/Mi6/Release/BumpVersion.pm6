@@ -55,7 +55,8 @@ method !exists-git-tag($tag) {
 }
 
 method scan($dir) {
-    my @file = mi6run("git", "ls-files", $dir, :out).out.lines(:close).grep(/\.pm6?$/);
+    my $ext = / '.' [ pm | pm6 | rakumod ] /;
+    my @file = mi6run("git", "ls-files", $dir, :out).out.lines(:close).grep(/$ext$/);
     @!line = gather for @file -> $file {
         for $file.IO.lines(:!chomp).kv -> $num, $line {
             next if $line ~~ /'# No BumpVersion'/;
