@@ -84,6 +84,7 @@ my $tempdir = tempdir;
     temp $*CWD = $tempdir.IO;
     mi6 "new", "Hello::World";
     chdir "Hello-World";
+    "lib/Hello/World1.rakumod".IO.spurt("");
     "lib/Hello/World2.pm6".IO.spurt("");
     "lib/Hello/World3.pm6".IO.spurt("");
     "lib/Hello/World4.pm6".IO.spurt("");
@@ -102,6 +103,7 @@ my $tempdir = tempdir;
     my $meta = from-json( "META6.json".IO.slurp );
     is $meta<provides>, {
         "Hello::World" => "lib/Hello/World.pm6",
+        "Hello::World1" => "lib/Hello/World1.rakumod",
         "Hello::World2" => "lib/Hello/World2.pm6",
     };
 }

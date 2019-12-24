@@ -9,6 +9,8 @@ use Shell::Command;
 
 unit class App::Mi6:ver<0.2.6>:auth<cpan:SKAJI>;
 
+my $MODULE-EXT = / '.' [ pm | pm6 | rakumod ] /;
+
 has $!author = mi6run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
 has $!email  = mi6run(<git config --global user.email>, :out).out.slurp(:close).chomp;
 has $!cpanid = $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user> !! Nil;
@@ -18,7 +20,7 @@ my $normalize-path = -> $path {
     $*DISTRO.is-win ?? $path.subst('\\', '/', :g) !! $path;
 };
 my $to-module = -> $file {
-    $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/\.pm6?$/, '');
+    $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/$MODULE-EXT?$/, '');
 };
 my $to-file = -> $module {
     'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.pm6';
@@ -51,7 +53,7 @@ multi method cmd('new', $module is copy) {
         Changes       Changes
         dist.ini      dist
         $module-file  module
-        t/01-basic.t6 test
+        t/01-basic.t  test
         LICENSE       license
         .gitignore    gitignore
         .travis.yml   travis
@@ -128,6 +130,7 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
         my @option = "-r";
         @option.push("--ext", ".t");
         @option.push("--ext", ".t6");
+        @option.push("--ext", ".rakutest");
         @option.push("-v") if $verbose;
         @option.push("-j", $jobs) if $jobs;
         if @file.elems == 0 {
@@ -347,7 +350,7 @@ method find-provides() {
         }
     }
     my @prune = self.prune-files;
-    my %provides = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/)\
+    my %provides = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/$MODULE-EXT?$/)\
         .grep(-> $file { !so @prune.grep({$_($file)}) })\
         .grep(-> $file { !so @no-index.grep({ $_ eq $file }) })\
         .map(-> $file {
@@ -361,10 +364,13 @@ sub guess-main-module() {
     die "Must run in the top directory" unless "lib".IO ~~ :d;
     if my $name = config("_", "name") {
         my $file = $to-file($name).subst(".pm6", "");
-        $file = "$file.pm6".IO.e ?? "$file.pm6" !! "$file.pm".IO.e ?? "$file.pm" !! "";
+        $file =  "$file.pm6".IO.e     ?? "$file.pm6"
+              !! "$file.pm".IO.e      ?? "$file.pm"
+              !! "$file.rakumod".IO.e ?? "$file.rakumod"
+              !! "";
         return ($to-module($file), $file) if $file;
     }
-    my @module-files = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/\.pm6?$/);
+    my @module-files = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/$MODULE-EXT$/);
     my $num = @module-files.elems;
     given $num {
         when 0 {
@@ -378,7 +384,7 @@ sub guess-main-module() {
             my $dir = $*CWD.basename;
             $dir ~~ s/^ (perl6|p6) '-' //;
             my $module = $dir.split('-').join('/');
-            my @found = @module-files.grep(-> $f { $f ~~ m:i/$module . pm6?$/});
+            my @found = @module-files.grep(-> $f { $f ~~ m:i/$module $MODULE-EXT$/});
             my $f = do if @found == 0 {
                 my @f = @module-files.sort: { $^a.chars <=> $^b.chars };
                 @f.shift.Str;
