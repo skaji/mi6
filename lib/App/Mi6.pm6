@@ -7,7 +7,7 @@ use App::Mi6::Util;
 use CPAN::Uploader::Tiny;
 use Shell::Command;
 
-unit class App::Mi6:ver<0.3.0>:auth<cpan:SKAJI>;
+unit class App::Mi6:ver<0.3.1>:auth<cpan:SKAJI>;
 
 my $MODULE-EXT = / '.' [ pm | pm6 | rakumod ] /;
 

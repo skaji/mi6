@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.3.1  2019-12-24T22:14:11+09:00
+  - Fix regexp
+
 0.3.0  2019-12-24T20:57:26+09:00
   - Support new recommended extensions for Raku files (frithnanth #82, #83)
   - Enable to use a builder which is set in META6.json (titsuki #77)
