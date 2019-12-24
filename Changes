@@ -2,6 +2,13 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.3.0  2019-12-24T20:57:26+09:00
+  - Support new recommended extensions for Raku files (frithnanth #82, #83)
+  - Enable to use a builder which is set in META6.json (titsuki #77)
+  - Use mi6run for windows (holli-holzer #78)
+  - Only read the "dist.ini" once (lizmat #69)
+  - Update docs for Raku
+
 0.2.6  2019-01-19T13:49:46+09:00
   - Support .t6 files in test directories (jmaslak #66)
 
