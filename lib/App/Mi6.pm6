@@ -20,7 +20,7 @@ my $normalize-path = -> $path {
     $*DISTRO.is-win ?? $path.subst('\\', '/', :g) !! $path;
 };
 my $to-module = -> $file {
-    $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/$MODULE-EXT?$/, '');
+    $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/$MODULE-EXT$/, '');
 };
 my $to-file = -> $module {
     'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.pm6';
@@ -350,7 +350,7 @@ method find-provides() {
         }
     }
     my @prune = self.prune-files;
-    my %provides = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/$MODULE-EXT?$/)\
+    my %provides = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/$MODULE-EXT$/)\
         .grep(-> $file { !so @prune.grep({$_($file)}) })\
         .grep(-> $file { !so @no-index.grep({ $_ eq $file }) })\
         .map(-> $file {
