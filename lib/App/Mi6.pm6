@@ -382,7 +382,7 @@ sub guess-main-module() {
         }
         default {
             my $dir = $*CWD.basename;
-            $dir ~~ s/^ (perl6|p6) '-' //;
+            $dir ~~ s/^ (perl6|p6|raku) '-' //;
             my $module = $dir.split('-').join('/');
             my @found = @module-files.grep(-> $f { $f ~~ m:i/$module $MODULE-EXT$/});
             my $f = do if @found == 0 {
@@ -403,7 +403,7 @@ sub guess-main-module() {
 
 =head1 NAME
 
-App::Mi6 - minimal authoring tool for Perl6
+App::Mi6 - minimal authoring tool for Raku
 
 =head1 SYNOPSIS
 
@@ -426,9 +426,9 @@ $ zef install App::Mi6
 
 =head1 DESCRIPTION
 
-App::Mi6 is a minimal authoring tool for Perl6. Features are:
+App::Mi6 is a minimal authoring tool for Raku. Features are:
 
-=item Create minimal distribution skeleton for Perl6
+=item Create minimal distribution skeleton for Raku
 
 =item Generate README.md from lib/Main/Module.pm6's pod
 
@@ -458,7 +458,7 @@ name = Your-Module-Name
 ; if you want to prune files when packaging, then
 ; filename = utils/tool.pl
 ;
-; you can use Perl6 regular expressions
+; you can use Raku regular expressions
 ; match = ^ 'xt/'
 
 [MetaNoIndex]
@@ -473,7 +473,7 @@ Write them to META6.json directly :)
 
 =head2 Where is the spec of META6.json?
 
-http://design.perl6.org/S22.html
+https://design.raku.org/S22.html
 
 See also L<The Meta spec, Distribution, and CompUnit::Repository explained-ish|https://perl6advent.wordpress.com/2016/12/16/day-16-the-meta-spec-distribution-and-compunitrepository-explained-ish/> by ugexe.
 

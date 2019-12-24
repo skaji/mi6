@@ -1,7 +1,7 @@
 NAME
 ====
 
-App::Mi6 - minimal authoring tool for Perl6
+App::Mi6 - minimal authoring tool for Raku
 
 SYNOPSIS
 ========
@@ -23,9 +23,9 @@ $ zef install App::Mi6
 DESCRIPTION
 ===========
 
-App::Mi6 is a minimal authoring tool for Perl6. Features are:
+App::Mi6 is a minimal authoring tool for Raku. Features are:
 
-  * Create minimal distribution skeleton for Perl6
+  * Create minimal distribution skeleton for Raku
 
   * Generate README.md from lib/Main/Module.pm6's pod
 
@@ -56,7 +56,7 @@ name = Your-Module-Name
 ; if you want to prune files when packaging, then
 ; filename = utils/tool.pl
 ;
-; you can use Perl6 regular expressions
+; you can use Raku regular expressions
 ; match = ^ 'xt/'
 
 [MetaNoIndex]
@@ -72,7 +72,7 @@ Write them to META6.json directly :)
 Where is the spec of META6.json?
 --------------------------------
 
-http://design.perl6.org/S22.html
+https://design.raku.org/S22.html
 
 See also [The Meta spec, Distribution, and CompUnit::Repository explained-ish](https://perl6advent.wordpress.com/2016/12/16/day-16-the-meta-spec-distribution-and-compunitrepository-explained-ish/) by ugexe.
 

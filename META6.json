@@ -10,7 +10,7 @@
     "Shell::Command",
     "CPAN::Uploader::Tiny:ver<0.0.4+>"
   ],
-  "description" : "minimal authoring tool for Perl6",
+  "description" : "minimal authoring tool for Raku",
   "license" : "Artistic-2.0",
   "name" : "App::Mi6",
   "perl" : "6.c",
