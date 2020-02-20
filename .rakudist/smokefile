@@ -1,0 +1,4 @@
+bash "tomty --all --show-failed", %(
+  user => config()<user>,
+  cwd => "{$*CWD}"
+);
