@@ -1,1 +1,1 @@
-task-run ".tom/tasks/new-distro";
+task-run ".tomty/tasks/new-distro";
