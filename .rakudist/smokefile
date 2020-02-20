@@ -1,4 +1,5 @@
 bash "tomty --all --show-failed", %(
   user => config()<user>,
-  cwd => "{$*CWD}"
+  cwd => "{$*CWD}",
+  SP6_REPO => "http://repo.westus.cloudapp.azure.com/"   
 );
