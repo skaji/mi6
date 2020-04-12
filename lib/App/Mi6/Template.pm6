@@ -47,6 +47,43 @@ script:
 sudo: false
 EOF
 
+appveyor => q:to/EOF/,
+os: Visual Studio 2015
+
+platform: x64
+
+# Update *_clear_cache.txt to force re-install
+cache:
+    - C:\Strawberry -> .appveyor_clear_cache.txt
+    - C:\Rakudo -> .appveyor_clear_cache.txt
+
+install:
+  - '"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64'
+
+  - IF NOT EXIST "C:\Strawberry" choco install strawberryperl
+  - SET PATH=C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;%PATH%
+  - ps: refreshenv
+  - perl -v
+
+  - IF NOT EXIST "C:\Rakudo" appveyor DownloadFile "https://rakudo.org/latest/star/win" -FileName "%APPVEYOR_BUILD_FOLDER%\rakudo.msi"
+  - IF NOT EXIST "C:\Rakudo" msiexec /i rakudo.msi /quiet /qn /norestart /log install.log
+  - SET PATH=C:\Rakudo\bin;C:\Rakudo\share\perl6\site\bin;%PATH%
+  - ps: refreshenv
+  - raku -v
+
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - zef install . --depsonly --/test
+
+build: off
+
+test_script:
+  - zef --verbose install . --/test
+  - prove6 -v t
+
+shallow_clone: true
+clone_depth: 4
+EOF
+
 test => qq:to/END_OF_TEST/,
 use v6.c;
 use Test;

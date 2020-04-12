@@ -51,6 +51,10 @@ name = Your-Module-Name
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
+;
+; if you want to disable the Travis or Appveyor CI badge, then:
+; travis_badge = false
+; appveyor_badge = false
 
 [PruneFiles]
 ; if you want to prune files when packaging, then

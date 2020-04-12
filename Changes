@@ -1,6 +1,9 @@
 Revision history for App-Mi6
 
 {{$NEXT}}
+  - Add .appveyor.yml template support
+  - Add Appveyor badge to README generation
+  - Make Travis and Appveyor badges configurable
 
 0.3.1  2019-12-24T22:14:11+09:00
   - Fix regexp

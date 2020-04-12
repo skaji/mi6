@@ -57,6 +57,7 @@ multi method cmd('new', $module is copy) {
         LICENSE       license
         .gitignore    gitignore
         .travis.yml   travis
+        .appveyor.yml appveyor
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
@@ -155,14 +156,18 @@ method regenerate-readme($module-file) {
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
+
     my ($user, $repo) = guess-user-and-repo();
-    my $header = do if $user and ".travis.yml".IO.e {
-        "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-            ~ "(https://travis-ci.org/$user/$repo)"
-            ~ "\n\n";
-    } else {
-        "";
+    my $header = '';
+    if $user and ".travis.yml".IO.e and config($section, "travis_badge", :default<true>) eq "true" {
+        $header ~= "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
+            ~ "(https://travis-ci.org/$user/$repo)\n"
     }
+    if $user and ".appveyor.yml".IO.e and config($section, "appveyor_badge", :default<true>) eq "true" {
+        $header ~= "[![Windows Status](https://ci.appveyor.com/api/projects/status/github/$user/$repo?branch=master&passingText=Windows%20-%20OK&failingText=Windows%20-%20FAIL&pendingText=Windows%20-%20pending&svg=true)]"
+            ~ "(https://ci.appveyor.com/project/$user/$repo/branch/master)\n"
+    }
+    $header and $header ~= "\n";
 
     spurt "README.md", $header ~ $markdown;
 }
@@ -246,9 +251,9 @@ method prune-files {
         * eq ".travis.yml",
         * eq ".gitignore",
         * eq "appveyor.yml",
-        * eq ".appveyor.yml",
+        * ~~ rx/^ '.appveyor'/,
         * eq "circle.yml",
-        * ~~ rx/\.precomp/,
+        * ~~ rx/^ '.precomp'/,
     );
     if "MANIFEST.SKIP".IO.e {
         my @skip = "MANIFEST.SKIP".IO.lines.map: -> $skip { * eq $skip };
@@ -453,6 +458,10 @@ name = Your-Module-Name
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
+;
+; if you want to disable the Travis or Appveyor CI badge, then:
+; travis_badge = false
+; appveyor_badge = false
 
 [PruneFiles]
 ; if you want to prune files when packaging, then

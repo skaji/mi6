@@ -19,7 +19,7 @@ my $tempdir = tempdir;
     is $r.exit, 0;
     ok "Foo-Bar".IO.d;
     chdir "Foo-Bar";
-    ok $_.IO.e for <.git  .gitignore  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
+    ok $_.IO.e for <.git  .gitignore  .appveyor.yml  .travis.yml  LICENSE  META6.json  README.md  bin  lib  t>;
     ok !"xt".IO.d;
     ok "lib/Foo/Bar.pm6".IO.e;
     $r = mi6 "test";
