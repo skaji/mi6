@@ -6,7 +6,7 @@ use App::Mi6::Release;
 use App::Mi6::Util;
 use CPAN::Uploader::Tiny;
 use Shell::Command;
-use TAP::Harness;
+use TAP;
 
 unit class App::Mi6:ver<0.3.1>:auth<cpan:SKAJI>;
 
@@ -139,18 +139,15 @@ multi list-testfiles(IO::Path $path) {
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
-    withp6lib {
-        my %args;
-        %args<jobs> = $jobs with $jobs;
-        %args<volume> = TAP::Verbose with $verbose;
-        if @file.elems == 0 {
-            @file = <t xt>.grep({.IO.d});
-        }
-        my @sources = gather { list-testfiles($_.IO) for @file }
-        note "==> Set PERL6LIB=%*ENV<PERL6LIB>";
-        my $run = TAP::Harness.new(|%args).run(@sources);
-        die "Test failed" if $run.result.has-errors;
-    };
+    my %args = handlers => TAP::Harness::SourceHandler::Raku.new(incdirs => ["lib"]);
+    %args<jobs> = $jobs with $jobs;
+    %args<volume> = TAP::Verbose with $verbose;
+    if @file.elems == 0 {
+        @file = <t xt>.grep({.IO.d});
+    }
+    my @sources = gather { list-testfiles($_.IO) for @file }
+    my $run = TAP::Harness.new(|%args).run(@sources);
+    die "Test failed" if $run.result.has-errors;
 }
 
 method regenerate-readme($module-file) {
