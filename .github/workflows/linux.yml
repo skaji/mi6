@@ -9,23 +9,26 @@ on:
   pull_request:
 
 jobs:
-  perl6:
+  raku:
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        rakudo-star-version:
-          - 'latest'
-
-    container:
-      image: rakudo-star:${{ matrix.rakudo-star-version }}
+        raku-version:
+          - '2020.05.1'
 
     steps:
-      - uses: actions/checkout@v1
-      - name: perl6 -v
-        run: perl6 -v
+      - uses: actions/checkout@v2
+      - name: Install Rakudo
+        run: |
+          url=$(curl -fsSL https://rakudo.org/dl/rakudo | jq -r '[. | sort_by(.build_rev) | reverse | .[] | select(.ver == "${{ matrix.raku-version }}" and .format == "tar.gz" and .arch == "x86_64" and .platform == "linux") | .url][0]')
+          [[ $url = null ]] && printf '::error::Failed to find url for ${{ matrix.raku-version }}\n\n' && exit 1
+          curl -fsSL $url | tar xzf - -C $HOME
+          printf "::add-path::$HOME/.raku/bin:$HOME/rakudo-${{ matrix.raku-version }}/share/perl6/site/bin:$HOME/rakudo-${{ matrix.raku-version }}/bin\n"
+      - name: raku -V
+        run: raku -V
       - name: Install Dependencies
         run: zef install --deps-only --/test .
       - name: Run Tests
-        run: PERL6LIB=$PWD/lib prove -e perl6 -vr t/ xt/
+        run: RAKULIB=$PWD/lib prove -e raku -vr t/ xt/
