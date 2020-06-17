@@ -65,11 +65,11 @@ sub USAGE {
      (none)
 
   $ mi6 test [test files/directory]
-    Run tests by `PERL6LIB=lib prove -e perl6 t`
+    Run tests
 
     Options:
-     -v, --verbose   execute prove with -v option
-     -j, --jobs=N    execute prove with -j=N option
+     -v, --verbose   print all test lines
+     -j, --jobs=N    run N test jobs in parallel
 
   $ mi6 release
     Create tarball for your distribution, and release it to CPAN.
