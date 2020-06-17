@@ -1,8 +1,9 @@
 use v6;
-use App::Mi6::Template;
-use App::Mi6::JSON;
+use App::Mi6::Badge;
 use App::Mi6::INI;
+use App::Mi6::JSON;
 use App::Mi6::Release;
+use App::Mi6::Template;
 use App::Mi6::Util;
 use CPAN::Uploader::Tiny;
 use Shell::Command;
@@ -150,6 +151,30 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
     die "Test failed" if $run.result.has-errors;
 }
 
+method readme-header() {
+    my ($user, $repo) = guess-user-and-repo();
+    return "" if !$user;
+    my $badges = config("Badges", default => []);
+    if @$badges == 0 && ".travis.yml".IO.e {
+        push $badges, (badge =>"travis-ci.org");
+    }
+    return "" if @$badges == 0;
+
+    my @markdown;
+    for @$badges -> $badge {
+        die "unknown key Badges.{$badge.key} in dist.ini" if $badge.key ne "provider";
+        my $provider = $badge.value;
+        my $name = "test";
+        if $provider ~~ rx{ (.+) '/' (.+) } {
+            $provider = $/[0];
+            $name = $/[1];
+        }
+        my $b = App::Mi6::Badge.new(:$user, :$repo, :$provider, :$name);
+        push @markdown, $b.markdown();
+    }
+    return @markdown.join(" ") ~ "\n\n";
+}
+
 method regenerate-readme($module-file) {
     my $section = "ReadmeFromPod";
     my $default = "";
@@ -161,15 +186,7 @@ method regenerate-readme($module-file) {
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
-    my ($user, $repo) = guess-user-and-repo();
-    my $header = do if $user and ".travis.yml".IO.e {
-        "[![Build Status](https://travis-ci.org/$user/$repo.svg?branch=master)]"
-            ~ "(https://travis-ci.org/$user/$repo)"
-            ~ "\n\n";
-    } else {
-        "";
-    }
-
+    my $header = self.readme-header();
     spurt "README.md", $header ~ $markdown;
 }
 
@@ -470,6 +487,13 @@ name = Your-Module-Name
 [MetaNoIndex]
 ; if you do not want to list some files in META6.json as "provides", then
 ; filename = lib/Should/Not/List/Provides.pm6
+
+[Badges]
+; if you want to add badges to README.md, then
+; provider = travis-ci.org
+; provider = travis-ci.com
+; provider = appveyor
+; provider = github-actions/name
 
 =end code
 
