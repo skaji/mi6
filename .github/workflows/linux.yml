@@ -29,6 +29,8 @@ jobs:
       - name: raku -V
         run: raku -V
       - name: Install Dependencies
-        run: zef install --deps-only --/test .
+        run: |
+          zef install --deps-only --/test .
+          zef install --/test App::Prove6 # develop requires
       - name: Run Tests
-        run: RAKULIB=$PWD/lib prove -e raku -vr t/ xt/
+        run: prove6 -l t/ xt/
