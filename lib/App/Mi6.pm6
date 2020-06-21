@@ -155,8 +155,9 @@ method readme-header() {
     my ($user, $repo) = guess-user-and-repo();
     return "" if !$user;
     my $badges = config("Badges", default => []);
-    if @$badges == 0 && ".travis.yml".IO.e {
-        push $badges, (badge =>"travis-ci.org");
+    if @$badges == 0 {
+        push $badges, (badge => "travis-ci.org") if ".travis.yml".IO.e;
+        push $badges, (badge => "appveyor") if ".appveyor.yml".IO.e;
     }
     return "" if @$badges == 0;
 
@@ -172,7 +173,7 @@ method readme-header() {
         my $b = App::Mi6::Badge.new(:$user, :$repo, :$provider, :$name);
         push @markdown, $b.markdown();
     }
-    return @markdown.join(" ") ~ "\n\n";
+    return @markdown.join("\n") ~ "\n\n";
 }
 
 method regenerate-readme($module-file) {
