@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/skaji/mi6/workflows/linux/badge.svg)](https://github.com/skaji/mi6/actions)
+
 NAME
 ====
 
@@ -62,6 +64,13 @@ name = Your-Module-Name
 [MetaNoIndex]
 ; if you do not want to list some files in META6.json as "provides", then
 ; filename = lib/Should/Not/List/Provides.pm6
+
+[Badges]
+; if you want to add badges to README.md, then
+; provider = travis-ci.org
+; provider = travis-ci.com
+; provider = appveyor
+; provider = github-actions/name
 ```
 
 How can I manage depends, build-depends, test-depends?
