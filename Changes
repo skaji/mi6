@@ -2,6 +2,10 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.4.0  2020-06-29T19:49:21+09:00
+  - Use TAP::Harness instead of "prove" command in `mi6 test` (Leont #67)
+  - Support various CI badges (softmoth #88, #90)
+
 0.3.1  2019-12-24T22:14:11+09:00
   - Fix regexp
 
