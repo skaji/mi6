@@ -272,6 +272,7 @@ method prune-files {
         * eq ".appveyor.yml",
         * eq "circle.yml",
         * ~~ rx/\.precomp/,
+        * ~~ rx/\.github/,
     );
     if "MANIFEST.SKIP".IO.e {
         my @skip = "MANIFEST.SKIP".IO.lines.map: -> $skip { * eq $skip };
