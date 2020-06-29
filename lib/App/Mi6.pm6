@@ -156,7 +156,7 @@ method readme-header() {
     return "" if !$user;
     my $badges = config("Badges", default => []);
     if @$badges == 0 && ".travis.yml".IO.e {
-        push $badges, (badge =>"travis-ci.org");
+        push $badges, (provider =>"travis-ci.org");
     }
     return "" if @$badges == 0;
 
