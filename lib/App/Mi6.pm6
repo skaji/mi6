@@ -146,7 +146,7 @@ sub test(@file, Bool :$verbose, Int :$jobs) {
     if @file.elems == 0 {
         @file = <t xt>.grep({.IO.d});
     }
-    my @sources = gather { list-testfiles($_.IO) for @file }
+    my @sources = sort gather { list-testfiles($_.IO) for @file };
     my $run = TAP::Harness.new(|%args).run(@sources);
     die "Test failed" if $run.result.has-errors;
 }
