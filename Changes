@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+0.4.1  2020-06-29T22:41:37+09:00
+  - Fix how to add travis CI badge (ufobat #94)
+
 0.4.0  2020-06-29T19:49:21+09:00
   - Use TAP::Harness instead of "prove" command in `mi6 test` (Leont #67)
   - Support various CI badges (softmoth #88, #90)
