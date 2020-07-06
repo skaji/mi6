@@ -1,0 +1,33 @@
+name: test
+
+on:
+  push:
+    branches:
+      - '*'
+    tags-ignore:
+      - '*'
+  pull_request:
+
+jobs:
+  raku:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          # - windows-latest # disabled for now
+        raku-version:
+          - '2020.06'
+          - '2019.11'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Raku/setup-raku@v1
+        with:
+          raku-version: ${{ matrix.raku-version }}
+      - name: Install Dependencies
+        run: |
+          zef install --deps-only --/test .
+          zef install --/test App::Prove6 # develop requires
+      - name: Run Tests
+        run: prove6 -l t xt

@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/skaji/mi6/workflows/linux/badge.svg)](https://github.com/skaji/mi6/actions)
+[![Actions Status](https://github.com/skaji/mi6/workflows/test/badge.svg)](https://github.com/skaji/mi6/actions)
 
 NAME
 ====
