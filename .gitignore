@@ -1,5 +1,2 @@
-/blib/
-/resources/*.so
-/resources/*.dylib
 .precomp/
 /App-Mi6-*
