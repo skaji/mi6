@@ -1,4 +1,3 @@
-use v6;
 unit class App::Mi6::JSON;
 need JSON::Pretty;
 

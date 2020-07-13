@@ -1,4 +1,3 @@
-use v6;
 use App::Mi6::Badge;
 use App::Mi6::INI;
 use App::Mi6::JSON;
@@ -8,6 +7,8 @@ use App::Mi6::Util;
 use CPAN::Uploader::Tiny;
 use Shell::Command;
 use TAP;
+
+BEGIN { $*PERL.compiler.version >= v2019.11 or die "App::Mi6 needs rakudo v2019.11 or later" }
 
 unit class App::Mi6:ver<0.4.1>:auth<cpan:SKAJI>;
 
@@ -25,7 +26,7 @@ my $to-module = -> $file {
     $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/$MODULE-EXT$/, '');
 };
 my $to-file = -> $module {
-    'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.pm6';
+    'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.rakumod';
 };
 
 my sub config($section, $key?, :$default = Any) {
@@ -45,7 +46,7 @@ multi method cmd('new', $module is copy) {
     chdir($main-dir); # XXX temp $*CWD
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
-    mkpath($_) for $module-dir, "t", "bin";
+    mkpath($_) for $module-dir, "t", "bin", ".github/workflows";
     my %content = App::Mi6::Template::template(
         :$module, :$!author, :$!cpanid, :$!email, :$!year,
         :$module-file,
@@ -55,10 +56,10 @@ multi method cmd('new', $module is copy) {
         Changes       Changes
         dist.ini      dist
         $module-file  module
-        t/01-basic.t  test
+        t/01-basic.rakutest  test
         LICENSE       license
         .gitignore    gitignore
-        .travis.yml   travis
+        .github/workflows/test.yml workflow
     >>;
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
@@ -99,9 +100,10 @@ multi method cmd('dist') {
     return $tarball;
 }
 
-sub withp6lib(&code) {
+sub with-rakulib(&code) {
     temp %*ENV;
-    %*ENV<PERL6LIB> = %*ENV<PERL6LIB>:exists ?? "$*CWD/lib," ~ %*ENV<PERL6LIB> !! "$*CWD/lib";
+    my $name = $*PERL.compiler.version >= v2020.05 ?? "RAKULIB" !! "PERL6LIB";
+    %*ENV{$name} = %*ENV{$name}:exists ?? "$*CWD/lib," ~ %*ENV{$name} !! "$*CWD/lib";
     &code();
 }
 
@@ -114,7 +116,7 @@ sub build() {
         } else {
             $meta<builder>
         };
-        withp6lib { (require ::($builder)).new(:$meta).build; }
+        with-rakulib { (require ::($builder)).new(:$meta).build; }
         return;
     }
 
@@ -182,7 +184,7 @@ method regenerate-readme($module-file) {
     my $file = config($section, "filename", :$default) || $module-file;
 
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
-    my $p = withp6lib { mi6run |@cmd, :out };
+    my $p = with-rakulib { mi6run |@cmd, :out };
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
@@ -202,19 +204,19 @@ method regenerate-meta-info($module, $module-file) {
         [ $!author ];
     };
 
-    my $perl = $already<perl> || "6.c";
-    $perl = "6.c" if $perl eq "v6";
+    my $perl = $already<perl> || "6.d";
+    $perl = "6.d" if $perl eq "v6";
     $perl ~~ s/^v//;
 
     my $version = do {
         my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
-        my $p = withp6lib { mi6run |@cmd, :out, :!err };
+        my $p = with-rakulib { mi6run |@cmd, :out, :!err };
         my $v = $p.out.slurp(:close).chomp || $already<version>;
         $v eq "*" ?? "0.0.1" !! $v;
     };
     my $auth = do {
         my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^auth.Str.say";
-        my $p = withp6lib { mi6run |@cmd, :out, :!err };
+        my $p = with-rakulib { mi6run |@cmd, :out, :!err };
         $p.out.slurp(:close).chomp || $already<auth> || Nil;
     };
 
@@ -387,7 +389,7 @@ method find-provides() {
 sub guess-main-module() {
     die "Must run in the top directory" unless "lib".IO ~~ :d;
     if my $name = config("_", "name") {
-        my $file = $to-file($name).subst(".pm6", "");
+        my $file = $to-file($name).subst(".rakumod", "");
         $file =  "$file.pm6".IO.e     ?? "$file.pm6"
               !! "$file.pm".IO.e      ?? "$file.pm"
               !! "$file.rakumod".IO.e ?? "$file.rakumod"
@@ -442,6 +444,10 @@ $ mi6 release      # release your distribution to CPAN
 
 =head1 INSTALLATION
 
+First make sure you have rakudo v2019.11 or later. If not, install rakudo from L<https://rakudo.org/downloads>.
+
+Then:
+
 =begin code :lang<console>
 
 $ zef install App::Mi6
@@ -454,7 +460,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
 =item Create minimal distribution skeleton for Raku
 
-=item Generate README.md from lib/Main/Module.pm6's pod
+=item Generate README.md from lib/Main/Module.rakumod's pod
 
 =item Run tests by C<mi6 test>
 
@@ -487,7 +493,7 @@ name = Your-Module-Name
 
 [MetaNoIndex]
 ; if you do not want to list some files in META6.json as "provides", then
-; filename = lib/Should/Not/List/Provides.pm6
+; filename = lib/Should/Not/List/Provides.rakumod
 
 [Badges]
 ; if you want to add badges to README.md, then

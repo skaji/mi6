@@ -19,36 +19,52 @@ filename = $module-file
 
 [PruneFiles]
 ; match = ^ 'xt/'
+
+[Badges]
+provider = github-actions/test
+EOF
+
+workflow => q:to/EOF/,
+name: test
+
+on:
+  push:
+    branches:
+      - '*'
+    tags-ignore:
+      - '*'
+  pull_request:
+
+jobs:
+  raku:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+        raku-version:
+          - '2020.06'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Raku/setup-raku@v1
+        with:
+          raku-version: ${{ matrix.raku-version }}
+      - name: Install Dependencies
+        run: |
+          zef install --/test --deps-only .
+          zef install --/test App::Prove6
+      - name: Run Tests
+        run: prove6 -l t
 EOF
 
 gitignore => qq:to/EOF/,
-/blib/
-/src/*.o
-/src/Makefile
-/.panda-work
-/resources/*.so
-/resources/*.dylib
 .precomp/
 /$dist-*
 EOF
 
-travis => qq:to/EOF/,
-os:
-  - linux
-  - osx
-language: perl6
-perl6:
-  - latest
-install:
-  - rakudobrew build zef
-  - zef install --deps-only --/test .
-script:
-  - PERL6LIB=\$PWD/lib prove -e perl6 -vr --ext .t --ext .t6 --ext .rakutest t
-sudo: false
-EOF
-
 test => qq:to/END_OF_TEST/,
-use v6.c;
 use Test;
 use $module;
 
@@ -58,7 +74,6 @@ done-testing;
 END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,
-use v6.c;
 unit class $module\:ver<0.0.1>{ $cpanid ?? ":auth<cpan:$cpanid>" !! ""};
 
 
@@ -70,7 +85,7 @@ $module - blah blah blah
 
 =head1 SYNOPSIS
 
-=begin code :lang<perl6>
+=begin code :lang<raku>
 
 use $module;
 

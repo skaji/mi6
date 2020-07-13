@@ -1,4 +1,3 @@
-use v6.c;
 unit class App::Mi6::Badge;
 
 has $.provider is required;

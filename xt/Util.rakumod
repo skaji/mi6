@@ -1,4 +1,3 @@
-use v6;
 unit module Util;
 
 my $base = $*SPEC.catdir($?FILE.IO.dirname, "..");
