@@ -1,4 +1,3 @@
-use v6.c;
 use App::Mi6::Util;
 unit class App::Mi6::Release::CheckOrigin;
 

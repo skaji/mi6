@@ -18,6 +18,10 @@ $ mi6 release      # release your distribution to CPAN
 INSTALLATION
 ============
 
+First make sure you have rakudo v2019.11 or later. If not, install rakudo from [https://rakudo.org/downloads](https://rakudo.org/downloads).
+
+Then:
+
 ```console
 $ zef install App::Mi6
 ```
@@ -29,7 +33,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
   * Create minimal distribution skeleton for Raku
 
-  * Generate README.md from lib/Main/Module.pm6's pod
+  * Generate README.md from lib/Main/Module.rakumod's pod
 
   * Run tests by `mi6 test`
 
@@ -63,7 +67,7 @@ name = Your-Module-Name
 
 [MetaNoIndex]
 ; if you do not want to list some files in META6.json as "provides", then
-; filename = lib/Should/Not/List/Provides.pm6
+; filename = lib/Should/Not/List/Provides.rakumod
 
 [Badges]
 ; if you want to add badges to README.md, then

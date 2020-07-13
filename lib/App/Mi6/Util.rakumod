@@ -1,4 +1,3 @@
-use v6.c;
 unit module App::Mi6::Util;
 
 sub prompt($message, :$default) is export {
