@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+1.0.1  2020-07-30T05:42:27+09:00
+  - Update github action yaml template; Use rakudo 2020.07, and specify --test-depends
+
 1.0.0  2020-07-13T23:09:59+09:00
   - Now mi6 requires "Raku" compilers, that is, rakudo v2019.11 or later
   - Use .rakumod and .rakutest for file extensions
