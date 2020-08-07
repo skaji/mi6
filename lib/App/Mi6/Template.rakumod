@@ -101,7 +101,7 @@ $author <$email>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright $year $author
+Copyright &#x00A9; $year $author Z<add the Unicode Copyright symbol>
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
@@ -111,7 +111,7 @@ EOD_OF_MODULE
 license => qq:to/END_OF_LICENSE/,
 		       The Artistic License 2.0
 
-	    Copyright (c) 2000-2006, The Perl Foundation.
+	    Copyright 2000-2006, The Perl Foundation.
 
      Everyone is permitted to copy and distribute verbatim copies
       of this license document, but changing it is not allowed.
@@ -128,7 +128,7 @@ You are always permitted to make arrangements wholly outside of this
 license directly with the Copyright Holder of a given Package.  If the
 terms of this license do not permit the full use that you propose to
 make of the Package, you should contact the Copyright Holder and seek
-a different licensing arrangement. 
+a different licensing arrangement.
 
 Definitions
 
@@ -161,7 +161,7 @@ Definitions
 
     "Modified Version" means the Package, if it has been changed, and
     such changes were not explicitly requested by the Copyright
-    Holder. 
+    Holder.
 
     "Original License" means this Artistic License as Distributed with
     the Standard Version of the Package, in its current version or as
@@ -197,7 +197,7 @@ Package will still be considered the Standard Version, and as such
 will be subject to the Original License.
 
 
-Distribution of Modified Versions of the Package as Source 
+Distribution of Modified Versions of the Package as Source
 
 (4)  You may Distribute your Modified Version as Source (either gratis
 or for a Distributor Fee, and with or without a Compiled form of the
@@ -219,7 +219,7 @@ you do at least ONE of the following:
     (c)  allow anyone who receives a copy of the Modified Version to
     make the Source form of the Modified Version available to others
     under
-		
+
 	(i)  the Original License or
 
 	(ii)  a license that permits the licensee to freely copy,
@@ -231,7 +231,7 @@ you do at least ONE of the following:
 	Fees are allowed.
 
 
-Distribution of Compiled Forms of the Standard Version 
+Distribution of Compiled Forms of the Standard Version
 or Modified Versions without the Source
 
 (5)  You may Distribute Compiled forms of the Standard Version without
@@ -249,7 +249,7 @@ the Source, provided that you comply with Section 4 with respect to
 the Source of the Modified Version.
 
 
-Aggregating or Linking the Package 
+Aggregating or Linking the Package
 
 (7)  You may aggregate the Package (either the Standard Version or
 Modified Version) with other packages and Distribute the resulting
@@ -266,7 +266,7 @@ include the Package, and Distribute the result without restriction,
 provided the result does not expose a direct interface to the Package.
 
 
-Items That are Not Considered Part of a Modified Version 
+Items That are Not Considered Part of a Modified Version
 
 (9) Works (including, but not limited to, modules and scripts) that
 merely extend or make use of the Package, do not, by themselves, cause

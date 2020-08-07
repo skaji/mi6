@@ -553,8 +553,8 @@ Shoichi Kaji <skaji@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2015 Shoichi Kaji
+Copyright &#x00A9; 2015 Shoichi Kaji
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
 
 =end pod
