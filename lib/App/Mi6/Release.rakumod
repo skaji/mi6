@@ -21,7 +21,7 @@ method !desc {
     note "  There are {+@klass} steps:";
     for @klass.kv -> $i, $pair {
         my ($klass, $desc) = $pair.kv;
-        note "   * Step{sprintf '%2d', $i+1}. $klass" ~ ($desc ?? " - $desc" !! "");
+        note "   * Step {sprintf '%2d', $i+1}. $klass" ~ ($desc ?? " - $desc" !! "");
     }
     note "";
 }
@@ -35,7 +35,7 @@ method run(*%opt is copy) {
         my $full-klass = $prefix ~ $klass;
         require ::($full-klass);
         my $instance = ::($full-klass).new;
-        note &color("==> Step{sprintf '%2d', $i+1}. $klass");
+        note &color("==> Step {sprintf '%2d', $i+1}. $klass");
         my $res = $instance.run(|%opt);
         %opt = |%opt, |%($res) if $res ~~ Associative;
     }
