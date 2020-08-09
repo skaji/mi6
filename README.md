@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/tbrowder/mi6/workflows/test/badge.svg)](https://github.com/tbrowder/mi6/actions)
+[![Actions Status](https://github.com/skaji/mi6/workflows/test/badge.svg)](https://github.com/skaji/mi6/actions)
 
 NAME
 ====
@@ -108,20 +108,13 @@ What existing files are modified by `mi6`?
 
 After the initial `mi6` creation step, the following files are changed by `mi6` during each build or release operation:
 
+  * `README.md`
+
   * `Changes`
 
   * `META6.json`
 
-  * All modules in the lib directory
-
-In each case, only the version number is changed. In addition, the `META6.json` file is reformatted to strict JSON format. For example, if you have an empty array like this in the existing file
-
-    "depends" : [
-    ],
-
-it will get changed to
-
-    "depends" : [],
+  * modules in the lib directory
 
 How is the version number specified?
 ------------------------------------
@@ -135,17 +128,18 @@ What is the required format of the `Changes` file before a release?
 
 Ensure your `Changes` file looks like something like this **before** you start a release operation
 
-    {{NEXT}}
-        - Tightened the framistan
-          - Changed to counterclockwise operation
+    {{$NEXT}}
+        - Change entry line 1
+        - Change entry line 2
+        - Change entry line 3
 
 Notes:
 
-  * Text above the `{{NEXT}}` line is ignored
+  * `mi6 release` will replace the `{{$NEXT}}` line with the new version number and its timestamp
 
-  * The first change text line **must** start with a space or tab
+  * You **must** have at least one change entry line
 
-  * `mi6` does not change any text except to substitute the new version number and its time stamp plus adding a new `{{NEXT}}` token above the latest version entry
+  * The first change entry line **must** start with a space or tab
 
 TODO
 ====

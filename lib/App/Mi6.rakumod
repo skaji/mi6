@@ -537,31 +537,15 @@ C<your_pause_password> with your PAUSE password.
 This file can also be encrypted with GPG
 if you do not want to leave your PAUSE credentials in plain text.
 
-Z<proposed FAQ entries>
-
 =head2 What existing files are modified by C<mi6>?
 
 After the initial C<mi6> creation step, the following files are changed by C<mi6>
 during each build or release operation:
 
+=item C<README.md>
 =item C<Changes>
 =item C<META6.json>
-=item All modules in the lib directory
-
-In each case, only the version number is changed. In addition, the
-C<META6.json> file is reformatted to strict JSON format. For
-example, if you have an empty array like this in the existing file
-
-=begin code
-"depends" : [
-],
-=end code
-
-it will get changed to
-
-=begin code
-"depends" : [],
-=end code
+=item modules in the lib directory
 
 =head2 How is the version number specified?
 
@@ -574,21 +558,22 @@ During the release, C<mi6> updates the files mentioned above with the selected v
 
 =head2 What is the required format of the C<Changes> file before a release?
 
-Ensure your C<Changes> file looks like something like this **before** you start a release operation
+Ensure your C<Changes> file looks like something like this B<before> you start a release operation
 
 =begin code
-{{NEXT}}
-    - Tightened the framistan
-      - Changed to counterclockwise operation
+
+{{$NEXT}}
+    - Change entry line 1
+    - Change entry line 2
+    - Change entry line 3
+
 =end code
 
 Notes:
 
-=item Text above the C<{{NEXT}}> line is ignored
-=item The first change text line B<must> start with a space or tab
-=item C<mi6> does not change any text except to substitute the new version number and its time stamp plus adding a new C<{{NEXT}}> token  above the latest version entry
-
-Z<end proposed FAQ entries>
+=item C<mi6 release> will replace the C<{{$NEXT}}> line with the new version number and its timestamp
+=item You B<must> have at least one change entry line
+=item The first change entry line B<must> start with a space or tab
 
 =head1 TODO
 
