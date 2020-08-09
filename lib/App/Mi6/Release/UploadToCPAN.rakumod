@@ -22,5 +22,8 @@ method run(*%opt) {
         }
     };
     $client.upload($tarball, subdirectory => "Perl6");
-    say "Successfully uploaded $tarball to CPAN.";
+    say "Successfully uploaded $tarball to CPAN";
+    my $user = $client.user.uc;
+    printf "It will appear in https://cpan.metacpan.org/authors/id/%s/%s/%s/Perl6/%s\n",
+        $user.substr(0, 1), $user.substr(0, 2), $user, $tarball;
 }
