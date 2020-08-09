@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+1.0.2  2020-08-09T09:37:50+09:00
+  - Improve documentation (tbrowder #105, #97, #100, #101)
+
 1.0.1  2020-07-30T05:42:27+09:00
   - Update github action yaml template; Use rakudo 2020.07, and specify --test-depends
 
