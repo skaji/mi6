@@ -506,7 +506,7 @@ name = Your-Module-Name
 
 =head2 How can I manage depends, build-depends, test-depends?
 
-Write them to META6.json directly :)
+Write them to META6.json directly :).
 
 =head2 Where is the spec of META6.json?
 
@@ -536,6 +536,59 @@ C<your_pause_password> with your PAUSE password.
 
 This file can also be encrypted with GPG
 if you do not want to leave your PAUSE credentials in plain text.
+
+Z<proposed FAQ entries>
+
+=head2 What existing files are modified by C<mi6>?
+
+After the initial C<mi6> creation step, the following files are changed by C<mi6>
+during each build or release operation:
+
+=item C<Changes>
+=item C<META6.json>
+=item All modules in the lib directory
+
+In each case, only the version number is changed. In addition, the
+C<META6.json> file is reformatted to strict JSON format. For
+example, if you have an empty array like this in the existing file
+
+=begin code
+"depends" : [
+],
+=end code
+
+it will get changed to
+
+=begin code
+"depends" : [],
+=end code
+
+=head2 How is the version number specified?
+
+When you are ready to release a module and enter at the CLI mi6
+release, you will get a response presenting a proposed version number
+which you can either accept or enter a new one (which must be greater
+than the one offered by default).
+
+During the release, C<mi6> updates the files mentioned above with the selected version number.
+
+=head2 What is the required format of the C<Changes> file before a release?
+
+Ensure your C<Changes> file looks like something like this **before** you start a release operation
+
+=begin code
+{{NEXT}}
+    - Tightened the framistan
+      - Changed to counterclockwise operation
+=end code
+
+Notes:
+
+=item Text above the C<{{NEXT}}> line is ignored
+=item The first change text line B<must> start with a space or tab
+=item C<mi6> does not change any text except to substitute the new version number and its time stamp plus adding a new C<{{NEXT}}> token  above the latest version entry
+
+Z<end proposed FAQ entries>
 
 =head1 TODO
 
