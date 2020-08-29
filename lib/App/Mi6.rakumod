@@ -10,7 +10,7 @@ use TAP;
 
 BEGIN { $*PERL.compiler.version >= v2019.11 or die "App::Mi6 needs rakudo v2019.11 or later" }
 
-unit class App::Mi6:ver<1.0.2>:auth<cpan:SKAJI>;
+unit class App::Mi6:ver<1.0.3>:auth<cpan:SKAJI>;
 
 my $MODULE-EXT = / '.' [ pm | pm6 | rakumod ] /;
 
