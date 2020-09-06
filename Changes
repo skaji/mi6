@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+1.0.4  2020-09-06T16:53:04+09:00
+  - Update github action yaml template; separate installation of App::Prove6
+
 1.0.3  2020-08-29T18:37:09+09:00
   - Show CPAN url in release step
   - Use latest rakudo in github actions
