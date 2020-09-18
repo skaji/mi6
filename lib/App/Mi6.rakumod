@@ -84,12 +84,18 @@ multi method cmd('test', *@file, Bool :$verbose, Int :$jobs) {
     $exitcode;
 }
 
-multi method cmd('release', Bool :$keep) {
+multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     my ($main-module, $main-module-file) = guess-main-module();
     my $dist = $main-module.subst("::", "-", :g);
     my $release-date = DateTime.now.truncated-to('second').Str;
     my $release = App::Mi6::Release.new;
-    $release.run(dir => "lib", app => self, :$main-module, :$main-module-file, :$release-date, :$dist, :$keep);
+    $release.run(
+        dir => "lib",
+        app => self,
+        :$main-module, :$main-module-file,
+        :$release-date, :$dist, :$keep,
+        :$next-version, :$yes,
+    );
 }
 
 multi method cmd('dist') {

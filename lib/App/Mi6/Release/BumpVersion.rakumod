@@ -37,11 +37,15 @@ method run(*%opt) {
             ~ "  class {%opt<main-module>}:ver<0.0.1>;\n";
     }
 
-    my $next-version = self!exists-git-tag($current-version) ?? self.next-version !! $current-version;
-    my $message = "Next release version? [$next-version]:";
-    my $answer = prompt($message, default => $next-version);
-    die "'$answer' is not a supported version string.\n" if $answer !~~ rx/^ $VERSION-REGEXP $/;
-    $next-version = $answer;
+    my $next-version = %opt<next-version> || (self!exists-git-tag($current-version) ?? self.next-version !! $current-version);
+    if %opt<yes> {
+        say "Use next release version $next-version";
+    } else {
+        my $message = "Next release version? [$next-version]:";
+        my $answer = prompt($message, default => $next-version);
+        $next-version = $answer;
+    }
+    die "'$next-version' is not a supported version string.\n" if $next-version !~~ rx/^ $VERSION-REGEXP $/;
     self.bump($next-version);
 
     my %result = :$current-version, :$next-version;

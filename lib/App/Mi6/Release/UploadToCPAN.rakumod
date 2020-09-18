@@ -11,16 +11,18 @@ method run(*%opt) {
     die "To upload tarball to CPAN, you need to prepare $config first\n" unless $config.IO.e;
     my $client = CPAN::Uploader::Tiny.new-from-config($config);
     my $tarball = %opt<tarball>;
-    loop {
-        my $answer = prompt("Are you sure you want to upload $tarball to CPAN? (y/N)");
-        if $answer ~~ rx:i/^y(es)?$/ {
-            last;
-        } elsif $answer ~~ rx:i/^n(o)?$/ {
-            die "Abort.\n";
-        } else {
-            say "Please type Yes or No.";
-        }
-    };
+    if !%opt<yes> {
+        loop {
+            my $answer = prompt("Are you sure you want to upload $tarball to CPAN? (y/N)");
+            if $answer ~~ rx:i/^y(es)?$/ {
+                last;
+            } elsif $answer ~~ rx:i/^n(o)?$/ {
+                die "Abort.\n";
+            } else {
+                say "Please type Yes or No.";
+            }
+        };
+    }
     $client.upload($tarball, subdirectory => "Perl6");
     say "Successfully uploaded $tarball to CPAN";
     my $user = $client.user.uc;

@@ -16,8 +16,8 @@ multi MAIN("build") {
 multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
     $app.cmd("test", @file, :$verbose, :$jobs);
 }
-multi MAIN("release", Bool :$keep) {
-    $app.cmd("release", :$keep);
+multi MAIN("release", Bool :k(:$keep), Str :$next-version, Bool :$yes) {
+    $app.cmd("release", :$keep, :$next-version, :$yes);
 }
 multi MAIN("dist") {
     $app.cmd("dist");
@@ -75,7 +75,9 @@ sub USAGE {
     You should prepare ~/.pause file before releasing.
 
     Options:
-     -k, --keep   do not delete local tarball after releasing it to CPAN
+     -k, --keep          do not delete local tarball after releasing it to CPAN
+         --next-version  set next release version manually
+         --yes           do not raise prompt; accept the default behavior
 
   $ mi6 version
     Show mi6 version
