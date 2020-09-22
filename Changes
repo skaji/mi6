@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+1.1.1  2020-09-22T21:28:05+09:00
+  - Add support for modules using OO::Monitors (jjatria #111)
+
 1.1.0  2020-09-18T21:06:47+09:00
   - Introduce --next-version and --yes options to release command (melezhik #109, #110)
 
