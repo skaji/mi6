@@ -2,7 +2,7 @@ use Test;
 use lib "xt";
 use Util;
 use File::Temp;
-use JSON::Pretty;
+use App::Mi6::JSON;
 
 my $r;
 $r = mi6 "new";
@@ -51,7 +51,7 @@ my $tempdir = tempdir;
 
     $r = mi6 "new", "Hello";
     chdir "Hello";
-    my $meta = from-json( "META6.json".IO.slurp );
+    my $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
     is $meta<description>, "blah blah blah";
     is $meta<auth>, "cpan:SOMEBODY";
     "lib/Hello.pm6".IO.spurt: q:to/EOF/;
@@ -69,7 +69,7 @@ my $tempdir = tempdir;
     =end pod
     EOF
     $r = mi6 "build";
-    $meta = from-json( "META6.json".IO.slurp );
+    $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
     is $meta<description>, "This is hello module.";
 }
 {
@@ -99,7 +99,7 @@ my $tempdir = tempdir;
     run "git", "add", ".";
 
     mi6 "build";
-    my $meta = from-json( "META6.json".IO.slurp );
+    my $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
     is $meta<provides>, {
         "Hello::World" => "lib/Hello/World.rakumod",
         "Hello::World1" => "lib/Hello/World1.rakumod",
