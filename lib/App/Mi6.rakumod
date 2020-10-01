@@ -115,7 +115,7 @@ sub with-rakulib(&code) {
 
 sub build() {
     my $meta-text = $*CWD.child('META6.json').slurp;
-    my $meta = Rakudo::Internals::JSON.from-json($meta-text);
+    my $meta = App::Mi6::JSON.decode($meta-text);
     if $meta<builder>:exists {
         my $builder = do if $meta<builder> eq "MakeFromJSON" {
             "Distribution::Builder::$meta<builder>"

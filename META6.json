@@ -1,46 +1,48 @@
 {
-  "auth" : "cpan:SKAJI",
-  "authors" : [
+  "auth": "cpan:SKAJI",
+  "authors": [
     "Shoichi Kaji"
   ],
-  "build-depends" : [ ],
-  "depends" : [
-    "JSON::Pretty",
+  "build-depends": [
+  ],
+  "depends": [
     "Pod::To::Markdown:ver<0.1.4+>",
     "Shell::Command",
     "CPAN::Uploader::Tiny:ver<0.0.4+>",
     "TAP:ver<0.1.0+>"
   ],
-  "description" : "minimal authoring tool for Raku",
-  "license" : "Artistic-2.0",
-  "name" : "App::Mi6",
-  "perl" : "6.d",
-  "provides" : {
-    "App::Mi6" : "lib/App/Mi6.rakumod",
-    "App::Mi6::Badge" : "lib/App/Mi6/Badge.rakumod",
-    "App::Mi6::INI" : "lib/App/Mi6/INI.rakumod",
-    "App::Mi6::JSON" : "lib/App/Mi6/JSON.rakumod",
-    "App::Mi6::Release" : "lib/App/Mi6/Release.rakumod",
-    "App::Mi6::Release::BumpVersion" : "lib/App/Mi6/Release/BumpVersion.rakumod",
-    "App::Mi6::Release::CheckChanges" : "lib/App/Mi6/Release/CheckChanges.rakumod",
-    "App::Mi6::Release::CheckOrigin" : "lib/App/Mi6/Release/CheckOrigin.rakumod",
-    "App::Mi6::Release::CheckUntrackedFiles" : "lib/App/Mi6/Release/CheckUntrackedFiles.rakumod",
-    "App::Mi6::Release::CleanDist" : "lib/App/Mi6/Release/CleanDist.rakumod",
-    "App::Mi6::Release::CreateGitTag" : "lib/App/Mi6/Release/CreateGitTag.rakumod",
-    "App::Mi6::Release::DistTest" : "lib/App/Mi6/Release/DistTest.rakumod",
-    "App::Mi6::Release::GitCommit" : "lib/App/Mi6/Release/GitCommit.rakumod",
-    "App::Mi6::Release::MakeDist" : "lib/App/Mi6/Release/MakeDist.rakumod",
-    "App::Mi6::Release::RegenerateFiles" : "lib/App/Mi6/Release/RegenerateFiles.rakumod",
-    "App::Mi6::Release::RewriteChanges" : "lib/App/Mi6/Release/RewriteChanges.rakumod",
-    "App::Mi6::Release::UploadToCPAN" : "lib/App/Mi6/Release/UploadToCPAN.rakumod",
-    "App::Mi6::Template" : "lib/App/Mi6/Template.rakumod",
-    "App::Mi6::Util" : "lib/App/Mi6/Util.rakumod"
+  "description": "minimal authoring tool for Raku",
+  "license": "Artistic-2.0",
+  "name": "App::Mi6",
+  "perl": "6.d",
+  "provides": {
+    "App::Mi6": "lib/App/Mi6.rakumod",
+    "App::Mi6::Badge": "lib/App/Mi6/Badge.rakumod",
+    "App::Mi6::INI": "lib/App/Mi6/INI.rakumod",
+    "App::Mi6::JSON": "lib/App/Mi6/JSON.rakumod",
+    "App::Mi6::Release": "lib/App/Mi6/Release.rakumod",
+    "App::Mi6::Release::BumpVersion": "lib/App/Mi6/Release/BumpVersion.rakumod",
+    "App::Mi6::Release::CheckChanges": "lib/App/Mi6/Release/CheckChanges.rakumod",
+    "App::Mi6::Release::CheckOrigin": "lib/App/Mi6/Release/CheckOrigin.rakumod",
+    "App::Mi6::Release::CheckUntrackedFiles": "lib/App/Mi6/Release/CheckUntrackedFiles.rakumod",
+    "App::Mi6::Release::CleanDist": "lib/App/Mi6/Release/CleanDist.rakumod",
+    "App::Mi6::Release::CreateGitTag": "lib/App/Mi6/Release/CreateGitTag.rakumod",
+    "App::Mi6::Release::DistTest": "lib/App/Mi6/Release/DistTest.rakumod",
+    "App::Mi6::Release::GitCommit": "lib/App/Mi6/Release/GitCommit.rakumod",
+    "App::Mi6::Release::MakeDist": "lib/App/Mi6/Release/MakeDist.rakumod",
+    "App::Mi6::Release::RegenerateFiles": "lib/App/Mi6/Release/RegenerateFiles.rakumod",
+    "App::Mi6::Release::RewriteChanges": "lib/App/Mi6/Release/RewriteChanges.rakumod",
+    "App::Mi6::Release::UploadToCPAN": "lib/App/Mi6/Release/UploadToCPAN.rakumod",
+    "App::Mi6::Template": "lib/App/Mi6/Template.rakumod",
+    "App::Mi6::Util": "lib/App/Mi6/Util.rakumod"
   },
-  "resources" : [ ],
-  "source-url" : "https://github.com/skaji/mi6.git",
-  "tags" : [ ],
-  "test-depends" : [
+  "resources": [
+  ],
+  "source-url": "https://github.com/skaji/mi6.git",
+  "tags": [
+  ],
+  "test-depends": [
     "File::Temp"
   ],
-  "version" : "1.1.1"
+  "version": "1.1.1"
 }
