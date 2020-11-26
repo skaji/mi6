@@ -333,6 +333,14 @@ method make-dist-tarball($main-module) {
     return "$name.tar.gz";
 }
 
+my $GIT-REMOTE-REGEXP = rx{^[
+    # eg: ssh://git@github.com/skaji/mi6.git
+    [ https? | ssh | git ] '://' [<-[/]>+'@']? $<host>=<-[/]>+ '/' $<user>=<-[/]>+ '/' $<repo>=.+? '.git'?
+    |
+    # eg: git@github.com:skaji/mi6.git
+    <-[@]>+ '@' $<host>=<-[:]>+ ':' $<user>=<-[/]>+ '/' $<repo>=.+? '.git'?
+]$};
+
 sub find-source-url() {
     my @line = mi6run("git", "remote", "-v", :out, :!err).out.lines(:close);
     return "" unless @line;
@@ -345,11 +353,8 @@ sub find-source-url() {
     }
     return "" unless $url;
     $url .= Str;
-    $url .= subst(/^ 'git:' /, 'https:');
-    if $url ~~ m/'git@' $<host>=[.+] ':' $<repo>=[<-[:]>+] $/ {
-        $url = "https://$<host>/$<repo>";
-    } elsif $url ~~ m/'ssh://git@' $<rest>=[.+] / {
-        $url = "https://$<rest>";
+    if $url ~~ $GIT-REMOTE-REGEXP {
+        return "https://$<host>/$<user>/$<repo>.git";
     }
     $url;
 }
@@ -357,15 +362,10 @@ sub find-source-url() {
 sub guess-user-and-repo() {
     my $url = find-source-url();
     return if $url eq "";
-    if $url ~~ m{ (git|https?) '://'
-        [<-[/]>+] '/'
-        $<user>=[<-[/]>+] '/'
-        $<repo>=[.+?] [\.git]?
-    $} {
-        return $/<user>, $/<repo>;
-    } else {
-        return;
+    if $url ~~ $GIT-REMOTE-REGEXP {
+        return $<user>, $<repo>;
     }
+    return;
 }
 
 method find-provides() {
