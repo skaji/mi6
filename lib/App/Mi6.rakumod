@@ -126,13 +126,16 @@ sub build() {
         return;
     }
 
-    if "Build.pm".IO.e {
-        note '==> Execute Build.pm';
-        my @cmd = $*EXECUTABLE, '-Ilib', '-I.', '-MBuild', '-e', "Build.new.build('{~$*CWD}')";
-        my $proc = mi6run |@cmd;
-        my $code = $proc.exitcode;
-        die "Failed with exitcode $code" if $code != 0;
-    }
+    my ($build-file) = <Build.rakumod Build.pm6 Build.pm>.grep(*.IO.e);
+    return if !$build-file;
+
+    note "==> Execute $build-file";
+    my $cmd = "require '{$build-file.IO.absolute}'; ::('Build').new.build('{~$*CWD}') ?? exit(0) !! exit(1);";
+    my @cmd = $*EXECUTABLE, "-Ilib", "-I.", '-e', $cmd;
+    note "==> @cmd[]";
+    my $proc = mi6run |@cmd;
+    my $code = $proc.exitcode;
+    die "Failed with exitcode $code" if $code != 0;
 }
 
 multi list-testfiles(IO::Path $path where .d) {
