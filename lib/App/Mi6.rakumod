@@ -85,6 +85,7 @@ multi method cmd('test', *@file, Bool :$verbose, Int :$jobs) {
 }
 
 multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
+    self.cmd('build');
     my ($main-module, $main-module-file) = guess-main-module();
     my $dist = $main-module.subst("::", "-", :g);
     my $release-date = DateTime.now.truncated-to('second').Str;
