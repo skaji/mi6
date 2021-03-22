@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+1.1.5  2021-03-22T19:20:30+09:00
+  - Run "build" before "release" (tbrowder #120, #121)
+
 1.1.4  2021-01-13T19:41:41+09:00
   - Fix Build.pm support (tbrowder #116, #118)
 
