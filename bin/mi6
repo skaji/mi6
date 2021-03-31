@@ -7,8 +7,8 @@ my $app = App::Mi6.new;
 multi MAIN("version") {
     say $app.^ver;
 }
-multi MAIN("new", $module) {
-    $app.cmd("new", $module);
+multi MAIN("new", $module, :fez(:$zef)) {
+    $app.cmd("new", $module, :$zef);
 }
 multi MAIN("build") {
     $app.cmd("build");
@@ -19,7 +19,7 @@ multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
 multi MAIN("release", Bool :k(:$keep), Str :$next-version, Bool :$yes) {
     $app.cmd("release", :$keep, :$next-version, :$yes);
 }
-multi MAIN("dist") {
+multi MAIN("dist", Bool :$no-top-directory) {
     $app.cmd("dist");
 }
 multi MAIN("upload") {
@@ -54,7 +54,7 @@ sub USAGE {
     Create Foo-Bar distribution
 
     Options:
-     (none)
+      --fez, --zef  create distribution for Zef ecosystem
 
   $ mi6 build
     Build the distribution, and re-generate README.md/META6.json.
