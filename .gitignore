@@ -1,2 +1,15 @@
+# Caches
 .precomp/
+node_modules/
+
+# Packages
+/sdist/
 /App-Mi6-*
+
+# Backup files
+*~
+*.bak
+
+# IDE files
+/.idea
+*.iml
