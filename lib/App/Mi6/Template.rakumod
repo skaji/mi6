@@ -51,17 +51,32 @@ jobs:
       - uses: Raku/setup-raku@v1
         with:
           raku-version: ${{ matrix.raku-version }}
+      - name: Update Zef Indices
+        run: zef update
       - name: Install Dependencies
         run: zef install --/test --test-depends --deps-only .
       - name: Install App::Prove6
         run: zef install --/test App::Prove6
       - name: Run Tests
-        run: prove6 -l t
+        run: prove6 -l -v t
 EOF
 
 gitignore => qq:to/EOF/,
+# Caches
 .precomp/
+node_modules/
+
+# Packages
+/sdist/
 /$dist-*
+
+# Backup files
+*~
+*.bak
+
+# IDE files
+/.idea
+*.iml
 EOF
 
 test => qq:to/END_OF_TEST/,
