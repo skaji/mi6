@@ -32,12 +32,12 @@ my $to-file = -> $module {
 my sub config($section, $key?, :$default = Any) {
     state $top = "dist.ini".IO.e ?? App::Mi6::INI::parsefile("dist.ini") !! {};
     my $config = $top{$section};
-    return $config || $default if !$config || !$key;
+    return $config // $default if !$config || !$key;
     my $pair = @($config).grep({ $_.key eq $key }).first;
     $pair ?? $pair.value !! $default;
 }
 
-multi method cmd('new', $module is copy) {
+multi method cmd('new', $module is copy, :$zef) {
     $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
     $main-dir ~~ s:g/ '::' /-/;
@@ -47,8 +47,28 @@ multi method cmd('new', $module is copy) {
     my $module-file = $to-file($module);
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin", ".github/workflows";
+
+    my $auth;
+    if $zef {
+        try require ::("App::Mi6::Fez");
+        if ::("App::Mi6::Fez") ~~ Failure {
+            die "To create a distribution for Zef ecosystem, you need to install fez first";
+        }
+        if my $u = ::("App::Mi6::Fez").username {
+            $auth = "zef:$u";
+        } else {
+            die "To create a distribution for Zef ecosystem,\n"
+                ~ "you need to execute 'fez register' and 'fez login' first.";
+        }
+    } else {
+        my $u = $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user> !! Nil;
+        if $u {
+            $auth = "cpan:$u";
+        }
+    }
+
     my %content = App::Mi6::Template::template(
-        :$module, :$!author, :$!cpanid, :$!email, :$!year,
+        :$module, :$!author, :$auth, :$!email, :$!year,
         :$module-file,
         dist => $module.subst("::", "-", :g),
     );
@@ -89,7 +109,8 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     my ($main-module, $main-module-file) = guess-main-module();
     my $dist = $main-module.subst("::", "-", :g);
     my $release-date = DateTime.now.truncated-to('second').Str;
-    my $release = App::Mi6::Release.new;
+    my $upload-class = config("UploadToZef").defined ?? "UploadToZef" !! "UploadToCPAN";
+    my $release = App::Mi6::Release.new(:$upload-class);
     $release.run(
         dir => "lib",
         app => self,
@@ -99,10 +120,10 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     );
 }
 
-multi method cmd('dist') {
+multi method cmd('dist', Bool :$no-top-directory) {
     self.cmd('build');
     my ($module, $module-file) = guess-main-module();
-    my $tarball = self.make-dist-tarball($module);
+    my $tarball = self.make-dist-tarball($module, :$no-top-directory);
     say "Created $tarball";
     return $tarball;
 }
@@ -306,7 +327,7 @@ method prune-files {
 
 }
 
-method make-dist-tarball($main-module) {
+method make-dist-tarball($main-module, Bool :$no-top-directory) {
     my $name = $main-module.subst("::", "-", :g);
     my $meta = App::Mi6::JSON.decode("META6.json".IO.slurp);
     my $version = $meta<version>;
@@ -327,7 +348,13 @@ method make-dist-tarball($main-module) {
     }
     my %env = %*ENV;
     %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
-    my $proc = mi6run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
+    my $proc = do if $no-top-directory {
+        mi6run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
+    } else {
+        temp $*CWD = $name;
+        my @entry = ".".IO.dir.map(*.Str);
+        mi6run "tar", "czf", "../$name.tar.gz", @entry, :!out, :err, :%env;
+    };
     LEAVE $proc && $proc.err.close;
     if $proc.exitcode != 0 {
         my $exitcode = $proc.exitcode;

@@ -1,6 +1,6 @@
 unit module App::Mi6::Template;
 
-our sub template(:$module, :$module-file, :$dist, :$author, :$cpanid, :$email, :$year) {
+our sub template(:$module, :$module-file, :$dist, :$author, :$auth, :$email, :$year) {
     my %template =
 
 Changes => qq:to/EOF/,
@@ -16,6 +16,8 @@ name = $dist
 [ReadmeFromPod]
 ; enable = false
 filename = $module-file
+
+[UploadTo{ $auth && $auth ~~ /^zef:/ ?? "Zef" !! "CPAN" }]
 
 [PruneFiles]
 ; match = ^ 'xt/'
@@ -74,7 +76,7 @@ done-testing;
 END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,
-unit class $module\:ver<0.0.1>{ $cpanid ?? ":auth<cpan:$cpanid>" !! ""};
+unit class $module\:ver<0.0.1>{ $auth ?? ":auth<$auth>" !! ""};
 
 
 =begin pod
