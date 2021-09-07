@@ -8,7 +8,7 @@ use CPAN::Uploader::Tiny;
 use Shell::Command;
 use TAP;
 
-BEGIN { $*PERL.compiler.version >= v2019.11 or die "App::Mi6 needs rakudo v2019.11 or later" }
+BEGIN { $*PERL.compiler.version >= v2020.05 or die "App::Mi6 needs rakudo v2020.05 or later" }
 
 unit class App::Mi6:ver<1.1.5>:auth<cpan:SKAJI>;
 
@@ -130,8 +130,7 @@ multi method cmd('dist', Bool :$no-top-directory) {
 
 sub with-rakulib(&code) {
     temp %*ENV;
-    my $name = $*PERL.compiler.version >= v2020.05 ?? "RAKULIB" !! "PERL6LIB";
-    %*ENV{$name} = %*ENV{$name}:exists ?? "$*CWD/lib," ~ %*ENV{$name} !! "$*CWD/lib";
+    %*ENV<RAKULIB> = %*ENV<RAKULIB>:exists ?? "$*CWD/lib," ~ %*ENV<RAKULIB> !! "$*CWD/lib";
     &code();
 }
 
@@ -481,7 +480,7 @@ $ mi6 release      # release your distribution to CPAN
 
 =head1 INSTALLATION
 
-First make sure you have rakudo v2019.11 or later. If not, install rakudo from L<https://rakudo.org/downloads>.
+First make sure you have rakudo v2020.05 or later. If not, install rakudo from L<https://rakudo.org/downloads>.
 
 Then:
 
