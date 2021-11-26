@@ -77,7 +77,9 @@ method scan($dir) {
 }
 
 method current-version {
-    @!line.map(*<version>).sort({ Version.new($^b) <=> Version.new($^a) }).first;
+    @!line.map(*<version>).sort(*.Version).first
+      // (run <git tag -l>, :out).out.lines(:close).sort(*.Version).tail
+      // "0.0.1"
 }
 
 method next-version($version? is copy) {

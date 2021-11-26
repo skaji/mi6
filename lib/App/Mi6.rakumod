@@ -238,13 +238,17 @@ method regenerate-meta-info($module, $module-file) {
     $perl = "6.d" if $perl eq "v6";
     $perl ~~ s/^v//;
 
-    my $version = do {
+    my $version = config("VersionInMeta").defined
+      ?? $already<version>
+      !! do {
         my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
         my $p = with-rakulib { mi6run |@cmd, :out, :!err };
         my $v = $p.out.slurp(:close).chomp || $already<version>;
         $v eq "*" ?? "0.0.1" !! $v;
     };
-    my $auth = do {
+    my $auth = config("AuthInMeta").defined
+      ?? $already<auth>
+      !! do {
         my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^auth.Str.say";
         my $p = with-rakulib { mi6run |@cmd, :out, :!err };
         $p.out.slurp(:close).chomp || $already<auth> || Nil;
