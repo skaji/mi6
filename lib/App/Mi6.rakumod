@@ -608,6 +608,8 @@ Ensure your C<Changes> file looks like something like this B<before> you start a
 =head2 What is the source of the author's email address?
 
 The email is taken from the author's C<.gitconfig> file.
+In general, that same email address should match any email address existing in a module's
+C<META6.json> file.
 
 =head2 How does one change an existing module created with C<mi6> to
 use the Raku C<fez/zef> archive instead of CPAN?
