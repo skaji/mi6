@@ -626,7 +626,7 @@ C<[UploadToZef]>
 =begin item
 Change all instances of the C<:auth<cpan:CPAN-USERNAME>> to
 C<:auth<zef:zef-username>>. Check files C<META6.json> and
-the modules leading or main module file in
+the module's leading or main module file in
 directory C<./lib>.
 =end item
 
