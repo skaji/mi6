@@ -73,6 +73,7 @@ multi method cmd('new', $module is copy, :$zef) {
         dist => $module.subst("::", "-", :g),
     );
     my %map = <<
+        META6.json    META6
         Changes       Changes
         dist.ini      dist
         $module-file  module
@@ -94,7 +95,7 @@ multi method cmd('new', $module is copy, :$zef) {
 multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
     self.regenerate-readme($module-file);
-    self.regenerate-meta-info($module, $module-file);
+    self.regenerate-meta($module, $module-file);
     build();
 }
 
@@ -222,9 +223,8 @@ method regenerate-readme($module-file) {
     spurt "README.md", $header ~ $markdown;
 }
 
-method regenerate-meta-info($module, $module-file) {
-    my $meta-file = <META6.json META.info>.grep({.IO ~~ :f & :!l})[0];
-    my $already = $meta-file.defined ?? App::Mi6::JSON.decode($meta-file.IO.slurp) !! {};
+method regenerate-meta($module, $module-file) {
+    my $already = App::Mi6::JSON.decode("META6.json".IO.slurp);
 
     my $authors = do if $already<authors> {
         $already<authors>;
@@ -238,18 +238,6 @@ method regenerate-meta-info($module, $module-file) {
     $perl = "6.d" if $perl eq "v6";
     $perl ~~ s/^v//;
 
-    my $version = do {
-        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^ver.Str.say";
-        my $p = with-rakulib { mi6run |@cmd, :out, :!err };
-        my $v = $p.out.slurp(:close).chomp || $already<version>;
-        $v eq "*" ?? "0.0.1" !! $v;
-    };
-    my $auth = do {
-        my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^auth.Str.say";
-        my $p = with-rakulib { mi6run |@cmd, :out, :!err };
-        $p.out.slurp(:close).chomp || $already<auth> || Nil;
-    };
-
     my %new-meta =
         name          => $module,
         perl          => $perl,
@@ -260,16 +248,14 @@ method regenerate-meta-info($module, $module-file) {
         description   => find-description($module-file) || $already<description> || "",
         provides      => self.find-provides(),
         source-url    => $already<source-url> || find-source-url(),
-        version       => $version,
         resources     => $already<resources> || [],
         tags          => $already<tags> || [],
         license       => $already<license> || guess-license(),
     ;
-    %new-meta<auth> = $auth if $auth;
     for $already.keys -> $k {
         %new-meta{$k} = $already{$k} unless %new-meta{$k}:exists;
     }
-    ($meta-file || "META6.json").IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
+    "META6.json".IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
 }
 
 sub guess-license() {
