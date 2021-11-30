@@ -2,6 +2,7 @@ use App::Mi6::Util;
 unit class App::Mi6::Release::BumpVersion;
 
 use App::Mi6::Util;
+use App::Mi6::JSON;
 
 my $VERSION-REGEXP = rx/ [<[0..9]> | '.']+ /;
 
@@ -31,11 +32,6 @@ has @.line;
 method run(*%opt) {
     self.scan(%opt<dir>);
     my $current-version = self.current-version;
-    if !$current-version {
-        die   "Could not determine version from {%opt<main-module-file>}.\n"
-            ~ "You should specify version first in it:\n\n"
-            ~ "  class {%opt<main-module>}:ver<0.0.1>;\n";
-    }
 
     my $next-version = %opt<next-version> || (self!exists-git-tag($current-version) ?? self.next-version !! $current-version);
     if %opt<yes> {
@@ -77,7 +73,7 @@ method scan($dir) {
 }
 
 method current-version {
-    @!line.map(*<version>).sort({ Version.new($^b) <=> Version.new($^a) }).first;
+    App::Mi6::JSON.decode("META6.json".IO.slurp)<version>;
 }
 
 method next-version($version? is copy) {
@@ -88,6 +84,10 @@ method next-version($version? is copy) {
 }
 
 method bump($version) {
+    my %meta = App::Mi6::JSON.decode("META6.json".IO.slurp);
+    %meta<version> = $version;
+    "META6.json".IO.spurt: App::Mi6::JSON.encode(%meta) ~ "\n";
+
     for @!line -> %line {
         self!bump(|%line, version => $version);
     }

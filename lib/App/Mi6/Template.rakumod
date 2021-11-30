@@ -3,6 +3,13 @@ unit module App::Mi6::Template;
 our sub template(:$module, :$module-file, :$dist, :$author, :$auth, :$email, :$year) {
     my %template =
 
+META6 => qq:to/EOF/,
+\{
+    { $auth ?? qq["auth": "$auth",] !! ""}
+    "version": "0.0.1"
+\}
+EOF
+
 Changes => qq:to/EOF/,
 Revision history for $dist
 
@@ -76,7 +83,7 @@ done-testing;
 END_OF_TEST
 
 module => qq:to/EOD_OF_MODULE/,
-unit class $module\:ver<0.0.1>{ $auth ?? ":auth<$auth>" !! ""};
+unit class $module;
 
 
 =begin pod
