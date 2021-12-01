@@ -54,7 +54,7 @@ sub USAGE {
     Create Foo-Bar distribution
 
     Options:
-      --fez, --zef  create distribution for Zef ecosystem
+      --zef, --fez  create distribution for Zef ecosystem
 
   $ mi6 build
     Build the distribution, and re-generate README.md/META6.json.

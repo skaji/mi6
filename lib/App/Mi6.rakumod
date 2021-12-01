@@ -477,10 +477,12 @@ App::Mi6 - minimal authoring tool for Raku
 
 =begin code :lang<console>
 
-$ mi6 new Foo::Bar # create Foo-Bar distribution
-$ mi6 build        # build the distribution and re-generate README.md/META6.json
-$ mi6 test         # run tests
-$ mi6 release      # release your distribution to CPAN
+$ mi6 new Foo::Bar        # create Foo-Bar distribution for CPAN ecosystem
+$ mi6 new --zef Foo::Bar  # create Foo-Bar distribution for Zef ecosystem
+
+$ mi6 build    # build the distribution and re-generate README.md/META6.json
+$ mi6 test     # run tests
+$ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by dist.ini)
 
 =end code
 
@@ -506,7 +508,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
 =item Run tests by C<mi6 test>
 
-=item Release your distribution tarball to CPAN
+=item Release your distribution to CPAN ecosystem or Zef ecosystem
 
 =head1 FAQ
 
@@ -525,6 +527,9 @@ name = Your-Module-Name
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
+
+[UploadToCPAN]   ; Upload your distribution to CPAN ecosystem
+; [UploadToZef]  ; You can also use UploadToZef instead, to upload your distribution to Zef ecosystem
 
 [PruneFiles]
 ; if you want to prune files when packaging, then
@@ -611,16 +616,21 @@ Ensure your C<Changes> file looks like something like this B<before> you start a
 
 =end code
 
+Notes:
+
+=item C<mi6 release> will replace the C<{{$NEXT}}> line with the new version number and its timestamp
+=item You B<must> have at least one change entry line
+=item The first change entry line B<must> start with a space or tab
+
 =head2 What is the source of the author's email address?
 
 The email is taken from the author's C<.gitconfig> file.
 In general, that same email address should match any email address existing in a module's
 C<META6.json> file.
 
-=head2 How does one change an existing module created with C<mi6> to
-use the Raku C<fez/zef> archive instead of CPAN?
+=head2 How does one change an existing distribution created with C<mi6> to use Zef ecosystem instead of CPAN ecosystem?
 
-First, the author must have an active account with C<fez/zef> which
+First, the author must have an active account with L<fez|https://github.com/tony-o/raku-fez> which
 will create a C<.fez-config.json> file in the author's home directory.
 
 Then, starting with an existing module created with C<mi6>, do the following:
@@ -632,8 +642,8 @@ C<[UploadToZef]>
 =end item
 
 =begin item
-Change all instances of the C<:auth<cpan:CPAN-USERNAME>> to
-C<:auth<zef:zef-username>>. Check files C<META6.json> and
+Change all instances of the C<auth<cpan:CPAN-USERNAME>> to
+C<auth<zef:zef-username>>. Check files C<META6.json> and
 the module's leading or main module file in
 directory C<./lib>.
 =end item
@@ -655,18 +665,6 @@ Commit all changes.
 Run C<mi6 release> and accept (or increase)
 the version number offered by C<mi6>.
 =end item
-
-=head2 Can one use C<mi6> to create a new Raku module using the
-Raku C<fez> archive?
-
-Currently it cannot be done. A pull request (PR) is welcome
-to be considered (and it must be complete with tests).
-
-Notes:
-
-=item C<mi6 release> will replace the C<{{$NEXT}}> line with the new version number and its timestamp
-=item You B<must> have at least one change entry line
-=item The first change entry line B<must> start with a space or tab
 
 =head1 TODO
 
