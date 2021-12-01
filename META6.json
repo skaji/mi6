@@ -9,7 +9,8 @@
     "Pod::To::Markdown:ver<0.1.4+>",
     "Shell::Command",
     "CPAN::Uploader::Tiny:ver<0.0.4+>",
-    "TAP:ver<0.1.0+>"
+    "TAP:ver<0.1.0+>",
+    "fez"
   ],
   "description": "minimal authoring tool for Raku",
   "license": "Artistic-2.0",
@@ -18,6 +19,7 @@
   "provides": {
     "App::Mi6": "lib/App/Mi6.rakumod",
     "App::Mi6::Badge": "lib/App/Mi6/Badge.rakumod",
+    "App::Mi6::Fez": "lib/App/Mi6/Fez.rakumod",
     "App::Mi6::INI": "lib/App/Mi6/INI.rakumod",
     "App::Mi6::JSON": "lib/App/Mi6/JSON.rakumod",
     "App::Mi6::Release": "lib/App/Mi6/Release.rakumod",
@@ -33,6 +35,7 @@
     "App::Mi6::Release::RegenerateFiles": "lib/App/Mi6/Release/RegenerateFiles.rakumod",
     "App::Mi6::Release::RewriteChanges": "lib/App/Mi6/Release/RewriteChanges.rakumod",
     "App::Mi6::Release::UploadToCPAN": "lib/App/Mi6/Release/UploadToCPAN.rakumod",
+    "App::Mi6::Release::UploadToFez": "lib/App/Mi6/Release/UploadToFez.rakumod",
     "App::Mi6::Template": "lib/App/Mi6/Template.rakumod",
     "App::Mi6::Util": "lib/App/Mi6/Util.rakumod"
   },
