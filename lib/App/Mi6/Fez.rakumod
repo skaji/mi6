@@ -1,5 +1,6 @@
 unit class App::Mi6::Fez;
 
+no precompilation;
 use Fez::Util::Config;
 use App::Mi6::Util;
 
