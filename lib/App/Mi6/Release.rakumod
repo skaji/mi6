@@ -3,8 +3,11 @@ unit class App::Mi6::Release;
 
 has $.upload-class = "UploadToCPAN";
 
+method !ecosystem { $.upload-class eq "UploadToZef" ?? "Zef" !! "CPAN" }
+
 method !classes() {
     my @klass =
+        CheckAuth => "Make sure 'auth' in META6.json is '{self!ecosystem.lc}:xxx'",
         CheckChanges => "Make sure 'Changes' file has the next release description",
         CheckOrigin => "",
         CheckUntrackedFiles => "",
@@ -23,8 +26,7 @@ method !classes() {
 
 method !desc {
     my @klass = self!classes;
-    my $where = $.upload-class eq "UploadToZef" ?? "Zef ecosystem" !! "CPAN ecosystem";
-    note "==> Release distribution to $where";
+    note "==> Release distribution to {self!ecosystem} ecosystem";
     note "";
     note "  There are {+@klass} steps:";
     for @klass.kv -> $i, $pair {
