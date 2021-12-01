@@ -10,7 +10,14 @@ use TAP;
 
 BEGIN { $*PERL.compiler.version >= v2020.05 or die "App::Mi6 needs rakudo v2020.05 or later" }
 
-unit class App::Mi6:ver<1.1.5>:auth<cpan:SKAJI>;
+unit class App::Mi6;
+
+# You can inspect App-Mi6 distribution by this dist() method. For example,
+#
+#   say App::Mi6.dist.meta<version>; # 1.1.5
+#   say App::Mi6.dist.meta<auth>;    # cpan:SKAJI
+#
+method dist() { $?DISTRIBUTION }
 
 my $MODULE-EXT = / '.' [ pm | pm6 | rakumod ] /;
 
