@@ -9,16 +9,18 @@ SYNOPSIS
 ========
 
 ```console
-$ mi6 new Foo::Bar # create Foo-Bar distribution
-$ mi6 build        # build the distribution and re-generate README.md/META6.json
-$ mi6 test         # run tests
-$ mi6 release      # release your distribution to CPAN
+$ mi6 new Foo::Bar        # create Foo-Bar distribution for CPAN ecosystem
+$ mi6 new --zef Foo::Bar  # create Foo-Bar distribution for Zef ecosystem
+
+$ mi6 build    # build the distribution and re-generate README.md/META6.json
+$ mi6 test     # run tests
+$ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by dist.ini)
 ```
 
 INSTALLATION
 ============
 
-First make sure you have rakudo v2019.11 or later. If not, install rakudo from [https://rakudo.org/downloads](https://rakudo.org/downloads).
+First make sure you have rakudo v2020.05 or later. If not, install rakudo from [https://rakudo.org/downloads](https://rakudo.org/downloads).
 
 Then:
 
@@ -37,7 +39,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
   * Run tests by `mi6 test`
 
-  * Release your distribution tarball to CPAN
+  * Release your distribution to CPAN ecosystem or Zef ecosystem
 
 FAQ
 ===
@@ -57,6 +59,9 @@ name = Your-Module-Name
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
+
+[UploadToCPAN]   ; Upload your distribution to CPAN ecosystem
+; [UploadToZef]  ; You can also use UploadToZef instead, to upload your distribution to Zef ecosystem
 
 [PruneFiles]
 ; if you want to prune files when packaging, then
@@ -140,6 +145,32 @@ Notes:
   * You **must** have at least one change entry line
 
   * The first change entry line **must** start with a space or tab
+
+What is the source of the author's email address?
+-------------------------------------------------
+
+The email is taken from the author's `.gitconfig` file. In general, that same email address should match any email address existing in a module's `META6.json` file.
+
+How does one change an existing distribution created with `mi6` to use Zef ecosystem instead of CPAN ecosystem?
+---------------------------------------------------------------------------------------------------------------
+
+First, the author must have an active account with [fez](https://github.com/tony-o/raku-fez) which will create a `.fez-config.json` file in the author's home directory.
+
+Then, starting with an existing module created with `mi6`, do the following:
+
+  * Add the following line to your `dist.ini` file:
+
+    `[UploadToZef]`
+
+  * Change all instances of the `auth<cpan:CPAN-USERNAME>` to `auth<zef:zef-username>`. Check files `META6.json` and the module's leading or main module file in directory `./lib`.
+
+  * Optional, but recommended: Add an entry in the module's `Changes` file mentioning the change.
+
+  * Run `mi6 build; mi6 test`.
+
+  * Commit all changes.
+
+  * Run `mi6 release` and accept (or increase) the version number offered by `mi6`.
 
 TODO
 ====

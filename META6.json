@@ -23,6 +23,7 @@
     "App::Mi6::JSON": "lib/App/Mi6/JSON.rakumod",
     "App::Mi6::Release": "lib/App/Mi6/Release.rakumod",
     "App::Mi6::Release::BumpVersion": "lib/App/Mi6/Release/BumpVersion.rakumod",
+    "App::Mi6::Release::CheckAuth": "lib/App/Mi6/Release/CheckAuth.rakumod",
     "App::Mi6::Release::CheckChanges": "lib/App/Mi6/Release/CheckChanges.rakumod",
     "App::Mi6::Release::CheckOrigin": "lib/App/Mi6/Release/CheckOrigin.rakumod",
     "App::Mi6::Release::CheckUntrackedFiles": "lib/App/Mi6/Release/CheckUntrackedFiles.rakumod",
@@ -34,7 +35,7 @@
     "App::Mi6::Release::RegenerateFiles": "lib/App/Mi6/Release/RegenerateFiles.rakumod",
     "App::Mi6::Release::RewriteChanges": "lib/App/Mi6/Release/RewriteChanges.rakumod",
     "App::Mi6::Release::UploadToCPAN": "lib/App/Mi6/Release/UploadToCPAN.rakumod",
-    "App::Mi6::Release::UploadToFez": "lib/App/Mi6/Release/UploadToFez.rakumod",
+    "App::Mi6::Release::UploadToZef": "lib/App/Mi6/Release/UploadToZef.rakumod",
     "App::Mi6::Template": "lib/App/Mi6/Template.rakumod",
     "App::Mi6::Util": "lib/App/Mi6/Util.rakumod"
   },
