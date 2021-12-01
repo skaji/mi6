@@ -611,6 +611,57 @@ Ensure your C<Changes> file looks like something like this B<before> you start a
 
 =end code
 
+=head2 What is the source of the author's email address?
+
+The email is taken from the author's C<.gitconfig> file.
+In general, that same email address should match any email address existing in a module's
+C<META6.json> file.
+
+=head2 How does one change an existing module created with C<mi6> to
+use the Raku C<fez/zef> archive instead of CPAN?
+
+First, the author must have an active account with C<fez/zef> which
+will create a C<.fez-config.json> file in the author's home directory.
+
+Then, starting with an existing module created with C<mi6>, do the following:
+
+=begin item
+Add the following line to your C<dist.ini> file:
+
+C<[UploadToZef]>
+=end item
+
+=begin item
+Change all instances of the C<:auth<cpan:CPAN-USERNAME>> to
+C<:auth<zef:zef-username>>. Check files C<META6.json> and
+the module's leading or main module file in
+directory C<./lib>.
+=end item
+
+=begin item
+Optional, but recommended: Add an entry in the module's C<Changes> file
+mentioning the change.
+=end item
+
+=begin item
+Run C<mi6 build; mi6 test>.
+=end item
+
+=begin item
+Commit all changes.
+=end item
+
+=begin item
+Run C<mi6 release> and accept (or increase)
+the version number offered by C<mi6>.
+=end item
+
+=head2 Can one use C<mi6> to create a new Raku module using the
+Raku C<fez> archive?
+
+Currently it cannot be done. A pull request (PR) is welcome
+to be considered (and it must be complete with tests).
+
 Notes:
 
 =item C<mi6 release> will replace the C<{{$NEXT}}> line with the new version number and its timestamp
