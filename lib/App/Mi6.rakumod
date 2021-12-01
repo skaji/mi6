@@ -16,7 +16,6 @@ my $MODULE-EXT = / '.' [ pm | pm6 | rakumod ] /;
 
 has $!author = mi6run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
 has $!email  = mi6run(<git config --global user.email>, :out).out.slurp(:close).chomp;
-has $!cpanid = $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user> !! Nil;
 has $!year   = Date.today.year;
 
 my $normalize-path = -> $path {
@@ -37,6 +36,22 @@ my sub config($section, $key?, :$default = Any) {
     $pair ?? $pair.value !! $default;
 }
 
+method !cpan-user() {
+    $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user>.uc !! Nil;
+}
+
+method !zef-user() {
+    try require ::("App::Mi6::Fez");
+    if ::("App::Mi6::Fez") ~~ Failure {
+        die "To create a distribution for Zef ecosystem, you need to install fez first";
+    }
+    if my $user = ::("App::Mi6::Fez").username {
+        return $user;
+    } else {
+        die "To create a distribution for Zef ecosystem, you need to execute 'fez register' and 'fez login' first.";
+    }
+}
+
 multi method cmd('new', $module is copy, :$zef) {
     $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
@@ -50,20 +65,12 @@ multi method cmd('new', $module is copy, :$zef) {
 
     my $auth;
     if $zef {
-        try require ::("App::Mi6::Fez");
-        if ::("App::Mi6::Fez") ~~ Failure {
-            die "To create a distribution for Zef ecosystem, you need to install fez first";
-        }
-        if my $u = ::("App::Mi6::Fez").username {
-            $auth = "zef:$u";
-        } else {
-            die "To create a distribution for Zef ecosystem,\n"
-                ~ "you need to execute 'fez register' and 'fez login' first.";
-        }
+        my $user = self!zef-user;
+        $auth = "zef:$user";
     } else {
-        my $u = $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user> !! Nil;
-        if $u {
-            $auth = "cpan:$u";
+        my $user = self!cpan-user;
+        if $user {
+            $auth = "cpan:$user";
         }
     }
 
@@ -111,6 +118,17 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     my $dist = $main-module.subst("::", "-", :g);
     my $release-date = DateTime.now.truncated-to('second').Str;
     my $upload-class = config("UploadToZef").defined ?? "UploadToZef" !! "UploadToCPAN";
+
+    my $expect-auth;
+    if $upload-class eq "UploadToZef" {
+        my $user = self!zef-user;
+        $expect-auth = "zef:$user";
+    } else {
+        my $user = self!cpan-user;
+        die "cannot determine CPAN user from ~/.pause" if !$user;
+        $expect-auth = "cpan:$user";
+    }
+
     my $release = App::Mi6::Release.new(:$upload-class);
     $release.run(
         dir => "lib",
@@ -118,6 +136,7 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
         :$main-module, :$main-module-file,
         :$release-date, :$dist, :$keep,
         :$next-version, :$yes,
+        :$expect-auth,
     );
 }
 
@@ -129,12 +148,6 @@ multi method cmd('dist', Bool :$no-top-directory) {
     return $tarball;
 }
 
-sub with-rakulib(&code) {
-    temp %*ENV;
-    %*ENV<RAKULIB> = %*ENV<RAKULIB>:exists ?? "$*CWD/lib," ~ %*ENV<RAKULIB> !! "$*CWD/lib";
-    &code();
-}
-
 sub build() {
     my $meta-text = $*CWD.child('META6.json').slurp;
     my $meta = App::Mi6::JSON.decode($meta-text);
@@ -144,7 +157,7 @@ sub build() {
         } else {
             $meta<builder>
         };
-        with-rakulib { (require ::($builder)).new(:$meta).build; }
+        with-rakulib "$*CWD/lib", { (require ::($builder)).new(:$meta).build; }
         return;
     }
 
@@ -215,7 +228,7 @@ method regenerate-readme($module-file) {
     my $file = config($section, "filename", :$default) || $module-file;
 
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
-    my $p = with-rakulib { mi6run |@cmd, :out };
+    my $p = with-rakulib "$*CWD/lib", { mi6run |@cmd, :out };
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
