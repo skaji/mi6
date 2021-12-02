@@ -5,7 +5,7 @@ my %*SUB-MAIN-OPTS = :named-anywhere;
 my $app = App::Mi6.new;
 
 multi MAIN("version") {
-    say $app.^ver;
+    say $app.dist.meta<version>;
 }
 multi MAIN("new", $module, :fez(:$zef)) {
     $app.cmd("new", $module, :$zef);
