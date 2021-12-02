@@ -2,6 +2,10 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+2.0.1  2021-12-03T00:30:09+09:00
+  - Fix `mi6 version`
+  - Emit more verbose messages when `mi6 new`
+
 2.0.0  2021-12-01T23:26:58+09:00
   - mi6 meets Zef ecosystem; now you can upload your distributions to Zef ecosystem with mi6 (#122, #132, lizmat #128, tbrowder #127)
   - Now mi6 needs rakudo v2020.05 or later (#125)
