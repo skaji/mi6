@@ -39,7 +39,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
   * Run tests by `mi6 test`
 
-  * Release your distribution to CPAN ecosystem or Zef ecosystem
+  * Release your distribution to [CPAN ecosystem](https://www.cpan.org/authors/id/) or [Zef ecosystem](https://deathbyperl6.com/faq-zef-ecosystem/)
 
 FAQ
 ===
