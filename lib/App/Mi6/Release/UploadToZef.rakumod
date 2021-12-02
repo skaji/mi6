@@ -21,6 +21,6 @@ method run(*%opt) {
             }
         };
     }
-    note "===> Uploading $tarball to Zef ecosystem";
     App::Mi6::Fez.upload($tarball);
+    say "It will appear in https://360.zef.pm/";
 }

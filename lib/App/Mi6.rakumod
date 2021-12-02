@@ -21,8 +21,6 @@ method dist() { $?DISTRIBUTION }
 
 my $MODULE-EXT = / '.' [ pm | pm6 | rakumod ] /;
 
-has $!author = mi6run(<git config --global user.name>,  :out).out.slurp(:close).chomp;
-has $!email  = mi6run(<git config --global user.email>, :out).out.slurp(:close).chomp;
 has $!year   = Date.today.year;
 
 my $normalize-path = -> $path {
@@ -42,6 +40,10 @@ my sub config($section, $key?, :$default = Any) {
     my $pair = @($config).grep({ $_.key eq $key }).first;
     $pair ?? $pair.value !! $default;
 }
+
+method !author() { mi6run(<git config --global user.name>,  :out).out.slurp(:close).chomp }
+
+method !email()  { mi6run(<git config --global user.email>, :out).out.slurp(:close).chomp }
 
 method !cpan-user() {
     $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user>.uc !! Nil;
@@ -70,24 +72,29 @@ multi method cmd('new', $module is copy, :$zef) {
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin", ".github/workflows";
 
+    note "Loading author's name and email from git config --global user.name / user.email";
+    my $author = self!author;
+    my $email = self!email;
+
     my $auth;
     if $zef {
+        note "Loading zef username from ~/.fez-config.json";
         my $user = self!zef-user;
         $auth = "zef:$user";
     } else {
-        my $user = self!cpan-user;
-        if $user {
+        if my $user = self!cpan-user {
+            note "Loading cpan username from ~/.pause";
             $auth = "cpan:$user";
         }
     }
 
     my %content = App::Mi6::Template::template(
-        :$module, :$!author, :$auth, :$!email, :$!year,
+        :$module, :$author, :$auth, :$email,
         :$module-file,
+        year => Date.today.year,
         dist => $module.subst("::", "-", :g),
     );
     my %map = <<
-        META6.json    META6
         Changes       Changes
         dist.ini      dist
         $module-file  module
@@ -99,6 +106,14 @@ multi method cmd('new', $module is copy, :$zef) {
     for %map.kv -> $f, $c {
         spurt($f, %content{$c});
     }
+    my %meta =
+        authors => [ $author ],
+        version => "0.0.1",
+        perl => "6.d",
+    ;
+    %meta<auth> = $auth if $auth;
+    "META6.json".IO.spurt: App::Mi6::JSON.encode(%meta) ~ "\n";
+
     mi6run "git", "init", ".", :!out;
     mi6run "git", "add", ".";
     self.cmd("build");
@@ -245,23 +260,8 @@ method regenerate-readme($module-file) {
 
 method regenerate-meta($module, $module-file) {
     my $already = App::Mi6::JSON.decode("META6.json".IO.slurp);
-
-    my $authors = do if $already<authors> {
-        $already<authors>;
-    } elsif $already<author> {
-        [$already<author>:delete];
-    } else {
-        [ $!author ];
-    };
-
-    my $perl = $already<perl> || "6.d";
-    $perl = "6.d" if $perl eq "v6";
-    $perl ~~ s/^v//;
-
     my %new-meta =
         name          => $module,
-        perl          => $perl,
-        authors       => $authors,
         depends       => $already<depends> || [],
         test-depends  => $already<test-depends> || [],
         build-depends => $already<build-depends> || [],

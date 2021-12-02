@@ -9,5 +9,8 @@ method username() {
 }
 
 method upload($tarball) {
-    mi6run "fez", "--file=$tarball", "upload";
+    my @cmd = "fez", "--file=$tarball", "upload";
+    note "Executing {@cmd}";
+    my $p = mi6run |@cmd;
+    die "Failed" if !?$p;
 }

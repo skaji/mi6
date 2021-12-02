@@ -3,13 +3,6 @@ unit module App::Mi6::Template;
 our sub template(:$module, :$module-file, :$dist, :$author, :$auth, :$email, :$year) {
     my %template =
 
-META6 => qq:to/EOF/,
-\{
-    { $auth ?? qq["auth": "$auth",] !! ""}
-    "version": "0.0.1"
-\}
-EOF
-
 Changes => qq:to/EOF/,
 Revision history for $dist
 
