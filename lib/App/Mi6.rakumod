@@ -54,8 +54,20 @@ method !zef-user() {
     if ::("App::Mi6::Fez") ~~ Failure {
         die "To create a distribution for Zef ecosystem, you need to install fez first";
     }
-    if my $user = ::("App::Mi6::Fez").username {
+    if ::("App::Mi6::Fez").username -> $user {
         return $user;
+    } else {
+        die "To create a distribution for Zef ecosystem, you need to execute 'fez register' and 'fez login' first.";
+    }
+}
+
+method !zef-groups() {
+    try require ::("App::Mi6::Fez");
+    if ::("App::Mi6::Fez") ~~ Failure {
+        die "To create a distribution for Zef ecosystem, you need to install fez first";
+    }
+    if ::("App::Mi6::Fez").groups -> @groups {
+        return @groups;
     } else {
         die "To create a distribution for Zef ecosystem, you need to execute 'fez register' and 'fez login' first.";
     }
@@ -145,6 +157,11 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     if $upload-class eq "UploadToZef" {
         my $user = self!zef-user;
         $expect-auth = "zef:$user";
+        if self!zef-groups -> @groups {
+            my @auths = $expect-auth;
+            @auths.push("zef:$_") for @groups;
+            $expect-auth = any(@auths);
+        }
     } else {
         my $user = self!cpan-user;
         die "cannot determine CPAN user from ~/.pause" if !$user;
