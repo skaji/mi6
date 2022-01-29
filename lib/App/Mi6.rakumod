@@ -8,7 +8,7 @@ use CPAN::Uploader::Tiny;
 use Shell::Command;
 use TAP;
 
-BEGIN { $*PERL.compiler.version >= v2020.05 or die "App::Mi6 needs rakudo v2020.05 or later" }
+BEGIN { $*RAKU.compiler.version >= v2020.11 or die "App::Mi6 needs rakudo v2020.11 or later" }
 
 unit class App::Mi6;
 
