@@ -20,7 +20,7 @@ $ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by 
 INSTALLATION
 ============
 
-First make sure you have rakudo v2020.05 or later. If not, install rakudo from [https://rakudo.org/downloads](https://rakudo.org/downloads).
+First make sure you have rakudo v2020.11 or later. If not, install rakudo from [https://rakudo.org/downloads](https://rakudo.org/downloads).
 
 Then:
 
