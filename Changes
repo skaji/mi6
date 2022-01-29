@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+2.0.2  2022-01-30T04:06:58+09:00
+  - macOS-latest -> macos-latest in github action workflow file
+
 2.0.1  2021-12-03T00:30:09+09:00
   - Fix `mi6 version`
   - Emit more verbose messages when `mi6 new`
