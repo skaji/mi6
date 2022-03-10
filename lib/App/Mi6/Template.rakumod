@@ -43,7 +43,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
+          - macos-latest
           - windows-latest
         raku-version:
           - 'latest'

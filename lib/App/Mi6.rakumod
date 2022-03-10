@@ -8,7 +8,7 @@ use CPAN::Uploader::Tiny;
 use Shell::Command;
 use TAP;
 
-BEGIN { $*PERL.compiler.version >= v2020.05 or die "App::Mi6 needs rakudo v2020.05 or later" }
+BEGIN { $*RAKU.compiler.version >= v2020.11 or die "App::Mi6 needs rakudo v2020.11 or later" }
 
 unit class App::Mi6;
 
@@ -505,7 +505,7 @@ $ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by 
 
 =head1 INSTALLATION
 
-First make sure you have rakudo v2020.05 or later. If not, install rakudo from L<https://rakudo.org/downloads>.
+First make sure you have rakudo v2020.11 or later. If not, install rakudo from L<https://rakudo.org/downloads>.
 
 Then:
 
