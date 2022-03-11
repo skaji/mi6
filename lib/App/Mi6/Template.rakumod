@@ -23,7 +23,7 @@ filename = $module-file
 ; match = ^ 'xt/'
 
 [Badges]
-provider = github-actions/test
+provider = github-actions/test.yml
 EOF
 
 workflow => q:to/EOF/,
