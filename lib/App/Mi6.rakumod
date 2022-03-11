@@ -266,7 +266,7 @@ method regenerate-meta($module, $module-file) {
         test-depends  => $already<test-depends> || [],
         build-depends => $already<build-depends> || [],
         description   => find-description($module-file) || $already<description> || "",
-        provides      => self.find-provides(),
+        provides      => $already<provides> || self.find-provides(),
         source-url    => $already<source-url> || find-source-url(),
         resources     => $already<resources> || [],
         tags          => $already<tags> || [],
