@@ -37,7 +37,8 @@ my sub config($section, $key?, :$default = Any) {
     state $top = "dist.ini".IO.e ?? App::Mi6::INI::parsefile("dist.ini") !! {};
     my $config = $top{$section};
     return $config // $default if !$config || !$key;
-    my $pair = @($config).grep({ $_.key eq $key }).first;
+    my $k = $key eq "enabled" ?? ("enabled", "enable").any !! $key;
+    my $pair = @($config).grep({ $_.key eq $k }).first;
     $pair ?? $pair.value !! $default;
 }
 
@@ -246,7 +247,7 @@ method readme-header() {
 method regenerate-readme($module-file) {
     my $section = "ReadmeFromPod";
     my $default = "";
-    return if config($section, "enable", :$default) eq "false" or config($section, "disable", :$default) eq "true";
+    return if config($section, "enabled", :$default) eq "false" ;
     my $file = config($section, "filename", :$default) || $module-file;
 
     my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
@@ -266,7 +267,7 @@ method regenerate-meta($module, $module-file) {
         test-depends  => $already<test-depends> || [],
         build-depends => $already<build-depends> || [],
         description   => find-description($module-file) || $already<description> || "",
-        provides      => config("DontTouchProvides").defined
+        provides      => config("AutoScanPackages", "enabled", :default<true>) eq "false"
                            ?? ($already<provides> || self.find-provides())
                            !! self.find-provides(),
         source-url    => $already<source-url> || find-source-url(),
@@ -525,7 +526,7 @@ name = Your-Module-Name
 
 [ReadmeFromPod]
 ; if you want to disable generating README.md from main module's pod, then:
-; enable = false
+; enabled = false
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
@@ -543,6 +544,11 @@ name = Your-Module-Name
 [MetaNoIndex]
 ; if you do not want to list some files in META6.json as "provides", then
 ; filename = lib/Should/Not/List/Provides.rakumod
+
+[AutoScanPackages]
+; if you do not want mi6 to scan packages at all,
+; but you want to manage "provides" in META6.json by yourself, then:
+; enabled = false
 
 [Badges]
 ; if you want to add badges to README.md, then
