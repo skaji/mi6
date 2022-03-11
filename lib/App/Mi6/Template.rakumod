@@ -58,7 +58,7 @@ jobs:
       - name: Install App::Prove6
         run: zef install --/test App::Prove6
       - name: Run Tests
-        run: prove6 -l t
+        run: prove6 -I. t
 EOF
 
 gitignore => qq:to/EOF/,
