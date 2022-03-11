@@ -14,7 +14,7 @@ dist => qq:to/EOF/,
 name = $dist
 
 [ReadmeFromPod]
-; enable = false
+; enabled = false
 filename = $module-file
 
 [UploadTo{ $auth && $auth ~~ /^zef:/ ?? "Zef" !! "CPAN" }]

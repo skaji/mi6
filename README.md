@@ -55,7 +55,7 @@ name = Your-Module-Name
 
 [ReadmeFromPod]
 ; if you want to disable generating README.md from main module's pod, then:
-; enable = false
+; enabled = false
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
@@ -73,6 +73,11 @@ name = Your-Module-Name
 [MetaNoIndex]
 ; if you do not want to list some files in META6.json as "provides", then
 ; filename = lib/Should/Not/List/Provides.rakumod
+
+[AutoScanPackages]
+; if you do not want mi6 to scan packages at all,
+; but you want to manage "provides" in META6.json by yourself, then:
+; enabled = false
 
 [Badges]
 ; if you want to add badges to README.md, then
