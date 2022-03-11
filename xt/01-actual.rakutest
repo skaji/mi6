@@ -98,6 +98,9 @@ my $tempdir = tempdir;
     EOF
     run "git", "add", ".";
 
+    "META6.json".IO.spurt:
+      "META6.json".IO.slurp.subst: / '  "provides": {' <( <-[}]>+ /;
+
     mi6 "build";
     my $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
     is $meta<provides>, {
