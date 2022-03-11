@@ -2,6 +2,10 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+2.0.3  2022-03-12T00:23:52+09:00
+  - Introduce AutoScanPackages configuration in dist.ini (lizmat #141, #144)
+  - Tests should be performed with -I. rather than -Ilib (lizmat #143)
+
 2.0.2  2022-01-30T04:06:58+09:00
   - macOS-latest -> macos-latest in github action workflow file
 
