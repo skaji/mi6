@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+2.0.5  2022-03-12T08:19:00+09:00
+  - Update GitHub actions badges (#145)
+
 2.0.4  2022-03-12T07:59:13+09:00
   - Support for zef/fez groups (vrurg #140, lizmat #138)
 
