@@ -50,13 +50,13 @@ method !cpan-user() {
     $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user>.uc !! Nil;
 }
 
-method !zef-user() {
+method !zef-auth() {
     try require ::("App::Mi6::Fez");
     if ::("App::Mi6::Fez") ~~ Failure {
         die "To create a distribution for Zef ecosystem, you need to install fez first";
     }
-    if my $user = ::("App::Mi6::Fez").username {
-        return $user;
+    if my $user = (my \fez-mod = ::("App::Mi6::Fez")).username {
+        return ($user, |fez-mod.groups);
     } else {
         die "To create a distribution for Zef ecosystem, you need to execute 'fez register' and 'fez login' first.";
     }
@@ -80,7 +80,7 @@ multi method cmd('new', $module is copy, :$zef) {
     my $auth;
     if $zef {
         note "Loading zef username from ~/.fez-config.json";
-        my $user = self!zef-user;
+        my $user = self!zef-auth.head;
         $auth = "zef:$user";
     } else {
         if my $user = self!cpan-user {
@@ -143,13 +143,15 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     my $upload-class = config("UploadToZef").defined ?? "UploadToZef" !! "UploadToCPAN";
 
     my $expect-auth;
+    my $auth-kind;
     if $upload-class eq "UploadToZef" {
-        my $user = self!zef-user;
-        $expect-auth = "zef:$user";
+        $expect-auth = self!zef-auth.map({ "zef:$_" }).List;
+        $auth-kind = "zef";
     } else {
         my $user = self!cpan-user;
         die "cannot determine CPAN user from ~/.pause" if !$user;
-        $expect-auth = "cpan:$user";
+        $expect-auth = ("cpan:$user",);
+        $auth-kind = "cpan";
     }
 
     my $release = App::Mi6::Release.new(:$upload-class);
@@ -160,6 +162,7 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
         :$release-date, :$dist, :$keep,
         :$next-version, :$yes,
         :$expect-auth,
+        :$auth-kind
     );
 }
 

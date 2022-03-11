@@ -4,7 +4,7 @@ use App::Mi6::JSON;
 use App::Mi6::Util;
 
 method run(*%opt) {
-    my $expect-auth = %opt<expect-auth>;
+    my $expect-auth = %opt<expect-auth>.any;
     my $module = %opt<main-module>;
 
     my $meta-auth = App::Mi6::JSON.decode("META6.json".IO.slurp)<auth>;
@@ -14,7 +14,7 @@ method run(*%opt) {
         $p.out.slurp(:close).chomp || Nil;
     };
 
-    if $expect-auth.starts-with("zef:") {
+    if %opt<auth-kind> eq 'zef' {
         if !$meta-auth {
             die "To upload distribution to Zef ecosystem, you need to set 'auth' in META6.json first";
         }

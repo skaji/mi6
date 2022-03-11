@@ -8,6 +8,10 @@ method username() {
     config-value('un');
 }
 
+method groups() {
+    (.map({ .<group> }) with config-value('groups'))
+}
+
 method upload($tarball) {
     my @cmd = "fez", "--file=$tarball", "upload";
     note "Executing {@cmd}";
