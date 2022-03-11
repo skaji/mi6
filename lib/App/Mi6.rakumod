@@ -208,7 +208,7 @@ multi list-testfiles(IO::Path $path) {
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
-    my %args = handlers => TAP::Harness::SourceHandler::Raku.new(incdirs => ["lib"]);
+    my %args = handlers => TAP::Harness::SourceHandler::Raku.new(incdirs => ["."]);
     %args<jobs> = $jobs with $jobs;
     %args<volume> = TAP::Verbose with $verbose;
     if @file.elems == 0 {
