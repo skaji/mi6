@@ -19,8 +19,13 @@ my %markdown =
         ~ "(https://ci.appveyor.com/project/$user/$repo/branch/master)";
     },
     "github-actions" => -> :$user, :$repo, :$name {
-        "[![Actions Status](https://github.com/$user/$repo/workflows/$name/badge.svg)]"
-        ~ "(https://github.com/$user/$repo/actions)";
+        if $name ~~ / [yml || yaml ] $/ {
+            "[![Actions Status](https://github.com/$user/$repo/actions/workflows/$name/badge.svg)]"
+            ~ "(https://github.com/$user/$repo/actions)";
+        } else {
+            "[![Actions Status](https://github.com/$user/$repo/workflows/$name/badge.svg)]"
+            ~ "(https://github.com/$user/$repo/actions)";
+        }
     },
 ;
 
