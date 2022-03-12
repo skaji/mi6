@@ -84,7 +84,7 @@ name = Your-Module-Name
 ; provider = travis-ci.org
 ; provider = travis-ci.com
 ; provider = appveyor
-; provider = github-actions/name
+; provider = github-actions/name.yml
 ```
 
 How can I manage depends, build-depends, test-depends?
