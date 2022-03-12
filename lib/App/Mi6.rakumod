@@ -183,7 +183,7 @@ sub build() {
         } else {
             $meta<builder>
         };
-        with-rakulib "$*CWD/lib", { (require ::($builder)).new(:$meta).build; }
+        with-rakulib $*CWD, { (require ::($builder)).new(:$meta).build; }
         return;
     }
 
@@ -192,7 +192,7 @@ sub build() {
 
     note "==> Execute $build-file";
     my $cmd = "require '{$build-file.IO.absolute}'; ::('Build').new.build('{~$*CWD}') ?? exit(0) !! exit(1);";
-    my @cmd = $*EXECUTABLE, "-Ilib", "-I.", '-e', $cmd;
+    my @cmd = $*EXECUTABLE, "-I$*CWD", '-e', $cmd;
     note "==> @cmd[]";
     my $proc = mi6run |@cmd;
     my $code = $proc.exitcode;
@@ -212,7 +212,7 @@ multi list-testfiles(IO::Path $path) {
 }
 
 sub test(@file, Bool :$verbose, Int :$jobs) {
-    my %args = handlers => TAP::Harness::SourceHandler::Raku.new(incdirs => ["."]);
+    my %args = handlers => TAP::Harness::SourceHandler::Raku.new(incdirs => [$*CWD]);
     %args<jobs> = $jobs with $jobs;
     %args<volume> = TAP::Verbose with $verbose;
     if @file.elems == 0 {
@@ -253,8 +253,8 @@ method regenerate-readme($module-file) {
     return if config($section, "enabled", :$default) eq "false" ;
     my $file = config($section, "filename", :$default) || $module-file;
 
-    my @cmd = $*EXECUTABLE, "--doc=Markdown", $file;
-    my $p = with-rakulib "$*CWD/lib", { mi6run |@cmd, :out };
+    my @cmd = $*EXECUTABLE, "-I$*CWD", "--doc=Markdown", $file;
+    my $p = mi6run |@cmd, :out;
     LEAVE $p && $p.out.close;
     die "Failed @cmd[]" if $p.exitcode != 0;
     my $markdown = $p.out.slurp;
