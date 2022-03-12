@@ -13,7 +13,7 @@ method groups() {
 }
 
 method upload($tarball) {
-    my @cmd = "fez", "--file=$tarball", "upload";
+    my @cmd = $*EXECUTABLE, "-e", "use Fez::CLI", "--file=$tarball", "upload";
     note "Executing {@cmd}";
     my $p = mi6run |@cmd;
     die "Failed" if !?$p;
