@@ -124,8 +124,8 @@ multi method cmd('new', $module is copy, :$zef) {
 
 multi method cmd('build') {
     my ($module, $module-file) = guess-main-module();
-    self.regenerate-readme($module-file);
     self.regenerate-meta($module, $module-file);
+    self.regenerate-readme($module-file);
     build();
 }
 
