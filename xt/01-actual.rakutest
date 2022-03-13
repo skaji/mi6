@@ -111,10 +111,18 @@ my $tempdir = tempdir;
     temp $*CWD = $tempdir.IO;
     mi6 "new", "Build::Test";
     chdir "Build-Test";
-    "Build.pm".IO.spurt('class Build { method build($pwd) { say "pwd=$pwd"; True } }');
+    "Build.rakumod".IO.spurt: q:to/EOF/;
+    use Build::Test;
+    class Build {
+        method build($pwd) {
+            say "pwd=$pwd";
+            True;
+        }
+    }
+    EOF
     my $r = mi6 "build";
     like $r.out, rx/ 'pwd=' /;
-    like $r.err, rx/ '==> Execute Build.pm' /;
+    like $r.err, rx/ '==> Execute Build.rakumod' /;
     is $r.exit, 0;
 }
 
