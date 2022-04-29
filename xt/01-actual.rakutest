@@ -126,4 +126,19 @@ my $tempdir = tempdir;
     is $r.exit, 0;
 }
 
+{
+    temp $*CWD = $tempdir.IO;
+    mi6 "new", "Build::Test2";
+    chdir "Build-Test2";
+    my $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
+    $meta<builder> = "MakeFromJSON";
+    "META6.json".IO.spurt: App::Mi6::JSON.encode($meta);
+    "Makefile.in".IO.spurt: qq:to/EOF/;
+    default:
+    \t@echo %SO%
+    EOF
+    my $r = mi6 "build";
+    is $r.exit, 0 or diag $r.err;
+}
+
 done-testing;

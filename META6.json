@@ -45,7 +45,6 @@
   "tags": [
   ],
   "test-depends": [
-    "File::Temp"
   ],
   "version": "2.0.6"
 }

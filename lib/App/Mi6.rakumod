@@ -183,7 +183,7 @@ sub build() {
         } else {
             $meta<builder>
         };
-        with-rakulib $*CWD, { (require ::($builder)).new(:$meta).build; }
+        with-rakulib $*CWD, { (require ::($builder)).new(:$meta).build($*CWD); }
         return;
     }
 
