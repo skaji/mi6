@@ -49,7 +49,7 @@ jobs:
           - 'latest'
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: Raku/setup-raku@v1
         with:
           raku-version: ${{ matrix.raku-version }}
