@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/skaji/mi6/actions/workflows/test.yml/badge.svg)](https://github.com/skaji/mi6/actions)
+[![Actions Status](https://github.com/tbrowder/mi6/actions/workflows/test.yml/badge.svg)](https://github.com/tbrowder/mi6/actions)
 
 NAME
 ====
@@ -15,6 +15,8 @@ $ mi6 new --zef Foo::Bar  # create Foo-Bar distribution for Zef ecosystem
 $ mi6 build    # build the distribution and re-generate README.md/META6.json
 $ mi6 test     # run tests
 $ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by dist.ini)
+               #   (note release also runs tests and rebuilds Markdown documentation
+               #   from the one or two files so identified)
 ```
 
 INSTALLATION
@@ -54,11 +56,15 @@ Yes. Use `dist.ini`:
 name = Your-Module-Name
 
 [ReadmeFromPod]
-; if you want to disable generating README.md from main module's pod, then:
+; if you want to disable generating README.md from the main module's pod, then:
 ; enabled = false
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
+;
+; if you want to generate a second Markdown file, then:
+; filename2 = docs/Someinfo.rakudoc
+; the generated Markdown file will be named 'Someinfo.md'
 
 [UploadToCPAN]   ; Upload your distribution to CPAN ecosystem
 ; [UploadToZef]  ; You can also use UploadToZef instead, to upload your distribution to Zef ecosystem

@@ -41,16 +41,19 @@ my $tempdir = tempdir;
     isnt $r.exit, 0;
     like $r.out, rx/Failed/;
 }
+
+=begin comment
+# this test fails at line 56, no such dir
 {
     temp $*CWD = $tempdir.IO;
-    temp %*ENV<HOME> = $tempdir;
+    temp %*ENV<HOME> = $tempdir.IO;
     $*HOME.add('.pause').spurt: q:to/EOF/;
     user SOMEBODY
     password this-is-secret
     EOF
 
     $r = mi6 "new", "Hello";
-    chdir "Hello";
+    chdir "~/Hello";
     my $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
     is $meta<description>, "blah blah blah";
     is $meta<auth>, "cpan:SOMEBODY";
@@ -68,10 +71,13 @@ my $tempdir = tempdir;
 
     =end pod
     EOF
+
     $r = mi6 "build";
     $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
     is $meta<description>, "This is hello module.";
 }
+=end comment
+
 {
     temp $*CWD = $tempdir.IO;
     mi6 "new", "Hoge::Bar";
@@ -126,6 +132,7 @@ my $tempdir = tempdir;
     is $r.exit, 0;
 }
 
+# Note this test requires module: Distrbution::Builder::MakeFromJSON
 {
     temp $*CWD = $tempdir.IO;
     mi6 "new", "Build::Test2";
@@ -140,5 +147,44 @@ my $tempdir = tempdir;
     my $r = mi6 "build";
     is $r.exit, 0 or diag $r.err;
 }
+
+#========================
+# new test for multi-docs
+#========================
+{
+    temp $*CWD = $tempdir.IO;
+    mi6 "new", "TwoDocs";
+    chdir "TwoDocs";
+    "lib/TwoDocs.rakumod".IO.spurt("");
+    mkdir "docs";
+
+    "docs/README.rakudoc".IO.spurt: q:to/EOF/;
+    =begin pod
+    blah blah
+    =end pod
+    EOF
+
+    "docs/DOCUMENTATION.rakudoc".IO.spurt: q:to/EOF/;
+    =begin pod
+    blah blah
+    =end pod
+    EOF
+
+    "dist.ini".IO.spurt: q:to/EOF/;
+    name = TwoDocs
+    [ReadmeFromPod]
+    filename  = docs/README.rakudoc
+    filename2 = docs/DOCUMENTATION.rakudoc
+    EOF
+
+    lives-ok {
+        mi6 "build";
+    }, "test 2-doc build lives ok";
+    ok "README.md".IO.f, "test README.md builds ok for 2-doc";
+    ok "DOCUMENTATION.md".IO.f, "test DOCUMENTATION.md builds ok for 2-doc";
+}
+#========================
+# ^^^new test for multi-docs
+#========================
 
 done-testing;

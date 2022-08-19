@@ -251,8 +251,8 @@ method regenerate-readme($module-file) {
     my $section = "ReadmeFromPod";
     my $default = "";
     return if config($section, "enabled", :$default) eq "false" ;
-    my $file = config($section, "filename", :$default) || $module-file;
 
+    my $file = config($section, "filename", :$default) || $module-file;
     my @cmd = $*EXECUTABLE, "-I$*CWD", "--doc=Markdown", $file;
     my $p = mi6run |@cmd, :out;
     LEAVE $p && $p.out.close;
@@ -260,6 +260,24 @@ method regenerate-readme($module-file) {
     my $markdown = $p.out.slurp;
     my $header = self.readme-header();
     spurt "README.md", $header ~ $markdown;
+
+    # allow multiple rakudoc files
+    my $file2 = config($section, "filename2", :$default);
+    #die "FATAL: no file2 produced" if not $file2.defined;
+    return if not $file2.defined;
+    return if not $file2;
+
+    # the output of the second file takes the basename of the rakudoc 
+    # file with the extension changed to 'md'
+    my $ofile = $file2.IO.basename;
+    $ofile = $file2.IO.extension("md").IO.basename;
+
+    @cmd = $*EXECUTABLE, "-I$*CWD", "--doc=Markdown", $file2;
+    $p = mi6run |@cmd, :out;
+    LEAVE $p && $p.out.close;
+    die "Failed @cmd[]" if $p.exitcode != 0;
+    $markdown = $p.out.slurp;
+    spurt $ofile, $markdown;
 }
 
 method regenerate-meta($module, $module-file) {
@@ -326,6 +344,8 @@ method prune-files {
         for @($config) {
             my ($k, $v) = $_.kv;
             if $k eq "filename" {
+                @prune.push: * eq $v;
+            } elsif $k eq "filename2" {
                 @prune.push: * eq $v;
             } elsif $k eq "match" {
                 @prune.push: * ~~ rx/<{$v}>/;
@@ -416,7 +436,7 @@ method find-provides() {
     if $config {
         for @($config) {
             my ($k, $v) = $_.kv;
-            if $k eq 'file' || $k eq 'filename' {
+            if $k eq 'file' || $k eq 'filename' || $k eq 'filename2' {
                 @no-index.push: $v;
             } else {
                 die "Unsupported key 'MetaNoIndex.$k' is found in dist.ini";
@@ -489,6 +509,8 @@ $ mi6 new --zef Foo::Bar  # create Foo-Bar distribution for Zef ecosystem
 $ mi6 build    # build the distribution and re-generate README.md/META6.json
 $ mi6 test     # run tests
 $ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by dist.ini)
+               #   (note release also runs tests and rebuilds Markdown documentation
+               #   from the one or two files so identified)
 
 =end code
 
@@ -528,11 +550,15 @@ Yes. Use C<dist.ini>:
 name = Your-Module-Name
 
 [ReadmeFromPod]
-; if you want to disable generating README.md from main module's pod, then:
+; if you want to disable generating README.md from the main module's pod, then:
 ; enabled = false
 ;
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
+;
+; if you want to generate a second Markdown file, then:
+; filename2 = docs/Someinfo.rakudoc
+; the generated Markdown file will be named 'Someinfo.md'
 
 [UploadToCPAN]   ; Upload your distribution to CPAN ecosystem
 ; [UploadToZef]  ; You can also use UploadToZef instead, to upload your distribution to Zef ecosystem
