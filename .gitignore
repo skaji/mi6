@@ -1,2 +1,4 @@
 .precomp/
 /App-Mi6-*
+dev/
+/Makefile
