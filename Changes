@@ -1,7 +1,7 @@
 Revision history for App-Mi6
 
 {{$NEXT}}
-  - Provide for an optional second file for conversion from Rakudoc to Markdown
+  - Provide for an optional second file for conversion from Rakudoc to Markdown (tbrowder PR #154' 
 
 2.0.6  2022-03-13T11:44:16+09:00
   - Execute fez by raku -e 'use Fez::CLI'

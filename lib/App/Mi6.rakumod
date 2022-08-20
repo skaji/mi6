@@ -263,7 +263,6 @@ method regenerate-readme($module-file) {
 
     # allow multiple rakudoc files
     my $file2 = config($section, "filename2", :$default);
-    #die "FATAL: no file2 produced" if not $file2.defined;
     return if not $file2.defined;
     return if not $file2;
 
