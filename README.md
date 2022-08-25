@@ -85,6 +85,16 @@ name = Your-Module-Name
 ; provider = travis-ci.com
 ; provider = appveyor
 ; provider = github-actions/name.yml
+
+; execute some commands before `mi6 build`
+[RunBeforeBuild]
+; %x will be replaced by $*EXECUTABLE
+; cmd = %x -e 'say "hello"'
+; cmd = %x -e 'say "world"'
+
+; execute some commands after `mi6 build`
+[RunAfterBuild]
+; cmd = some shell command here
 ```
 
 How can I manage depends, build-depends, test-depends?
