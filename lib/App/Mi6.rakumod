@@ -2,6 +2,7 @@ use App::Mi6::Badge;
 use App::Mi6::INI;
 use App::Mi6::JSON;
 use App::Mi6::Release;
+use App::Mi6::Run;
 use App::Mi6::Template;
 use App::Mi6::Util;
 use CPAN::Uploader::Tiny;
@@ -123,10 +124,12 @@ multi method cmd('new', $module is copy, :$zef) {
 }
 
 multi method cmd('build') {
+    self.run-hook('BeforeBuild');
     my ($module, $module-file) = guess-main-module();
     self.regenerate-meta($module, $module-file);
     self.regenerate-readme($module-file);
     build();
+    self.run-hook('AfterBuild');
 }
 
 multi method cmd('test', *@file, Bool :$verbose, Int :$jobs) {
@@ -172,6 +175,17 @@ multi method cmd('dist', Bool :$no-top-directory) {
     my $tarball = self.make-dist-tarball($module, :$no-top-directory);
     say "Created $tarball";
     return $tarball;
+}
+
+method run-hook($phase) {
+    my $hooks = config("Run$phase", default => []);
+    return if @$hooks == 0;
+    for @$hooks -> $hook {
+        die "unknown key Run$phase.{$hook.key} in dist.ini" if $hook.key ne 'cmd';
+        my $runner = App::Mi6::Run.new(raw-cmd => $hook.value);
+        note "==> Run$phase: Execute {$runner.cmd}";
+        $runner.run;
+    }
 }
 
 sub build() {
@@ -559,6 +573,16 @@ name = Your-Module-Name
 ; provider = travis-ci.com
 ; provider = appveyor
 ; provider = github-actions/name.yml
+
+; execute some commands before `mi6 build`
+[RunBeforeBuild]
+; %x will be replaced by $*EXECUTABLE
+; cmd = %x -e 'say "hello"'
+; cmd = %x -e 'say "world"'
+
+; execute some commands after `mi6 build`
+[RunAfterBuild]
+; cmd = some shell command here
 
 =end code
 

@@ -141,4 +141,21 @@ my $tempdir = tempdir;
     is $r.exit, 0 or diag $r.err;
 }
 
+{
+    temp $*CWD = $tempdir.IO;
+    mi6 "new", "Build::Test3";
+    chdir "Build-Test3";
+    "dist.ini".IO.spurt: q:to/EOF/, :append;
+    [RunBeforeBuild]
+    cmd = %x -e 'print 1'
+    cmd = %x -e 'print 2'
+    [RunAfterBuild]
+    cmd = %x -e 'print 3'
+    cmd = %x -e 'print 4'
+    EOF
+    my $r = mi6 "build";
+    is $r.exit, 0 or diag $r.err;
+    like $r.out, rx/1234/;
+}
+
 done-testing;

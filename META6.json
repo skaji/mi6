@@ -36,6 +36,7 @@
     "App::Mi6::Release::RewriteChanges": "lib/App/Mi6/Release/RewriteChanges.rakumod",
     "App::Mi6::Release::UploadToCPAN": "lib/App/Mi6/Release/UploadToCPAN.rakumod",
     "App::Mi6::Release::UploadToZef": "lib/App/Mi6/Release/UploadToZef.rakumod",
+    "App::Mi6::Run": "lib/App/Mi6/Run.rakumod",
     "App::Mi6::Template": "lib/App/Mi6/Template.rakumod",
     "App::Mi6::Util": "lib/App/Mi6/Util.rakumod"
   },
