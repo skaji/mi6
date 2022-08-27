@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+2.0.7  2022-08-27T10:49:09+09:00
+  - Introduce RunBeforeBuild and RunAfterBuild (#155)
+
 2.0.6  2022-03-13T11:44:16+09:00
   - Execute fez by raku -e 'use Fez::CLI'
   - Regenerate meta before readme in mi6 build
