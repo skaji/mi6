@@ -93,6 +93,11 @@ name = Your-Module-Name
 ; execute some commands after `mi6 build`
 [RunAfterBuild]
 ; cmd = some shell command here
+
+[MetaGeneration]
+; by default, META6.json is regenerated with 2 spaces indentation
+; if you want to modify that, you can set:
+; spacing = 4
 ```
 
 How can I manage depends, build-depends, test-depends?

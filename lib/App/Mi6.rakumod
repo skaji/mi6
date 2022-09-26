@@ -34,7 +34,7 @@ my $to-file = -> $module {
     'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.rakumod';
 };
 
-my sub config($section, $key?, :$default = Any) {
+my sub config($section, $key?, :$default = Nil) {
     state $top = "dist.ini".IO.e ?? App::Mi6::INI::parsefile("dist.ini") !! {};
     my $config = $top{$section};
     return $config // $default if !$config || !$key;
@@ -109,7 +109,9 @@ multi method cmd('new', $module is copy, :$cpan) {
         perl => "6.d",
     ;
     %meta<auth> = $auth if $auth;
-    "META6.json".IO.spurt: App::Mi6::JSON.encode(%meta) ~ "\n";
+    my %encode-args;
+    %encode-args.push: (spacing => .Int) with config('MetaGeneration', 'spacing');
+    "META6.json".IO.spurt: App::Mi6::JSON.encode(%meta, |%encode-args) ~ "\n";
 
     mi6run "git", "init", ".", :!out;
     mi6run "git", "add", ".";
@@ -295,7 +297,9 @@ method regenerate-meta($module, $module-file) {
     for $already.keys -> $k {
         %new-meta{$k} = $already{$k} unless %new-meta{$k}:exists;
     }
-    "META6.json".IO.spurt: App::Mi6::JSON.encode(%new-meta) ~ "\n";
+    my %encode-args;
+    %encode-args.push: (spacing => .Int) with config('MetaGeneration', 'spacing');
+    "META6.json".IO.spurt: App::Mi6::JSON.encode(%new-meta, |%encode-args) ~ "\n";
 }
 
 sub guess-license() {
@@ -581,6 +585,11 @@ name = Your-Module-Name
 ; execute some commands after `mi6 build`
 [RunAfterBuild]
 ; cmd = some shell command here
+
+[MetaGeneration]
+; by default, META6.json is regenerated with 2 spaces indentation
+; if you want to modify that, you can set:
+; spacing = 4
 
 =end code
 
