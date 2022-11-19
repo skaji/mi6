@@ -2,6 +2,11 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+3.0.0  2022-11-20T00:51:28+09:00
+  - Now mi6 itself lives in Zef ecosystem!
+  - Now `mi6 new` creates Zef distribution by default (#162)
+  - Depends on fez, and remove CPAN::Uploader::Tiny dependency (#162)
+
 2.0.7  2022-08-27T10:49:09+09:00
   - Introduce RunBeforeBuild and RunAfterBuild (#155)
 
