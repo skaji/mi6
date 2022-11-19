@@ -9,12 +9,10 @@ SYNOPSIS
 ========
 
 ```console
-$ mi6 new Foo::Bar        # create Foo-Bar distribution for CPAN ecosystem
-$ mi6 new --zef Foo::Bar  # create Foo-Bar distribution for Zef ecosystem
-
-$ mi6 build    # build the distribution and re-generate README.md/META6.json
-$ mi6 test     # run tests
-$ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by dist.ini)
+$ mi6 new Foo::Bar # create Foo-Bar distribution for Zef ecosystem
+$ mi6 build        # build the distribution and re-generate README.md/META6.json
+$ mi6 test         # run tests
+$ mi6 release      # release your distribution to Zef ecosystem
 ```
 
 INSTALLATION
@@ -39,7 +37,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
   * Run tests by `mi6 test`
 
-  * Release your distribution to [CPAN ecosystem](https://www.cpan.org/authors/id/) or [Zef ecosystem](https://deathbyperl6.com/faq-zef-ecosystem/)
+  * Release your distribution to [Zef ecosystem](https://deathbyperl6.com/faq-zef-ecosystem/) or [CPAN ecosystem](https://www.cpan.org/authors/id/)
 
 FAQ
 ===
@@ -60,8 +58,8 @@ name = Your-Module-Name
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
 
-[UploadToCPAN]   ; Upload your distribution to CPAN ecosystem
-; [UploadToZef]  ; You can also use UploadToZef instead, to upload your distribution to Zef ecosystem
+[UploadToZef]    ; Upload your distribution to Zef ecosystem
+; [UploadToCPAN] ; You can also use UploadToCPAN instead, to upload your distribution to CPAN ecosystem
 
 [PruneFiles]
 ; if you want to prune files when packaging, then

@@ -1,6 +1,6 @@
 unit module Util;
 
-my $base = $*SPEC.catdir($?FILE.IO.dirname, "..");
+my $base = $?FILE.IO.dirname.IO.parent;
 
 my class Result {
     has $.out;

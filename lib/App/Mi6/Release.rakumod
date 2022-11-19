@@ -1,13 +1,10 @@
 unit class App::Mi6::Release;
 
-
-has $.upload-class = "UploadToCPAN";
-
-method !ecosystem { $.upload-class eq "UploadToZef" ?? "Zef" !! "CPAN" }
+has $.ecosystem;
 
 method !classes() {
     my @klass =
-        CheckAuth => "Make sure 'auth' in META6.json is '{self!ecosystem.lc}:xxx'",
+        CheckAuth => "Make sure 'auth' in META6.json is '{$.ecosystem.lc}:xxx'",
         CheckChanges => "Make sure 'Changes' file has the next release description",
         CheckOrigin => "",
         CheckUntrackedFiles => "",
@@ -15,7 +12,7 @@ method !classes() {
         RegenerateFiles => "",
         DistTest => "",
         MakeDist => "",
-        $.upload-class => "",
+        "UploadTo$.ecosystem" => "",
         RewriteChanges => "",
         GitCommit => "Git commit, and push it to remote",
         CreateGitTag => "Create git tag, and push it to remote",
@@ -26,7 +23,7 @@ method !classes() {
 
 method !desc {
     my @klass = self!classes;
-    note "==> Release distribution to {self!ecosystem} ecosystem";
+    note "==> Release distribution to $.ecosystem ecosystem";
     note "";
     note "  There are {+@klass} steps:";
     for @klass.kv -> $i, $pair {
@@ -42,6 +39,7 @@ method run(*%opt is copy) {
     my $prefix = "App::Mi6::Release::";
 
     my @klass = self!classes;
+    %opt = :$.ecosystem, |%opt;
     for @klass.kv -> $i, $pair {
         my $klass = $pair.key;
         my $full-klass = $prefix ~ $klass;
