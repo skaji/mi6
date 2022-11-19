@@ -7,15 +7,16 @@ method run(*%opt) {
     my $expect-auth = %opt<expect-auth>.any;
     my $expect-str = %opt<expect-auth>.map({"'$_'"}).join(" or ");
     my $module = %opt<main-module>;
+    my $ecosystem = %opt<ecosystem>;
 
     my $meta-auth = App::Mi6::JSON.decode("META6.json".IO.slurp)<auth>;
     my $module-auth = do {
         my @cmd = $*EXECUTABLE, "-M$module", "-e", "$module.^auth.Str.say";
-        my $p = with-rakulib "$*CWD/lib", { mi6run |@cmd, :out, :!err };
+        my $p = with-rakulib $*CWD, { mi6run |@cmd, :out, :!err };
         $p.out.slurp(:close).chomp || Nil;
     };
 
-    if %opt<auth-kind> eq 'zef' {
+    if $ecosystem eq 'Zef' {
         if !$meta-auth {
             die "To upload distribution to Zef ecosystem, you need to set 'auth' in META6.json first";
         }

@@ -1,6 +1,6 @@
 unit module App::Mi6::Template;
 
-our sub template(:$module, :$module-file, :$dist, :$author, :$auth, :$email, :$year) {
+our sub template(:$module, :$module-file, :$dist, :$author, :$auth, :$email, :$year, :$ecosystem) {
     my %template =
 
 Changes => qq:to/EOF/,
@@ -14,13 +14,9 @@ dist => qq:to/EOF/,
 name = $dist
 
 [ReadmeFromPod]
-; enabled = false
 filename = $module-file
 
-[UploadTo{ $auth && $auth ~~ /^zef:/ ?? "Zef" !! "CPAN" }]
-
-[PruneFiles]
-; match = ^ 'xt/'
+[UploadTo$ecosystem]
 
 [Badges]
 provider = github-actions/test.yml

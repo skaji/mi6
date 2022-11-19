@@ -1,11 +1,11 @@
 use App::Mi6::Badge;
+use App::Mi6::Fez;
 use App::Mi6::INI;
 use App::Mi6::JSON;
 use App::Mi6::Release;
 use App::Mi6::Run;
 use App::Mi6::Template;
 use App::Mi6::Util;
-use CPAN::Uploader::Tiny;
 use Shell::Command;
 use TAP;
 
@@ -48,22 +48,14 @@ method !author() { mi6run(<git config --global user.name>,  :out).out.slurp(:clo
 method !email()  { mi6run(<git config --global user.email>, :out).out.slurp(:close).chomp }
 
 method !cpan-user() {
-    $*HOME.add('.pause').e ?? CPAN::Uploader::Tiny.read-config($*HOME.add('.pause'))<user>.uc !! Nil;
+    try require ::("CPAN::Uploader::Tiny");
+    return Nil if $!;
+    $*HOME.add('.pause').e
+        ?? ::("CPAN::Uploader::Tiny").read-config($*HOME.add('.pause'))<user>.uc
+        !! Nil;
 }
 
-method !zef-auth() {
-    try require ::("App::Mi6::Fez");
-    if ::("App::Mi6::Fez") ~~ Failure {
-        die "To create a distribution for Zef ecosystem, you need to install fez first";
-    }
-    if my $user = (my \fez-mod = ::("App::Mi6::Fez")).username {
-        return ($user, |fez-mod.groups);
-    } else {
-        die "To create a distribution for Zef ecosystem, you need to execute 'fez register' and 'fez login' first.";
-    }
-}
-
-multi method cmd('new', $module is copy, :$zef) {
+multi method cmd('new', $module is copy, :$cpan) {
     $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
     $main-dir ~~ s:g/ '::' /-/;
@@ -78,21 +70,24 @@ multi method cmd('new', $module is copy, :$zef) {
     my $author = self!author;
     my $email = self!email;
 
-    my $auth;
-    if $zef {
-        note "Loading zef username from ~/.fez-config.json";
-        my $user = self!zef-auth.head;
-        $auth = "zef:$user";
-    } else {
-        if my $user = self!cpan-user {
-            note "Loading cpan username from ~/.pause";
+    my ($auth, $ecosystem);
+    if $cpan {
+        $ecosystem = "CPAN";
+        if self!cpan-user -> $user {
             $auth = "cpan:$user";
+            note "Using auth $auth";
+        }
+    } else {
+        $ecosystem = "Zef";
+        if App::Mi6::Fez.user -> $user {
+            $auth = "zef:$user";
+            note "Using auth $auth";
         }
     }
 
     my %content = App::Mi6::Template::template(
         :$module, :$author, :$auth, :$email,
-        :$module-file,
+        :$module-file, :$ecosystem,
         year => Date.today.year,
         dist => $module.subst("::", "-", :g),
     );
@@ -143,21 +138,27 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     my ($main-module, $main-module-file) = guess-main-module();
     my $dist = $main-module.subst("::", "-", :g);
     my $release-date = DateTime.now.truncated-to('second').Str;
-    my $upload-class = config("UploadToZef").defined ?? "UploadToZef" !! "UploadToCPAN";
+    my $ecosystem = config("UploadToZef").defined ?? "Zef" !! "CPAN";
 
     my $expect-auth;
-    my $auth-kind;
-    if $upload-class eq "UploadToZef" {
-        $expect-auth = self!zef-auth.map({ "zef:$_" }).List;
-        $auth-kind = "zef";
+    if $ecosystem eq "Zef" {
+        my $user = App::Mi6::Fez.user;
+        if !$user {
+            die "cannot determine Zef user, "
+              ~ "make sure you execute `fez login` first";
+        }
+        $expect-auth = ($user, |App::Mi6::Fez.groups).map({ "zef:$_" }).List;
     } else {
         my $user = self!cpan-user;
+        if !$user {
+            die "cannot determine CPAN user, "
+              ~ "make sure you have ~/.pause and CPAN::Uploader::Tiny module";
+        }
         die "cannot determine CPAN user from ~/.pause" if !$user;
         $expect-auth = ("cpan:$user",);
-        $auth-kind = "cpan";
     }
 
-    my $release = App::Mi6::Release.new(:$upload-class);
+    my $release = App::Mi6::Release.new(:$ecosystem);
     $release.run(
         dir => "lib",
         app => self,
@@ -165,7 +166,6 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
         :$release-date, :$dist, :$keep,
         :$next-version, :$yes,
         :$expect-auth,
-        :$auth-kind
     );
 }
 
@@ -497,12 +497,10 @@ App::Mi6 - minimal authoring tool for Raku
 
 =begin code :lang<console>
 
-$ mi6 new Foo::Bar        # create Foo-Bar distribution for CPAN ecosystem
-$ mi6 new --zef Foo::Bar  # create Foo-Bar distribution for Zef ecosystem
-
-$ mi6 build    # build the distribution and re-generate README.md/META6.json
-$ mi6 test     # run tests
-$ mi6 release  # release your distribution to CPAN/Zef ecosystem (configured by dist.ini)
+$ mi6 new Foo::Bar # create Foo-Bar distribution for Zef ecosystem
+$ mi6 build        # build the distribution and re-generate README.md/META6.json
+$ mi6 test         # run tests
+$ mi6 release      # release your distribution to Zef ecosystem
 
 =end code
 
@@ -528,7 +526,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
 =item Run tests by C<mi6 test>
 
-=item Release your distribution to L<CPAN ecosystem|https://www.cpan.org/authors/id/> or L<Zef ecosystem|https://deathbyperl6.com/faq-zef-ecosystem/>
+=item Release your distribution to L<Zef ecosystem|https://deathbyperl6.com/faq-zef-ecosystem/> or L<CPAN ecosystem|https://www.cpan.org/authors/id/>
 
 =head1 FAQ
 
@@ -548,8 +546,8 @@ name = Your-Module-Name
 ; if you want to change a file that generates README.md, then:
 ; filename = lib/Your/Tutorial.pod
 
-[UploadToCPAN]   ; Upload your distribution to CPAN ecosystem
-; [UploadToZef]  ; You can also use UploadToZef instead, to upload your distribution to Zef ecosystem
+[UploadToZef]    ; Upload your distribution to Zef ecosystem
+; [UploadToCPAN] ; You can also use UploadToCPAN instead, to upload your distribution to CPAN ecosystem
 
 [PruneFiles]
 ; if you want to prune files when packaging, then

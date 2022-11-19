@@ -7,8 +7,8 @@ my $app = App::Mi6.new;
 multi MAIN("version") {
     say $app.dist.meta<version>;
 }
-multi MAIN("new", $module, :fez(:$zef)) {
-    $app.cmd("new", $module, :$zef);
+multi MAIN("new", $module, :fez(:$zef), :$cpan) {
+    $app.cmd("new", $module, :$cpan);
 }
 multi MAIN("build") {
     $app.cmd("build");
@@ -44,7 +44,7 @@ sub USAGE {
   $ mi6 new Foo::Bar # create Foo-Bar distribution
   $ mi6 build        # build the distribution, and re-generate README.md/META6.json
   $ mi6 test         # run tests
-  $ mi6 release      # release your distribution tarball to CPAN
+  $ mi6 release      # release your distribution tarball to Zef/CPAN ecosystem
   $ mi6 version      # show mi6 version
   $ mi6 help         # show this help
 
@@ -54,7 +54,7 @@ sub USAGE {
     Create Foo-Bar distribution
 
     Options:
-      --zef, --fez  create distribution for Zef ecosystem
+      --cpan  create distribution for CPAN ecosystem, instead of Zef ecosystem
 
   $ mi6 build
     Build the distribution, and re-generate README.md/META6.json.
@@ -71,11 +71,10 @@ sub USAGE {
      -j, --jobs=N    run N test jobs in parallel
 
   $ mi6 release
-    Create tarball for your distribution, and release it to CPAN.
-    You should prepare ~/.pause file before releasing.
+    Create tarball for your distribution, and release it to Zef/CPAN ecosystem.
 
     Options:
-     -k, --keep          do not delete local tarball after releasing it to CPAN
+     -k, --keep          do not delete local tarball after releasing it
          --next-version  set next release version manually
          --yes           do not raise prompt; accept the default behavior
 

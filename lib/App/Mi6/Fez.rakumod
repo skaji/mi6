@@ -1,15 +1,15 @@
 unit class App::Mi6::Fez;
 
-no precompilation;
 use Fez::Util::Config;
 use App::Mi6::Util;
 
-method username() {
+method user() {
     config-value('un');
 }
 
 method groups() {
-    (.map({ .<group> }) with config-value('groups'))
+    my $groups = config-value('groups') || [];
+    $groups.map({.<group>});
 }
 
 method upload($tarball) {

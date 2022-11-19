@@ -1,4 +1,6 @@
 unit class App::Mi6::Release::UploadToCPAN;
+
+no precompilation;
 use CPAN::Uploader::Tiny;
 use App::Mi6::Util;
 

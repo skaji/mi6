@@ -6,10 +6,10 @@
   "build-depends": [
   ],
   "depends": [
-    "Pod::To::Markdown:ver<0.1.4+>",
+    "Pod::To::Markdown:ver<0.2.1+>",
     "Shell::Command",
-    "CPAN::Uploader::Tiny:ver<0.0.4+>",
-    "TAP:ver<0.1.0+>"
+    "fez:ver<38+>",
+    "TAP:ver<0.3.8+>"
   ],
   "description": "minimal authoring tool for Raku",
   "license": "Artistic-2.0",

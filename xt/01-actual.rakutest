@@ -43,17 +43,16 @@ my $tempdir = tempdir;
 }
 {
     temp $*CWD = $tempdir.IO;
-    temp %*ENV<HOME> = $tempdir;
-    $*HOME.add('.pause').spurt: q:to/EOF/;
-    user SOMEBODY
-    password this-is-secret
-    EOF
+    my $fez-config-json = "$tempdir/fez-config.json";
+    $fez-config-json.IO.spurt: '{"un":"test-user"}';
+    temp %*ENV<FEZ_CONFIG> = $fez-config-json;
+    LEAVE %*ENV<FEZ_CONFIG>:delete; # XXX WHY IS THIS NEEDED?
 
     $r = mi6 "new", "Hello";
     chdir "Hello";
     my $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
     is $meta<description>, "blah blah blah";
-    is $meta<auth>, "cpan:SOMEBODY";
+    is $meta<auth>, "zef:test-user";
     "lib/Hello.pm6".IO.spurt: q:to/EOF/;
     use v6;
     unit module Hello;
