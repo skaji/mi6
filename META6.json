@@ -41,6 +41,8 @@
     "App::Mi6::Util": "lib/App/Mi6/Util.rakumod"
   },
   "resources": [
+    "MIT/license",
+    "MIT/module"
   ],
   "source-url": "https://github.com/skaji/mi6.git",
   "tags": [
