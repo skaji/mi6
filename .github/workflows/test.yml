@@ -18,7 +18,7 @@ jobs:
           # - windows-latest # disabled for now
         raku-version:
           - 'latest'
-          - '2020.11'
+          #- '2020.11'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -32,4 +32,4 @@ jobs:
       - name: Install Development Dependencies
         run: zef install --/test App::Prove6 File::Temp Distribution::Builder::MakeFromJSON
       - name: Run Tests
-        run: prove6 -I. t xt
+        run: prove6 -I. --verbose t xt
