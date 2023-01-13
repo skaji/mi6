@@ -157,4 +157,12 @@ my $tempdir = tempdir;
     like $r.out, rx/1234/;
 }
 
+{
+    temp $*CWD = $tempdir.IO;
+    mi6 "new", "Build::Test4", "--scaffold=MIT";
+    chdir "Build-Test4";
+    like "LICENSE".IO.slurp, rx/MIT\sLicense/;
+    unlike "README.md".IO.slurp, rx/Apache/;
+}
+
 done-testing;
