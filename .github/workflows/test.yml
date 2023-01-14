@@ -32,4 +32,4 @@ jobs:
       - name: Install Development Dependencies
         run: zef install --/test App::Prove6 File::Temp Distribution::Builder::MakeFromJSON
       - name: Run Tests
-        run: prove6 -I. t xt
+        run: prove6 -I.,lib t xt

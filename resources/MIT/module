@@ -1,0 +1,32 @@
+unit class $module;
+
+
+=begin pod
+
+=head1 NAME
+
+$module - blah blah blah
+
+=head1 SYNOPSIS
+
+=begin code :lang<raku>
+
+use $module;
+
+=end code
+
+=head1 DESCRIPTION
+
+$module is ...
+
+=head1 AUTHOR
+
+$author <$email>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright $year $author
+
+This library is free software; you can redistribute it and/or modify it under the MIT License.
+
+=end pod

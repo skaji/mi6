@@ -7,8 +7,8 @@ my $app = App::Mi6.new;
 multi MAIN("version") {
     say $app.dist.meta<version>;
 }
-multi MAIN("new", $module, :fez(:$zef), :$cpan) {
-    $app.cmd("new", $module, :$cpan);
+multi MAIN("new", $module, :fez(:$zef), :$cpan, :$scaffold ) {
+    $app.cmd("new", $module, :$cpan, :$scaffold );
 }
 multi MAIN("build") {
     $app.cmd("build");
@@ -54,7 +54,16 @@ sub USAGE {
     Create Foo-Bar distribution
 
     Options:
-      --cpan  create distribution for CPAN ecosystem, instead of Zef ecosystem
+      --cpan      create distribution for CPAN ecosystem, instead of Zef ecosystem
+
+      --scaffold  Use specified scaffolding to create new project.
+
+                  If you specify a directory, the following optional files
+                  will be used to scaffold the varous parts of your new project:
+                    Changes dist module test license gitignore workflow
+
+                  You can alternately specify one of the following flavours:
+                    MIT - use the MIT license
 
   $ mi6 build
     Build the distribution, and re-generate README.md/META6.json.

@@ -55,7 +55,7 @@ method !cpan-user() {
         !! Nil;
 }
 
-multi method cmd('new', $module is copy, :$cpan) {
+multi method cmd('new', $module is copy, :$cpan, :$scaffold ) {
     $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
     $main-dir ~~ s:g/ '::' /-/;
@@ -85,6 +85,14 @@ multi method cmd('new', $module is copy, :$cpan) {
         }
     }
 
+    # user specified skeleton / scaffolding
+    my %scaffold = App::Mi6::Template::external(
+        $scaffold,
+        :$module, :$author, :$auth, :$email,
+        :$module-file, :$ecosystem,
+        :year(Date.today.year),
+        :dist($module.subst("::", "-", :g)),
+    );
     my %content = App::Mi6::Template::template(
         :$module, :$author, :$auth, :$email,
         :$module-file, :$ecosystem,
@@ -101,7 +109,7 @@ multi method cmd('new', $module is copy, :$cpan) {
         .github/workflows/test.yml workflow
     >>;
     for %map.kv -> $f, $c {
-        spurt($f, %content{$c});
+        spurt($f, %scaffold{$c} || %content{$c});
     }
     my %meta =
         authors => [ $author ],

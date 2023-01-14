@@ -6,24 +6,24 @@ use App::Mi6::JSON;
 
 my $r;
 $r = mi6 "new";
-isnt $r.exit, 0;
+isnt $r.exit, 0, "missing module fails";
 
 $r = mi6 "unknown";
-isnt $r.exit, 0;
+isnt $r.exit, 0, "unknown command fails";
 
 my $tempdir = tempdir;
 {
     temp $*CWD = $tempdir.IO;
     $r = mi6 "new", "Foo::Bar";
-    is $r.exit, 0;
-    ok "Foo-Bar".IO.d;
+    is $r.exit, 0, "new Foo::Bar completes";
+    ok "Foo-Bar".IO.d, "and Foo-Bar exists";
     chdir "Foo-Bar";
-    ok $_.IO.e for <.git  .gitignore  LICENSE  META6.json  README.md  bin  lib  t>;
-    ok !"xt".IO.d;
-    ok "lib/Foo/Bar.rakumod".IO.e;
+    ok $_.IO.e, "have $_", for <.git  .gitignore  LICENSE  META6.json  README.md  bin  lib  t>;
+    ok !"xt".IO.d, "dont have xt";
+    ok "lib/Foo/Bar.rakumod".IO.e, "have lib/Foo/Bar.rakumod";
     $r = mi6 "test";
-    is $r.exit, 0;
-    like $r.out, rx/All \s+ tests \s+ successful/;
+    is $r.exit, 0, "Foo::Bar test completes";
+    like $r.out, rx/All \s+ tests \s+ successful/, "Foo:Bar tests pass";
 
     mkdir "xt";
     "xt/01-fail.rakutest".IO.spurt: q:to/EOF/;
@@ -32,14 +32,14 @@ my $tempdir = tempdir;
     ok False;
     EOF
     $r = mi6 "test";
-    isnt $r.exit, 0;
-    like $r.out, rx/Failed/;
+    isnt $r.exit, 0, "xt test completes";
+    like $r.out, rx/Failed/, "xt tests fail";
 
     # Check .t6 extension
     "xt/01-fail.rakutest".IO.rename("xt/01-fail.t6");
     $r = mi6 "test";
-    isnt $r.exit, 0;
-    like $r.out, rx/Failed/;
+    isnt $r.exit, 0, "test crashes for .t6";
+    like $r.out, rx/Failed/, "tests fail for .t6";
 }
 {
     temp $*CWD = $tempdir.IO;
@@ -51,8 +51,8 @@ my $tempdir = tempdir;
     $r = mi6 "new", "Hello";
     chdir "Hello";
     my $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
-    is $meta<description>, "blah blah blah";
-    is $meta<auth>, "zef:test-user";
+    is $meta<description>, "blah blah blah", "meta is blah";
+    is $meta<auth>, "zef:test-user", "auth is zef:test-user";
     "lib/Hello.pm6".IO.spurt: q:to/EOF/;
     use v6;
     unit module Hello;
@@ -69,14 +69,14 @@ my $tempdir = tempdir;
     EOF
     $r = mi6 "build";
     $meta = App::Mi6::JSON.decode( "META6.json".IO.slurp );
-    is $meta<description>, "This is hello module.";
+    is $meta<description>, "This is hello module.", "build updates meta";
 }
 {
     temp $*CWD = $tempdir.IO;
     mi6 "new", "Hoge::Bar";
     chdir "Hoge-Bar";
     mi6 "dist";
-    ok "Hoge-Bar-0.0.1.tar.gz".IO.f;
+    ok "Hoge-Bar-0.0.1.tar.gz".IO.f, "build creates .tar.gz";
 }
 {
     temp $*CWD = $tempdir.IO;
@@ -103,7 +103,7 @@ my $tempdir = tempdir;
         "Hello::World" => "lib/Hello/World.rakumod",
         "Hello::World1" => "lib/Hello/World1.rakumod",
         "Hello::World2" => "lib/Hello/World2.pm6",
-    };
+    }, "build populates provides";
 }
 
 {
@@ -120,9 +120,9 @@ my $tempdir = tempdir;
     }
     EOF
     my $r = mi6 "build";
-    like $r.out, rx/ 'pwd=' /;
-    like $r.err, rx/ '==> Execute Build.rakumod' /;
-    is $r.exit, 0;
+    like $r.out, rx/ 'pwd=' /, "build executes Build.rakumod";
+    like $r.err, rx/ '==> Execute Build.rakumod' /, "build reports Build.rakumod";
+    is $r.exit, 0, "build completes";
 }
 
 {
@@ -137,7 +137,7 @@ my $tempdir = tempdir;
     \t@echo %SO%
     EOF
     my $r = mi6 "build";
-    is $r.exit, 0 or diag $r.err;
+    is $r.exit, 0, "build completes with Makefile.in" or diag $r.err;
 }
 
 {
@@ -153,8 +153,17 @@ my $tempdir = tempdir;
     cmd = %x -e 'print 4'
     EOF
     my $r = mi6 "build";
-    is $r.exit, 0 or diag $r.err;
-    like $r.out, rx/1234/;
+    is $r.exit, 0, "build completes with RunBeforeBuild, RunAfterBuild" or diag $r.err;
+    like $r.out, rx/1234/, "build RunBeforeBuild, RunAfterBuild ran";
+}
+
+{
+    temp $*CWD = $tempdir.IO;
+    mi6 "new", "Build::Test4", "--scaffold=MIT";
+    chdir "Build-Test4";
+    like "LICENSE".IO.slurp, rx/MIT\sLicense/, "scaffold LICENSE is MIT";
+    unlike "README.md".IO.slurp, rx/Apache/, "scaffold README.md is not Apache";
 }
 
 done-testing;
+
