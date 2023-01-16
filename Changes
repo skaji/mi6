@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+3.0.1  2023-01-14T07:04:15+09:00
+  - Remove git "--global" from git config user.name/email (jaguart #164)
+
 3.0.0  2022-11-20T00:51:28+09:00
   - Now mi6 itself lives in Zef ecosystem!
   - Now `mi6 new` creates Zef distribution by default (#162)

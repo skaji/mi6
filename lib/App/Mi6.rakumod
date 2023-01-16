@@ -43,9 +43,9 @@ my sub config($section, $key?, :$default = Nil) {
     $pair ?? $pair.value !! $default;
 }
 
-method !author() { mi6run(<git config --global user.name>,  :out).out.slurp(:close).chomp }
+method !author() { mi6run(<git config user.name>,  :out).out.slurp(:close).chomp }
 
-method !email()  { mi6run(<git config --global user.email>, :out).out.slurp(:close).chomp }
+method !email()  { mi6run(<git config user.email>, :out).out.slurp(:close).chomp }
 
 method !cpan-user() {
     try require ::("CPAN::Uploader::Tiny");
@@ -66,7 +66,7 @@ multi method cmd('new', $module is copy, :$cpan) {
     my $module-dir = $module-file.IO.dirname.Str;
     mkpath($_) for $module-dir, "t", "bin", ".github/workflows";
 
-    note "Loading author's name and email from git config --global user.name / user.email";
+    note "Loading author's name and email from git config user.name / user.email";
     my $author = self!author;
     my $email = self!email;
 
