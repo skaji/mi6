@@ -19,9 +19,6 @@ multi MAIN("test", *@file, Bool :v(:$verbose), Int :j(:$jobs)) {
 multi MAIN("release", Bool :k(:$keep), Str :$next-version, Bool :$yes) {
     $app.cmd("release", :$keep, :$next-version, :$yes);
 }
-multi MAIN("upload") {
-    die "`mi6 upload` is removed, please execute `mi6 release` instead.\n";
-}
 multi MAIN("help") {
     USAGE();
 }
