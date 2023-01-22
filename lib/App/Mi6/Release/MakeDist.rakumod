@@ -26,15 +26,7 @@ method run(*%opt) {
             );
         }
     }
-    my %env = %*ENV;
-    %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
-    my $proc = mi6run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
-    LEAVE $proc && $proc.err.close;
-    if $proc.exitcode != 0 {
-        my $exitcode = $proc.exitcode;
-        my $err = $proc.err.slurp;
-        die $err ?? $err !! "can't create tarball, exitcode = $exitcode";
-    }
+    my $tarball = make-tarball($name);
     tarball => "$name.tar.gz";
 }
 
