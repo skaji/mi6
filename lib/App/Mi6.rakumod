@@ -169,14 +169,6 @@ multi method cmd('release', Bool :$keep, Str :$next-version, Bool :$yes) {
     );
 }
 
-multi method cmd('dist', Bool :$no-top-directory) {
-    self.cmd('build');
-    my ($module, $module-file) = guess-main-module();
-    my $tarball = self.make-dist-tarball($module, :$no-top-directory);
-    say "Created $tarball";
-    return $tarball;
-}
-
 method run-hook($phase) {
     my $hooks = config("Run$phase", default => []);
     return if @$hooks == 0;
@@ -350,43 +342,6 @@ method prune-files {
     }
     return |@prune;
 
-}
-
-method make-dist-tarball($main-module, Bool :$no-top-directory) {
-    my $name = $main-module.subst("::", "-", :g);
-    my $meta = App::Mi6::JSON.decode("META6.json".IO.slurp);
-    my $version = $meta<version>;
-    die "To make dist tarball, you must specify a concrete version (no '*' or '+') in META6.json first"
-        if $version.contains('*') or $version.ends-with('+');
-    $name ~= "-$version";
-    rm_rf $name if $name.IO.d;
-    unlink "$name.tar.gz" if "$name.tar.gz".IO.e;
-    my @file = mi6run("git", "ls-files", :out).out.lines(:close);
-
-    my @prune = self.prune-files;
-    for @file -> $file {
-        next if @prune.grep({$_($file)});
-        my $target = "$name/$file";
-        my $dir = $target.IO.dirname;
-        mkpath $dir unless $dir.IO.d;
-        $file.IO.copy($target);
-    }
-    my %env = %*ENV;
-    %env<$_> = 1 for <COPY_EXTENDED_ATTRIBUTES_DISABLE COPYFILE_DISABLE>;
-    my $proc = do if $no-top-directory {
-        mi6run "tar", "czf", "$name.tar.gz", $name, :!out, :err, :%env;
-    } else {
-        temp $*CWD = $name;
-        my @entry = ".".IO.dir.map(*.Str);
-        mi6run "tar", "czf", "../$name.tar.gz", @entry, :!out, :err, :%env;
-    };
-    LEAVE $proc && $proc.err.close;
-    if $proc.exitcode != 0 {
-        my $exitcode = $proc.exitcode;
-        my $err = $proc.err.slurp;
-        die $err ?? $err !! "can't create tarball, exitcode = $exitcode";
-    }
-    return "$name.tar.gz";
 }
 
 my $GIT-REMOTE-REGEXP = rx{^[
