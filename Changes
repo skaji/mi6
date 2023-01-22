@@ -2,6 +2,10 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+3.0.2  2023-01-23T05:54:01+09:00
+  - Use --no-xattrs option when creating tarball in macos (sdondley #166, #168)
+  - Remove dist command (#167)
+
 3.0.1  2023-01-14T07:04:15+09:00
   - Remove git "--global" from git config user.name/email (jaguart #164)
 
