@@ -2,6 +2,10 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+3.0.3  2023-09-05T23:25:04+09:00
+  - Remove "upload" command
+  - Use actions/checkout@v4
+
 3.0.2  2023-01-23T05:54:01+09:00
   - Use --no-xattrs option when creating tarball in macos (sdondley #166, #168)
   - Remove dist command (#167)
