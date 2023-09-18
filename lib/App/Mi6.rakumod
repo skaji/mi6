@@ -106,7 +106,7 @@ multi method cmd('new', $module is copy, :$cpan) {
     my %meta =
         authors => [ $author ],
         version => "0.0.1",
-        perl => "6.d",
+        raku => "6.d",
     ;
     %meta<auth> = $auth if $auth;
     "META6.json".IO.spurt: App::Mi6::JSON.encode(%meta) ~ "\n";
