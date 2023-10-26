@@ -50,11 +50,9 @@ jobs:
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
-        run: zef install --/test --test-depends --deps-only .
-      - name: Install App::Prove6
-        run: zef install --/test App::Prove6
-      - name: Run Tests
-        run: prove6 -I. t
+        run: zef --error --deps-only --fetch-degree=4 --/test --test-depends install .
+      - name: Install Module
+        run: zef --debug --/depends install .
 EOF
 
 gitignore => qq:to/EOF/,
