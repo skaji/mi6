@@ -32,6 +32,11 @@ on:
     tags-ignore:
       - '*'
   pull_request:
+  schedule:
+    # bi-monthly (on 31st) health test on default branch - for long-time-not-touched modules: are all your dependencies (still) installing?
+    #        you want to change MIN and HOUR randomized ensuring MIN % 15 != 0
+    #        MIN HOUR DAYOFMONTH MONTH DAYOFWEEK
+    - cron: '17 2 31 * *'
 
 jobs:
   raku:
