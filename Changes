@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+3.0.4  2023-10-27T20:03:23+09:00
+  - Set fail-fast false to github action workflow files (rcmlz #173)
+
 3.0.3  2023-09-05T23:25:04+09:00
   - Remove "upload" command
   - Use actions/checkout@v4
