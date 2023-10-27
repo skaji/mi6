@@ -36,6 +36,7 @@ on:
 jobs:
   raku:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
