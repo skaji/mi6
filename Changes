@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+3.0.5  2024-03-27T23:27:49+09:00
+  - Respect hyphen in module names when mi6 new (tbrowder #177, #179)
+
 3.0.4  2023-10-27T20:03:23+09:00
   - Set fail-fast false to github action workflow files (rcmlz #173)
 
