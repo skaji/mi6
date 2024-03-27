@@ -4,14 +4,14 @@ our sub template(:$module, :$module-file, :$dist, :$author, :$auth, :$email, :$y
     my %template =
 
 Changes => qq:to/EOF/,
-Revision history for $dist
+Revision history for $module
 
 \{\{\$NEXT\}\}
     - Initial version
 EOF
 
 dist => qq:to/EOF/,
-name = $dist
+name = $module
 
 [ReadmeFromPod]
 filename = $module-file

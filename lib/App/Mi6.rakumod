@@ -31,7 +31,7 @@ my $to-module = -> $file {
     $normalize-path($file).subst('lib/', '').subst('/', '::', :g).subst(/$MODULE-EXT$/, '');
 };
 my $to-file = -> $module {
-    'lib/' ~ $module.subst(rx{ '::' | '-' }, '/', :g) ~ '.rakumod';
+    'lib/' ~ $module.subst('::', '/', :g) ~ '.rakumod';
 };
 
 my sub config($section, $key?, :$default = Any) {
@@ -56,7 +56,6 @@ method !cpan-user() {
 }
 
 multi method cmd('new', $module is copy, :$cpan) {
-    $module ~~ s:g/ '-' /::/;
     my $main-dir = $module;
     $main-dir ~~ s:g/ '::' /-/;
     die "Already exists $main-dir" if $main-dir.IO ~~ :d;
@@ -406,12 +405,17 @@ method find-provides() {
 sub guess-main-module() {
     die "Must run in the top directory" unless "lib".IO ~~ :d;
     if my $name = config("_", "name") {
-        my $file = $to-file($name).subst(".rakumod", "");
-        $file =  "$file.pm6".IO.e     ?? "$file.pm6"
-              !! "$file.pm".IO.e      ?? "$file.pm"
-              !! "$file.rakumod".IO.e ?? "$file.rakumod"
-              !! "";
-        return ($to-module($file), $file) if $file;
+        my @file = <<rakumod pm6 pm>>.map(-> $ext {
+            |(
+                'lib/' ~ $name.subst('::', '/', :g) ~ ".$ext",
+                'lib/' ~ $name.subst(rx{ '-' | '::' }, '/', :g) ~ ".$ext",
+            );
+        });
+        for @file -> $file {
+            if $file.IO.e {
+                return ($to-module($file), $file);
+            }
+        }
     }
     my @module-files = mi6run("git", "ls-files", "lib", :out).out.lines(:close).grep(/$MODULE-EXT$/);
     my $num = @module-files.elems;
