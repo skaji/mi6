@@ -82,6 +82,7 @@ my $tempdir = tempdir;
     "lib/Hello/World5.pm6".IO.spurt("");
     "dist.ini".IO.spurt: q:to/EOF/;
     name = Hello::World
+    source-url = https://github.com/foo/bar.git
     [PruneFiles]
     filename = lib/Hello/World5.pm6
     [MetaNoIndex]
@@ -97,6 +98,7 @@ my $tempdir = tempdir;
         "Hello::World1" => "lib/Hello/World1.rakumod",
         "Hello::World2" => "lib/Hello/World2.pm6",
     };
+    is $meta<source-url>, "https://github.com/foo/bar.git";
 }
 
 {

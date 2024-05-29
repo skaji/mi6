@@ -278,7 +278,7 @@ method regenerate-meta($module, $module-file) {
         provides      => config("AutoScanPackages", "enabled", :default<true>) eq "false"
                            ?? ($already<provides> || self.find-provides())
                            !! self.find-provides(),
-        source-url    => $already<source-url> || find-source-url(),
+        source-url    => find-source-url(),
         resources     => $already<resources> || [],
         tags          => $already<tags> || [],
         license       => $already<license> || guess-license(),
@@ -352,13 +352,16 @@ my $GIT-REMOTE-REGEXP = rx{^[
 ]$};
 
 sub find-source-url() {
-    my @line = mi6run("git", "remote", "-v", :out, :!err).out.lines(:close);
-    return "" unless @line;
-    my $url = gather for @line -> $line {
-        my ($name, $url) = $line.split(/\s+/);
-        if $name eq "origin" and $url {
-            take $url;
-            last;
+    my $url = config("_", "source-url");
+    if !$url {
+        my @line = mi6run("git", "remote", "-v", :out, :!err).out.lines(:close);
+        return "" unless @line;
+        $url = gather for @line -> $line {
+            my ($name, $url) = $line.split(/\s+/);
+            if $name eq "origin" and $url {
+                take $url;
+                last;
+            }
         }
     }
     return "" unless $url;
@@ -496,7 +499,11 @@ Yes. Use C<dist.ini>:
 =begin code :lang<ini>
 
 ; dist.ini
-name = Your-Module-Name
+name = Your::Module::Name
+
+; mi6 automatically guesses source-url by `git remote -v`.
+; if it doesn't work for some reasons, you can specify source-url:
+source-url = https://github.com/you/Your-Module-Name.git
 
 [ReadmeFromPod]
 ; if you want to disable generating README.md from main module's pod, then:

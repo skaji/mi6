@@ -49,7 +49,11 @@ Yes. Use `dist.ini`:
 
 ```ini
 ; dist.ini
-name = Your-Module-Name
+name = Your::Module::Name
+
+; mi6 automatically guesses source-url by `git remote -v`.
+; if it doesn't work for some reasons, you can specify source-url:
+source-url = https://github.com/you/Your-Module-Name.git
 
 [ReadmeFromPod]
 ; if you want to disable generating README.md from main module's pod, then:
