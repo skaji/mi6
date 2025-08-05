@@ -1,6 +1,6 @@
 unit class App::Mi6::Release::CleanDist;
 
-use Shell::Command;
+use Shell::Command:ver<1.2+>:auth<zef:raku-community-modules>;
 
 method run(*%opt) {
     return if %opt<keep>;

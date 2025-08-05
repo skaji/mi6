@@ -1,5 +1,5 @@
 unit class App::Mi6::Release::MakeDist;
-use Shell::Command;
+use Shell::Command:ver<1.2+>:auth<zef:raku-community-modules>;
 use App::Mi6::JSON;
 use App::Mi6::Util;
 

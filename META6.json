@@ -7,9 +7,9 @@
   ],
   "depends": [
     "Pod::To::Markdown:ver<0.2.1+>",
-    "Shell::Command",
-    "fez:ver<38+>",
-    "TAP:ver<0.3.8+>"
+    "Shell::Command:ver<1.2+>:auth<zef:raku-community-modules>",
+    "fez:ver<55>:auth<zef:tony-o>",
+    "TAP:ver<0.3.15+>:auth<zef:leont>"
   ],
   "description": "minimal authoring tool for Raku",
   "license": "Artistic-2.0",
@@ -43,7 +43,7 @@
   "resources": [
   ],
   "source-url": "https://github.com/skaji/mi6.git",
-  "tags": [
+  "tags": [ "AUTHORING", "ZEF", "CPAN", "PAUSE"
   ],
   "test-depends": [
   ],
