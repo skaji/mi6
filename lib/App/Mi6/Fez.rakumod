@@ -1,6 +1,6 @@
 unit class App::Mi6::Fez;
 
-use Fez::Util::Config;
+use Fez::Util::Config:ver<55>:auth<zef:tony-o>;
 use App::Mi6::Util;
 
 method user() {
