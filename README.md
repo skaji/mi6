@@ -189,6 +189,21 @@ Then, starting with an existing module created with `mi6`, do the following:
 
   * Run `mi6 release` and accept (or increase) the version number offered by `mi6`.
 
+How does one handle `mi6`'s interaction with module `Test`'?
+------------------------------------------------------------
+
+`Test`'s routine `lives-ok` can cause problems when using command `mi6 test`. Any output to `$*OUT` or `$*ERR` may cause a test failure. To mitigate that you, can use module `Test:Output` to hide those one or both of outputs from `App::Mi6`. See that module's documentation for details. A simple example follows:
+
+    use Test;
+    use Test::Output;
+    # test sub 'do-something'
+    lives-ok {
+        my $x = stdout-from {
+            do-something($infile);
+        }
+        # now test output $x if desired
+    }, "good read of existing data";
+
 TODO
 ====
 

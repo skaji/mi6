@@ -665,6 +665,26 @@ Run C<mi6 release> and accept (or increase)
 the version number offered by C<mi6>.
 =end item
 
+=head2 How does one handle C<mi6>'s interaction with module C<Test>'?
+
+C<Test>'s routine C<lives-ok> can cause problems when using command
+C<mi6 test>.  Any output to C<$*OUT> or C<$*ERR> may cause a test
+failure. To mitigate that you, can use module C<Test:Output> to hide
+those one or both of outputs from C<App::Mi6>. See that module's
+documentation for details. A simple example follows:
+
+=begin code
+use Test;
+use Test::Output;
+# test sub 'do-something'
+lives-ok {
+    my $x = stdout-from {
+        do-something($infile);
+    }
+    # now test output $x if desired
+}, "good read of existing data";
+=end code
+
 =head1 TODO
 
 documentation
