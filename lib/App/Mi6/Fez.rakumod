@@ -9,7 +9,7 @@ method user() {
 
 method groups() {
     my $groups = config-value('groups') || [];
-    $groups.map({.<group>});
+    $groups.map({.<name> // .<group>})
 }
 
 method upload($tarball) {
