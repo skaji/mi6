@@ -1,6 +1,7 @@
 Revision history for App-Mi6
 
 {{$NEXT}}
+  - Document creation of a GitHub workflows file
 
 3.0.7  2025-11-07T05:27:38+09:00
   - Account for changes in .fez-config.json file (lizmat #191)

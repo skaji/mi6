@@ -486,6 +486,8 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
 =item Generate README.md from lib/Main/Module.rakumod's pod
 
+=item Generate a GitHub workflows 'test.yml' file suitable for Linux, MacOS, and Windows
+
 =item Run tests by C<mi6 test>
 
 =item Release your distribution to L<Zef ecosystem|https://deathbyperl6.com/faq-zef-ecosystem/> or L<CPAN ecosystem|https://www.cpan.org/authors/id/>
