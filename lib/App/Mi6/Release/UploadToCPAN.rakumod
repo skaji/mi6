@@ -1,7 +1,7 @@
 unit class App::Mi6::Release::UploadToCPAN;
 
 no precompilation;
-use CPAN::Uploader::Tiny;
+use CPAN::Uploader::Tiny:ver<0.1.0+>:auth<zef:skaji>;
 use App::Mi6::Util;
 
 method run(*%opt) {

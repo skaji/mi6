@@ -6,12 +6,13 @@ use App::Mi6::Release;
 use App::Mi6::Run;
 use App::Mi6::Template;
 use App::Mi6::Util;
-use Shell::Command;
-use TAP;
+
+use Shell::Command:ver<1.2+>:auth<zef:raku-community-modules>;
+use TAP:ver<0.3.15+>:auth<zef:leont>;
 
 BEGIN { $*RAKU.compiler.version >= v2020.11 or die "App::Mi6 needs rakudo v2020.11 or later" }
 
-unit class App::Mi6;
+unit class App::Mi6:ver<3.0.6>:auth<zef:skaji>;
 
 # You can inspect App-Mi6 distribution by this dist() method. For example,
 #
@@ -683,7 +684,7 @@ Shoichi Kaji <skaji@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2015 Shoichi Kaji
+Copyright 2015 - 2025 Shoichi Kaji
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 
