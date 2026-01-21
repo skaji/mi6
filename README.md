@@ -18,10 +18,6 @@ $ mi6 release      # release your distribution to Zef ecosystem
 INSTALLATION
 ============
 
-First make sure you have rakudo v2020.11 or later. If not, install rakudo from [https://rakudo.org/downloads](https://rakudo.org/downloads).
-
-Then:
-
 ```console
 $ zef install App::Mi6
 ```
@@ -35,7 +31,7 @@ App::Mi6 is a minimal authoring tool for Raku. Features are:
 
   * Generate README.md from lib/Main/Module.rakumod's pod
 
-  * Generate a GitHub workflows 'test.yml' file suitable for Linux, MacOS, and Windows
+  * Generate a GitHub workflows 'test.yml' file suitable for Linux, macOS, and Windows
 
   * Run tests by `mi6 test`
 
