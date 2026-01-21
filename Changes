@@ -1,7 +1,10 @@
 Revision history for App-Mi6
 
 {{$NEXT}}
-  - Document creation of a GitHub workflows file
+
+3.0.8  2026-01-21T19:43:41+09:00
+  - Document creation of a GitHub workflows file (tbrowder #195)
+  - Use actions/checkout@v6
 
 3.0.7  2025-11-07T05:27:38+09:00
   - Account for changes in .fez-config.json file (lizmat #191)
