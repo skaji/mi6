@@ -9,8 +9,6 @@ use App::Mi6::Util;
 use Shell::Command;
 use TAP;
 
-BEGIN { $*RAKU.compiler.version >= v2020.11 or die "App::Mi6 needs rakudo v2020.11 or later" }
-
 unit class App::Mi6;
 
 # You can inspect App-Mi6 distribution by this dist() method. For example,
@@ -467,10 +465,6 @@ $ mi6 release      # release your distribution to Zef ecosystem
 =end code
 
 =head1 INSTALLATION
-
-First make sure you have rakudo v2020.11 or later. If not, install rakudo from L<https://rakudo.org/downloads>.
-
-Then:
 
 =begin code :lang<console>
 
