@@ -2,6 +2,9 @@ Revision history for App-Mi6
 
 {{$NEXT}}
 
+3.0.9  2026-07-04T12:39:47+09:00
+  - Use actions/checkout@v7
+
 3.0.8  2026-01-21T19:43:41+09:00
   - Document creation of a GitHub workflows file (tbrowder #195)
   - Use actions/checkout@v6
